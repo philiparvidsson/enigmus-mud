@@ -1,0 +1,3 @@
+buggar:
+
+	* input måste skrivas flera ggr ibland, why? (någonstans i network.py?)
