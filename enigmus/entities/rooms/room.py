@@ -4,7 +4,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core               import messagefilter
+from core               import messages
 from entities.container import Container
 
 #-----------------------------------------------------------
@@ -21,7 +21,7 @@ class Room(Container):
 
         self.on_message('container_add'   , self.__on_container_add)
         self.on_message('container_remove', self.__on_container_remove)
-        self.on_message('player_command'  , self.__on_player_command, filter=messagefilter.in_container(self))
+        self.on_message('player_command'  , self.__on_player_command, filter=messages.for_entities_in(self))
 
     def __on_container_add(self, container, entity):
         self.post_message('room_enter', self, entity)

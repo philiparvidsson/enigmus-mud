@@ -6,7 +6,7 @@
 
 import enigmus
 
-from core import messagefilter
+from core import messages
 from entities.baseentity import BaseEntity
 from entities.actors.baseactor import BaseActor
 from entities.actors.player import Player
@@ -27,7 +27,7 @@ class Flashlight(BaseItem):
 
         self.description = 'en blå ficklampa'
 
-        self.on_message('player_command', self._on_player_command, messagefilter.in_same_room(self))
+        self.on_message('player_command', self._on_player_command, messages.for_nearby_entities(self))
 
     def _on_player_command(self, player, command):
         if command == 'tänd':
@@ -47,9 +47,9 @@ class Mouse(BaseActor):
         super(Mouse, self).__init__()
 
         self.on_message('entity_init', self.__on_entity_init)
-        self.on_message('actor_speak', self._actor_speak, filter=messagefilter.in_same_room(self))
-        self.on_message('room_enter', self._container_add, filter=messagefilter.in_same_room(self))
-        self.on_message('room_leave', self._container_remove, filter=messagefilter.in_same_room(self))
+        self.on_message('actor_speak', self._actor_speak, filter=messages.for_nearby_entities(self))
+        self.on_message('room_enter', self._container_add, filter=messages.for_nearby_entities(self))
+        self.on_message('room_leave', self._container_remove, filter=messages.for_nearby_entities(self))
 
     def talk(self):
         self.speak('Käft! Tilltala mig inte!')
@@ -76,7 +76,7 @@ class Mouse(BaseActor):
         self.description = 'en grå mus'
         self.mouse_room = enigmus.create_room('En varm tarm. Du undrar vad som händer om du sparkar till den.')
 
-        self.on_message('player_command', self._on_player_command, messagefilter.in_room(self.mouse_room))
+        self.on_message('player_command', self._on_player_command, filter=messages.for_entities_in(self.mouse_room))
 
         self.timer(self.walk_around, 60.0)
         self.timer(self.talk, 22.0)

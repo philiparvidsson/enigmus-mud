@@ -7,7 +7,7 @@
 import enigmus
 
 from core import log
-from core import messagefilter
+from core import messages
 
 #-----------------------------------------------------------
 # GLOBALS
@@ -36,12 +36,18 @@ class BaseEntity(object):
 
         self.post_message('entity_init')
 
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.id == other.id
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def destroy(self):
         self.post_message('entity_destroy')
 
     def on_message(self, msg, func, filter=None):
         if filter is None:
-            filter = messagefilter.default(self)
+            filter = messages.for_entity(self)
 
         if msg not in self._msg_funcs:
             self._msg_funcs[msg] = []

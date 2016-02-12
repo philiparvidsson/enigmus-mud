@@ -6,7 +6,7 @@
 
 import enigmus
 
-from core                      import messagefilter
+from core                      import messages
 from entities.actors.baseactor import BaseActor
 from entities.items.baseitem   import BaseItem
 from entities.rooms.room       import Room
@@ -30,9 +30,9 @@ class Player(BaseActor):
 
         self.state = LoggingInState(self)
 
-        self.on_message('actor_speak'   , self.__on_actor_speak, filter=messagefilter.in_same_room(self))
-        self.on_message('room_enter'    , self.__on_room_enter,  filter=messagefilter.in_same_room(self))
-        self.on_message('room_leave'    , self.__on_room_leave,  filter=messagefilter.in_same_room(self))
+        self.on_message('actor_speak'   , self.__on_actor_speak, filter=messages.for_nearby_entities(self))
+        self.on_message('room_enter'    , self.__on_room_enter,  filter=messages.for_nearby_entities(self))
+        self.on_message('room_leave'    , self.__on_room_leave,  filter=messages.for_nearby_entities(self))
         self.on_message('player_command', self.__on_player_command)
 
     def disconnect(self):
@@ -79,12 +79,8 @@ class Player(BaseActor):
             self.send(room.description)
             self.send('Utgångar: {}'.format(', '.join(room.exits.keys())))
 
-            for actor in room.get_entities(BaseActor):
-                if actor is not self:
-                    self.send('{} är här.'.format(actor.description))
-
-            for item in room.get_entities(BaseItem):
-                self.send('{}.'.format(item.description))
+            s = ', '.join([e.description for e in room.entities])
+            self.send('Här finns {}'.format(s))
 
     def __on_room_leave(self, container, entity):
         if not isinstance(entity, BaseActor) or entity is self:
