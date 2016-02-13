@@ -7,7 +7,7 @@
 #-----------------------------------------------------------
 
 from entities.entity    import BaseEntity
-from entities.item      import BaseItem
+from entities.item      import Item
 from entities.container import Container
 
 #-----------------------------------------------------------
@@ -26,19 +26,24 @@ class BaseActor(BaseEntity):
 
         self.on_message('entity_cleanup', self.__entity_cleanup)
 
-    def drop(self, item):
-        """ Drops the specified item from the actor's inventory.
+    def drop(self, item, container=None):
+        """ Drops the specified item from the actor's inventory into the
+            specified container.
 
-            :param item: The item to drop.
+            :param item:      The item to drop.
+            :param container: The container to drop the item into.
 
             :returns: True if the item was dropped successfully.
         """
 
-        if not self.container              : return False
-        if item.container != self.inventory: return False
+        if not container and not self.container: return False
+        if item.container != self.inventory    : return False
 
-        self.container.add_entity(item)
-        self.post_message('actor_drop', self, item)
+        if not container:
+            container = self.container
+
+        container.add_entity(item)
+        self.post_message('actor_drop', self, container, item)
 
         return True
 
@@ -61,7 +66,6 @@ class BaseActor(BaseEntity):
         self.post_message('actor_give', self, actor, item)
 
         return True
-
 
     def go(self, direction):
         """ Exits the room through the specified exit.
@@ -103,11 +107,13 @@ class BaseActor(BaseEntity):
             :returns: True if the item was taken successfully.
         """
 
-        if item.container != self.container: return False
-        if not isinstance(item, BaseItem)  : return False
+        if not isinstance(item, Item)                     : return False
+        if hasattr(item, 'takeable') and not item.takeable: return False
+
+        container = item.container
 
         self.inventory.add_entity(item)
-        self.post_message('actor_take', self, item)
+        self.post_message('actor_take', self, container, item)
 
         return True
 
@@ -116,6 +122,9 @@ class BaseActor(BaseEntity):
     def __entity_cleanup(self):
         if not self.inventory:
             return
+
+        for item in self.inventory.entities:
+            self.drop(item)
 
         self.inventory.destroy()
         self.inventory = None

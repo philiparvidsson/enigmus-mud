@@ -137,7 +137,6 @@ class PlayingState(State):
 
     def perform(self, command):
         self.player.post_message('player_command', self.player, command)
-        self.player.send('Ok.')
 
 #-----------------------------------------------------------
 # FUNCTIONS

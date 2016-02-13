@@ -33,16 +33,8 @@ class SayCommand(BaseEntity):
     # ------- MESSAGES -------
 
     def __actor_say(self, actor, sentence):
-        if not actor.container:
-            return
-
-        for entity in actor.container.get_entities(Player):
-            if entity is actor:
-                # You say "{}"
-                entity.send('Du säger "{}"'.format(sentence))
-            else:
-                # {} says "{}"
-                entity.send(lang.sentence('{} säger "{}"', actor.get_description(indefinite=False), sentence))
+        # says "{}"
+        actor.emote('säger "{}"'.format(sentence))
 
     def __player_command(self, player, command):
         # say

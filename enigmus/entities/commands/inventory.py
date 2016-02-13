@@ -11,7 +11,7 @@ from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
-from entities.item          import BaseItem
+from entities.item          import Item
 from entities.room          import Room
 
 #-----------------------------------------------------------
@@ -34,17 +34,13 @@ class DropCommand(BaseEntity):
 
     # ------- MESSAGES -------
 
-    def __actor_drop(self, actor, item):
-        if not actor.container:
-            return
-
-        for entity in actor.container.get_entities(Player):
-            if entity is actor:
-                # You dropped {} on the ground.
-                entity.send('Du slängde {} på marken.'.format(item.get_description()))
-            else:
-                # {} dropped {} on the ground.
-                entity.send('{} slängde {} på marken.'.format(actor.get_description(indefinite=False), item.get_description()))
+    def __actor_drop(self, actor, container, item):
+        if container != actor.container:
+            # put {} in
+            actor.emote('lade {} i'.format(item.get_description()), container)
+        else:
+            # put {} on the ground.
+            actor.emote('lade {} på marken.'.format(item.get_description()))
 
     def __player_command(self, player, command):
         if not player.container:
@@ -52,19 +48,33 @@ class DropCommand(BaseEntity):
 
         args    = command.split(' ')
         command = args[0]
+        args    = args[1:]
 
         # drop
         if command != 'släng':
             return
 
-        item_to_drop = player.inventory.find_match(' '.join(args[1:]))
+        container = None
 
-        if not item_to_drop:
+        # in
+        i = args.index('i') if 'i' in args else -1
+        if i >= 0:
+            container = player.container.find_match(' '.join(args[i+1:]))
+
+            if not container:
+                player.send('Släng i vad?')
+                return
+
+            args = args[:i]
+
+        item = player.inventory.find_match(' '.join(args))
+
+        if not item or item == container:
             # Drop what?
             player.send('Släng vadå?')
             return
 
-        player.drop(item_to_drop)
+        player.drop(item, container)
 
 class GiveCommand(BaseEntity):
     """ Command entity for handling the give command. """
@@ -171,17 +181,13 @@ class TakeCommand(BaseEntity):
 
     # ------- MESSAGES -------
 
-    def __actor_take(self, actor, item):
-        if not actor.container:
-            return
-
-        for entity in actor.container.get_entities(Player):
-            if entity is actor:
-                # You took {}.
-                entity.send('Du tog {}.'.format(item.get_description(indefinite=False)))
-            else:
-                # {} took {}.
-                entity.send('{} tog {}.'.format(actor.get_description(indefinite=False), item.get_description(indefinite=False)))
+    def __actor_take(self, actor, container, item):
+        if container != actor.container:
+            # took {} from
+            actor.emote('tog {} från'.format(item.get_description()), container)
+        else:
+            # took
+            actor.emote('tog', item)
 
     def __player_command(self, player, command):
         if not player.container:
@@ -189,18 +195,33 @@ class TakeCommand(BaseEntity):
 
         args    = command.split(' ')
         command = args[0]
+        args    = args[1:]
 
         # take
         if command != 'ta':
             return
 
-        item_to_take = player.container.find_match(' '.join(args[1:]))
-        if not item_to_take:
+        container = player.container
+
+        # from
+        i = args.index('från') if 'från' in args else -1
+        if i > 0:
+            container = player.container.find_match(' '.join(args[i+1:]))
+
+            if not container:
+                # Take from what?
+                player.send('Ta från vad?')
+                return
+
+            args = args[:i]
+
+        item = container.find_match(' '.join(args))
+        if not item:
             # Take what?
             player.send('Ta vad?')
             return
 
-        if not player.take(item_to_take):
+        if not player.take(item):
             # You can't take that!
             player.send('Den kan du inte ta!')
             return

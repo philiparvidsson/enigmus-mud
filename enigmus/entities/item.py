@@ -12,7 +12,7 @@ from entities.entity import BaseEntity
 # CLASSES
 #-----------------------------------------------------------
 
-class BaseItem(BaseEntity):
+class Item(BaseEntity):
     """ Represents an item in the game. """
 
     pass

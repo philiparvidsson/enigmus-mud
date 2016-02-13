@@ -8,6 +8,7 @@
 
 from core            import log
 from entities.entity import BaseEntity
+from entities.item   import Item
 
 #-----------------------------------------------------------
 # CLASSES
@@ -40,12 +41,23 @@ class Container(BaseEntity):
 
         entity.container = self
         self.entities.append(entity)
+        self.post_message('container_add', self, entity)
 
     def find_match(self, text):
         best_match = (0, None)
 
         for entity in self.entities:
             match = (entity.match(text), entity)
+            if match[0] > best_match[0]:
+                best_match = match
+
+            for detail in entity.details:
+                match = (detail.match(text), detail)
+                if match[0] > best_match[0]:
+                    best_match = match
+
+        for detail in self.details:
+            match = (detail.match(text), detail)
             if match[0] > best_match[0]:
                 best_match = match
 
@@ -85,6 +97,8 @@ class Container(BaseEntity):
 
         entity.container = None
 
+        self.post_message('container_remove', self, entity)
+
     # ------- MESSAGES -------
 
     def __entity_cleanup(self):
@@ -95,3 +109,11 @@ class Container(BaseEntity):
             entity.destroy()
 
         self.entities = None
+
+class ContainerItem(Container, Item):
+    """ Represents a container item that can contain other entities. """
+
+    def __init__(self):
+        """ Initializes the container. """
+
+        super(ContainerItem, self).__init__()

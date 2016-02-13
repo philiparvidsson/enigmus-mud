@@ -10,7 +10,8 @@ from core                   import lang
 from core                   import messages
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
-from entities.room          import Detail
+from entities.entity        import Detail
+from entities.container     import Container
 
 #-----------------------------------------------------------
 # CLASSES
@@ -33,8 +34,8 @@ class LookCommand(BaseEntity):
         if not player.container:
             return
 
-        args    = command.split(' ')
-        command = args[0]
+        args        = command.split(' ')
+        command     = args[0]
 
         # look
         if command != 't' and command != 'titta':
@@ -44,24 +45,41 @@ class LookCommand(BaseEntity):
             player.send(player.container.get_description(exclude_actor=player))
             return
 
-        args = args[1:]
+        args        = args[1:]
+        look_inside = False
 
         # at
         if len(args) > 1 and args[0] == 'på':
             args = args[1:]
+        # in
+        elif len(args) > 1 and args[0] == 'i':
+            args = args[1:]
+            look_inside = True
 
-        text = ' '.join(args)
+        text   = ' '.join(args)
+        entity = player.container.find_match(text)
 
-        entity_of_interest = player.container.find_match(text)
+        if not entity:
+            entity = player.inventory.find_match(text)
 
-        if not entity_of_interest:
-            entity_of_interest = player.inventory.find_match(text)
+        if look_inside and not isinstance(entity, Container):
+            entity = None
 
-        if not entity_of_interest:
-            # Look at what?
-            player.send('Titta på vad?')
+        if not entity:
+            # Look at/in what?
+            player.send('Titta {} vad?'.format('i' if look_inside else 'på'))
             return
 
-        if not isinstance(entity_of_interest, Detail):
-            player.send(lang.sentence(entity_of_interest.get_description()))
-        player.send(entity_of_interest.long_description)
+        if look_inside:
+            if len(entity.entities) == 0:
+                player.send(lang.sentence('{} är tom.', entity))
+                return
+
+            s = lang.list([x.get_description() for x in entity.entities])
+            # {} contains: {}
+            player.send(lang.sentence('{} innehåller: {}', entity.get_description(indefinite=False), s))
+            return
+
+        if not isinstance(entity, Detail):
+            player.send(lang.sentence(entity.get_description()))
+        player.send(entity.long_description)

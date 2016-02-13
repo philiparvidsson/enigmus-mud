@@ -28,6 +28,7 @@ class BaseEntity(object):
 
         self.container        = None
         self.description      = '<{}>'.format(self.__class__.__name__)
+        self.details          = []
         self.is_destroyed     = False
         self.long_description = object.__str__(self)
         self.timers           = []
@@ -69,6 +70,13 @@ class BaseEntity(object):
 
         if len(args) == 7:
             self.long_description = args[6]
+
+    def detail(self, description, long_description):
+        detail = Detail(self)
+
+        detail.describe(description, long_description)
+
+        self.details.append(detail)
 
     def destroy(self):
         """ Performs cleanup and destruction logic for the entity, and removes
@@ -288,6 +296,13 @@ class Description(object):
 
     def remove_indefinite_adjective(self, adj):
         if adj in self.indefinite[1]: self.indefinite[1].remove(adj)
+
+class Detail(BaseEntity):
+    def __init__(self, entity):
+        super(Detail, self).__init__()
+
+        self.entity = entity
+
 
 class Timer(object):
     """  Represents an entity timer. """
