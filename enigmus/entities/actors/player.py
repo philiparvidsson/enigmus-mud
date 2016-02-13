@@ -7,9 +7,8 @@
 import enigmus
 
 from core                      import messages
-from entities.actors.baseactor import BaseActor
-from entities.items.baseitem   import BaseItem
-from entities.rooms.room       import Room
+from entities.actor import BaseActor
+from entities.room       import Room
 
 #-----------------------------------------------------------
 # CONSTANTS
@@ -30,7 +29,7 @@ class Player(BaseActor):
 
         self.state = LoggingInState(self)
 
-        self.on_message('actor_speak'   , self.__on_actor_speak, filter=messages.for_nearby_entities(self))
+        self.on_message('actor_say'   , self.__on_actor_speak, filter=messages.for_nearby_entities(self))
         self.on_message('room_enter'    , self.__on_room_enter,  filter=messages.for_nearby_entities(self))
         self.on_message('room_leave'    , self.__on_room_leave,  filter=messages.for_nearby_entities(self))
         self.on_message('player_command', self.__on_player_command)
@@ -63,10 +62,11 @@ class Player(BaseActor):
         self._connection.send(end .decode('utf-8').encode('iso-8859-1'))
 
     def __on_actor_speak(self, actor, sentence):
-        if actor is self:
-            self.send('Du säger "{}"'.format(sentence))
-        else:
-            self.send('{} säger "{}"'.format(actor.description, sentence))
+        #if actor is self:
+        #    self.send('Du säger "{}"'.format(sentence))
+        #else:
+        #    self.send('{} säger "{}"'.format(actor.description, sentence))
+        pass
 
     def __on_room_enter(self, container, entity):
         if not isinstance(entity, BaseActor):
@@ -93,28 +93,6 @@ class Player(BaseActor):
             return False
 
         args = command.split(' ')
-
-        if args[0] == 'säg' or args[0] == '\'':
-            self.speak(' '.join(args[1:]))
-            return True
-
-        if args[0] == 'ta':
-            items = [self.container.entities[0]]
-
-            if len(items) == 0:
-                player.send('Ta vad?')
-                return
-
-            for item in items:
-                item.container.remove_entity(item)
-                self.inventory.append(item)
-
-            return True
-
-        if args[0] == 'i':
-            item_descriptions = [i.description for i in self.inventory]
-            player.send('Du har: {}'.format(', '.join(item_descriptions)))
-            return True
 
 class State(object):
     def __init__(self, player):

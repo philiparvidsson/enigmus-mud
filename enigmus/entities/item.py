@@ -1,14 +1,18 @@
 # coding=utf-8
 
+""" Provides the base item class. """
+
 #-----------------------------------------------------------
 # IMPORTS
 #-----------------------------------------------------------
 
-import enigmus
+from entities.entity import BaseEntity
 
 #-----------------------------------------------------------
-# SCRIPT
+# CLASSES
 #-----------------------------------------------------------
 
-if __name__ == '__main__':
-    enigmus.run()
+class BaseItem(BaseEntity):
+    """ Represents an item in the game. """
+
+    pass

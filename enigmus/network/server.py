@@ -20,10 +20,10 @@ BUF_SIZE = 64
 #-----------------------------------------------------------
 
 class TcpConnection(object):
-    ''' Represents a connection to a TCP server. '''
+    """ Represents a connection to a TCP server. """
 
     def __init__(self, server, socket, address):
-        ''' Initializes the connection with the specified parameters. '''
+        """ Initializes the connection with the specified parameters. """
 
         self._socket = socket
 
@@ -31,7 +31,7 @@ class TcpConnection(object):
         self.server  = server
 
     def close(self):
-        ''' Closes the connection and removes it from its server. '''
+        """ Closes the connection and removes it from its server. """
 
         del self.server.connections[self._socket]
 
@@ -41,12 +41,12 @@ class TcpConnection(object):
         self.server.post_message('disconnect', self)
 
     def is_open(self):
-        ''' Returns True if the connection is open. '''
+        """ Returns True if the connection is open. """
 
         return self._socket is not None
 
     def _receive(self):
-        ''' Receives data from the connection. '''
+        """ Receives data from the connection. """
 
         data = self._socket.recv(BUF_SIZE)
 
@@ -57,16 +57,16 @@ class TcpConnection(object):
         self.server.post_message('receive', self, data)
 
     def send(self, data):
-        ''' Sends data through the connection. '''
+        """ Sends data through the connection. """
         self._socket.send(data)
 
         self.server.post_message('send', self, data)
 
 class TcpServer(MessageQueue):
-    ''' A TCP server that accepts incoming connections. '''
+    """ A TCP server that accepts incoming connections. """
 
     def __init__(self):
-        ''' Initializes the TCP server. '''
+        """ Initializes the TCP server. """
 
         super(TcpServer, self).__init__()
 
@@ -75,18 +75,18 @@ class TcpServer(MessageQueue):
         self.connections = {}
 
     def disconnect_all(self):
-        ''' Disconnects all current connections from the server. '''
+        """ Disconnects all current connections from the server. """
 
         for socket, connection in self.connections.iteritems():
             connection.close()
 
     def listen(self, ip, port, backlog=10):
-        ''' Starts listening on the specified local endpoint.
+        """ Starts listening on the specified local endpoint.
 
             :param ip:      The IP to bind to.
             :param port:    The port to bind to.
             :param backlog: The size of the backlog.
-        '''
+        """
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind((ip, port))
@@ -95,16 +95,16 @@ class TcpServer(MessageQueue):
         self._socket = s
 
     def stop_listening(self):
-        ''' Stops listening for incoming connections. '''
+        """ Stops listening for incoming connections. """
 
-        if self._socket is None:
+        if not self._socket:
             return
 
         self._socket.close()
         self._socket = None
 
     def update(self):
-        ''' Accepts incoming connections and receives data from them. '''
+        """ Accepts incoming connections and receives data from them. """
 
         sockets = self.connections.keys()
 
@@ -122,7 +122,7 @@ class TcpServer(MessageQueue):
         self.process_pending_messages()
 
     def _accept(self):
-        ''' Accepts pending incoming connections. '''
+        """ Accepts pending incoming connections. """
 
         socket, address = self._socket.accept()
         connection = TcpConnection(self, socket, address)

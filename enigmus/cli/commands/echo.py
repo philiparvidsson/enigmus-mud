@@ -1,24 +1,24 @@
 # coding=utf-8
 
-#-----------------------------------------------------------
-# IMPORTS
-#-----------------------------------------------------------
-
-#-----------------------------------------------------------
-# GLOBALS
-#-----------------------------------------------------------
+""" Provides the echo command. """
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
 class Command(object):
+    """ Provides the echo command for echoing text back to the console. This is
+        a dummy command.
+    """
+
     usage = 'echo [text]'
 
-    def __init__(self):
-        pass
-
     def perform(self, args):
+        """ Performs the echo command.
+
+            :param args: The text to echo back to the console.
+        """
+
         text = ' '.join(args)
 
         print text

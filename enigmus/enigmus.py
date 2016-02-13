@@ -6,9 +6,14 @@
 
 from cli                    import console
 from core                   import log
-from entities.baseentity    import BaseEntity
+from entities.commands.say  import SayCommand
+from entities.commands.go  import GoCommand
+from entities.commands.inventory  import TakeCommand
+from entities.commands.inventory  import DropCommand
+from entities.commands.inventory  import InventoryCommand
+from entities.entity        import BaseEntity
 from entities.actors.player import Player
-from entities.rooms.room    import Room
+from entities.room           import Room
 from network.server         import TcpServer
 
 import time
@@ -66,9 +71,25 @@ class Enigmus(object):
                 log.warn('message dropped: {}, {}, {}', target.id, msg, args)
 
             for entity in self.entities.values():
-                entity.receive_message(target, msg, args)
+                entity.handle_message(target, msg, args)
 
         self._msg_queue = []
+
+    def register_entity(self, entity):
+        if entity.id in self.entities:
+            log.error('attempted to add entity {} twice', entity)
+            return
+
+        self.entities[entity.id] = entity
+        print 'added entity {}'.format(entity.id)
+
+    def remove_entity(self, entity):
+        if not entity.id in self.entities:
+            log.warn('cannot remove non-existent entity {}', entity)
+            return
+
+        del self.entities[entity.id]
+        print 'removed entity {}'.format(entity.id)
 
     def tick(self, dt):
         for entity in self.entities.values():
@@ -87,7 +108,7 @@ class Enigmus(object):
 # FUNCTIONS
 #-----------------------------------------------------------
 
-def create_entity(class_, *args):
+'''def create_entity(class_, *args):
     if not issubclass(class_, BaseEntity):
         # TODO: Raise exception.
         print 'cant do dat'
@@ -97,26 +118,16 @@ def create_entity(class_, *args):
 
     instance.entities[entity.id] = entity
 
-    print 'created entity {}'.format(entity.id)
 
-    return entity
-
-def destroy_entity(id):
-    if id not in instance.entities:
-        return
-
-    del instance.entities[id]
-
-    print 'destroyed entity {}'.format(id)
+    return entity'''
 
 
 def get_entity(id):
     return instance.entities[id]
 
-def create_room(description, class_=Room):
-    room = create_entity(class_)
+def create_room(description):
+    room = Room()
     room.description = description
-    room.exits       = {}
     return room
 
 def connect_rooms(room1, room2, exit1, exit2):
@@ -127,7 +138,7 @@ def exit():
     instance._done = True
 
 def on_connect(connection):
-    player = create_entity(Player, connection)
+    player = Player(connection)
     instance.players.append(player)
 
     connection.player = player
@@ -157,6 +168,7 @@ def run():
     console.init()
 
     load_rooms()
+    load_commands()
     load_actors()
 
     while instance.tick(1.0/5.0):
@@ -164,6 +176,13 @@ def run():
         time.sleep(1.0/5.0)
 
     instance.cleanup()
+
+def load_commands():
+    SayCommand()
+    GoCommand()
+    TakeCommand()
+    DropCommand()
+    InventoryCommand()
 
 def load_rooms():
     room1 = create_room('Du står i ett konstigt rum. Det är inrett på ett homosexuellt vis. Du känner dig hemma.')
@@ -176,17 +195,23 @@ def load_rooms():
     connect_rooms(room3, room4, 'vrå', 'tillbaka')
     connect_rooms(room3, room2, 'ut', 'kök')
 
+
+    def lol(room, entity):
+        for e in room1.get_entities(Player):
+            e.send('Det låter som att någon går runt i trädgården.')
+    room2.on_message('room_enter', lol)
+
 def load_actors():
     from entities.actors.mouse import Mouse
     from entities.actors.mouse import Flashlight
-    mouse = create_entity(Mouse)
+    mouse = Mouse()
     get_entity('Room_1').add_entity(mouse)
 
-    fl = create_entity(Flashlight)
+    fl = Flashlight()
     get_entity('Room_2').add_entity(fl)
 
 
-'''
+"""
 
 class Mouse(Actor):
     def init(self):
@@ -205,4 +230,4 @@ class Mouse(Actor):
 
     def walk_around(self):
         self.leave_room(0)
-'''
+"""

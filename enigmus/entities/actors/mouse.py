@@ -7,11 +7,11 @@
 import enigmus
 
 from core import messages
-from entities.baseentity import BaseEntity
-from entities.actors.baseactor import BaseActor
+from entities.entity import BaseEntity
+from entities.actor import BaseActor
 from entities.actors.player import Player
-from entities.items.baseitem import BaseItem
-from entities.rooms.room import Room
+from entities.item import BaseItem
+from entities.room import Room
 
 #-----------------------------------------------------------
 # GLOBALS
@@ -47,16 +47,16 @@ class Mouse(BaseActor):
         super(Mouse, self).__init__()
 
         self.on_message('entity_init', self.__on_entity_init)
-        self.on_message('actor_speak', self._actor_speak, filter=messages.for_nearby_entities(self))
+        self.on_message('actor_say', self._actor_speak, filter=messages.for_nearby_entities(self))
         self.on_message('room_enter', self._container_add, filter=messages.for_nearby_entities(self))
         self.on_message('room_leave', self._container_remove, filter=messages.for_nearby_entities(self))
 
     def talk(self):
-        self.speak('Käft! Tilltala mig inte!')
+        self.say('Käft! Tilltala mig inte!')
         self.timer(self.talk, 22.0)
 
     def walk_around(self):
-        self.exit_room(self.container.exits.keys()[0])
+        self.go(self.container.exits.keys()[0])
         self.timer(self.walk_around, 60.0)
 
         for p in self.mouse_room.get_entities(Player):
@@ -69,8 +69,8 @@ class Mouse(BaseActor):
         if sentence.find('mus') == -1:
             return
 
-        self.speak('Jamen skit i mig säger jag!!!!')
-        self.exit_room(self.container.exits.keys()[0])
+        self.say('Jamen skit i mig säger jag!!!!')
+        self.go(self.container.exits.keys()[0])
 
     def __on_entity_init(self):
         self.description = 'en grå mus'
