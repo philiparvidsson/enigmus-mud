@@ -29,10 +29,6 @@ class Room(Container):
         self.details     = []
         self.exits       = {}
 
-
-        self.on_message('container_add'   , self.__container_add   )
-        self.on_message('container_remove', self.__container_remove)
-
     def detail(self, description, long_description):
         self.details.append(Detail(self, description, long_description))
 
@@ -73,14 +69,6 @@ class Room(Container):
             desc += '\n' + lang.sentence('{}', lang.list(items))
 
         return desc
-
-    # ------- MESSAGES -------
-
-    def __container_add(self, container, entity):
-        self.post_message('room_enter', self, entity)
-
-    def __container_remove(self, container, entity):
-        self.post_message('room_leave', self, entity)
 
 class Detail(BaseEntity):
     def __init__(self, room, description, long_description):

@@ -11,6 +11,7 @@ from entities.commands.go  import GoCommand
 from entities.commands.inventory  import TakeCommand
 from entities.commands.inventory  import DropCommand
 from entities.commands.inventory  import InventoryCommand
+from entities.commands.inventory  import GiveCommand
 from entities.commands.look  import LookCommand
 from entities.commands.emotes  import EmoteHandler
 #from entities.commands.emote  import KissCommand
@@ -138,9 +139,9 @@ def create_room(description):
     room.describe(description)
     return room
 
-def connect_rooms(room1, room2, exit1, exit2):
-    room1.exits[exit1] = room2
-    room2.exits[exit2] = room1
+def connect_rooms(room1, exit1, exit_desc1, exit_desc2, room2, exit2, exit_desc3, exit_desc4):
+    room1.exits[exit1] = (room2, exit_desc1, exit_desc2)
+    room2.exits[exit2] = (room1, exit_desc3, exit_desc4)
 
 def exit():
     instance._done = True
@@ -193,6 +194,7 @@ def load_commands():
     DropCommand()
     InventoryCommand()
     LookCommand()
+    GiveCommand()
 
 def load_rooms():
     room1 = Room()
@@ -213,10 +215,17 @@ def load_rooms():
 
     room4.describe('Skamvrån. Vad gör du här? Vad skäms du för? En tanke slår dig; det kanske är du som är Bögen med stort B.')
 
-    connect_rooms(room1, room2, 'ut', 'in')
-    connect_rooms(room1, room3, 'kök', 'hall')
-    connect_rooms(room3, room4, 'vrå', 'tillbaka')
-    connect_rooms(room3, room2, 'ut', 'kök')
+    connect_rooms(room1, 'ut', 'ut', 'in',
+                  room2, 'in', 'in', 'ut')
+
+    connect_rooms(room1, 'kök', 'in i köket' , 'in från hallen',
+                  room3, 'ut',  'ut i hallen', 'ut från köket')
+
+    connect_rooms(room3, 'vrå'     , 'in i skamvrån'   , 'in från köket',
+                  room4, 'tillbaka', 'ut från skamvrån', 'in från skamvrån')
+
+    connect_rooms(room3, 'ut' , 'ut i trädgården' , 'ut från köket',
+                  room2, 'kök', 'in i köket'      , 'in från trändgården')
 
 
     def lol(room, entity):

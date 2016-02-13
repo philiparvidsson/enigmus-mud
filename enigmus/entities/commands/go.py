@@ -25,16 +25,31 @@ class GoCommand(BaseEntity):
 
         super(GoCommand, self).__init__()
 
-        self.on_message('room_enter', self.__room_enter,
-            filter=messages.for_entities_of_class(Room))
+        self.on_message('actor_enter', self.__actor_enter,
+            filter=messages.for_entities_of_class(BaseActor))
 
-        self.on_message('room_leave', self.__room_leave,
-            filter=messages.for_entities_of_class(Room))
+        self.on_message('actor_leave', self.__actor_leave,
+            filter=messages.for_entities_of_class(BaseActor))
 
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(Player))
 
     # ------- MESSAGES -------
+
+    def __actor_enter(self, actor, room, exit):
+        actor_desc = actor.get_description()
+        for player in room.get_entities(Player):
+            if player == actor:
+                player.send(room.get_description(exclude_actor=player))
+            else:
+                # {} comes {}.
+                player.send(lang.sentence('{} kommer {}.', actor_desc, exit))
+
+    def __actor_leave(self, actor, room, exit):
+        actor_desc = actor.get_description(indefinite=False)
+        for player in room.get_entities(Player):
+            # {} left {}.
+            player.send(lang.sentence('{} gick {}.', actor_desc, exit))
 
     def __player_command(self, player, command):
         if not player.container:
@@ -62,29 +77,3 @@ class GoCommand(BaseEntity):
         if args[0] == 'gå':
             # Go where?
             player.send('Gå vart?')
-
-    def __room_enter(self, room, entity):
-        actor = entity
-
-        if not isinstance(actor, BaseActor):
-            return
-
-        entity_desc = entity.get_description()
-        for player in room.get_entities(Player):
-            if player == actor:
-                player.send(room.get_description(exclude_actor=player))
-            else:
-                # {} arrived.
-                player.send(lang.sentence('{} kom in.', entity_desc))
-
-    def __room_leave(self, room, entity):
-        actor = entity
-
-        if not isinstance(actor, BaseActor):
-            return
-
-        entity_desc = entity.get_description(indefinite=False)
-        for player in room.get_entities(Player):
-            # {} left.
-            player.send(lang.sentence('{} gick.', entity_desc))
-

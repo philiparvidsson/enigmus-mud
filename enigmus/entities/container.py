@@ -23,8 +23,6 @@ class Container(BaseEntity):
 
         self.entities = []
 
-        self.on_message('container_add'   , self.__container_add   )
-        self.on_message('container_remove', self.__container_remove)
         self.on_message('entity_cleanup'  , self.__entity_cleanup  )
 
     def add_entity(self, entity):
@@ -33,7 +31,15 @@ class Container(BaseEntity):
             :param entity: The entity to add.
         """
 
-        self.post_message('container_add', self, entity)
+        if entity.container:
+            # If the entity is already in a container, remove it from that
+            # container first, then attempt to add it again.
+            entity.container.remove_entity(entity)
+            self.add_entity(entity)
+            return
+
+        entity.container = self
+        self.entities.append(entity)
 
     def find_match(self, text):
         best_match = (0, None)
@@ -70,24 +76,16 @@ class Container(BaseEntity):
             :param entity: The entity to remove from the container.
         """
 
-        self.post_message('container_remove', self, entity)
-
-    # ------- MESSAGES -------
-
-    def __container_add(self, container, entity):
-        if entity.container:
-            # If the entity is already in a container, remove it from that
-            # container first, then attempt to add it again.
-            entity.container.remove_entity(entity)
-            self.add_entity(entity)
+        if entity.container != self:
+            log.warning('tried to remove entity from wrong container')
             return
 
-        entity.container = self
-        self.entities.append(entity)
+        if self.entities:
+            self.entities.remove(entity)
 
-    def __container_remove(self, container, entity):
-        self.entities.remove(entity)
         entity.container = None
+
+    # ------- MESSAGES -------
 
     def __entity_cleanup(self):
         if not self.entities:

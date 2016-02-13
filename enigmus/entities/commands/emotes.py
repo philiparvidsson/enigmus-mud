@@ -40,8 +40,7 @@ class EmoteHandler(BaseEntity):
             return
 
         noun_desc = noun.get_description(indefinite=False) if noun else None
-
-        format = '{} {} {}' if noun else '{} {}'
+        format    = '{} {} {}'                             if noun else '{} {}'
 
         for player in room.get_entities(Player):
             is_actor = (player == actor)

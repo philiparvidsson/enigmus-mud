@@ -45,10 +45,28 @@ class BaseActor(BaseEntity):
     def emote(self, verb, noun=None):
         self.post_message('actor_emote', self, verb, noun)
 
-    def go(self, exit):
+    def give(self, actor, item):
+        """ Gives the specified item to the specified actor.
+
+            :param actor: The actor to give an item to.
+            :param item:  The item to give.
+
+            :returns: True if the item was given successfully.
+        """
+
+        if item.container != self.inventory: return False
+
+        self.inventory.remove_entity(item)
+        actor.inventory.add_entity(item)
+        self.post_message('actor_give', self, actor, item)
+
+        return True
+
+
+    def go(self, direction):
         """ Exits the room through the specified exit.
 
-            :param exit: The exit to leave the room through.
+            :param direction: The exit to leave the room through.
 
             :returns: True if the room was exited successfully.
         """
@@ -56,10 +74,16 @@ class BaseActor(BaseEntity):
         room = self.container
 
         #if not isinstance(room, Room): return False # TODO: Circular dependency.
-        if exit not in room.exits    : return False
+        if direction not in room.exits: return False
+
+        exit     = room.exits[direction]
+        new_room = exit[0]
 
         room.remove_entity(self)
-        room.exits[exit].add_entity(self)
+        self.post_message('actor_leave', self, room, exit[1])
+
+        new_room.add_entity(self)
+        self.post_message('actor_enter', self, new_room, exit[2])
 
         return True
 
@@ -78,11 +102,9 @@ class BaseActor(BaseEntity):
 
             :returns: True if the item was taken successfully.
         """
-        if item.container != self.container:
-            return False
 
-        if not isinstance(item, BaseItem):
-            return False
+        if item.container != self.container: return False
+        if not isinstance(item, BaseItem)  : return False
 
         self.inventory.add_entity(item)
         self.post_message('actor_take', self, item)
