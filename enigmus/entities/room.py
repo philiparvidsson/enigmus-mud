@@ -6,8 +6,11 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+from core               import lang
 from core               import messages
+from entities.actor     import BaseActor
 from entities.container import Container
+from entities.item      import BaseItem
 
 #-----------------------------------------------------------
 # CLASSES
@@ -24,8 +27,33 @@ class Room(Container):
         self.description = '<{} is missing a description.>'.format(self.id)
         self.exits       = {}
 
+
         self.on_message('container_add'   , self.__container_add   )
         self.on_message('container_remove', self.__container_remove)
+
+    def get_description(self):
+        """ Retrieves a description of the room.
+
+            :returns: A description of the room, including its exits, any actors
+                      in the room and any items in it.
+        """
+
+        room_desc  = lang.sentence(super(Room, self).get_description())
+        exits_desc = lang.list(self.exits.keys())
+
+        # {}\nExits: {}
+        desc = '{}\nUtgångar: {}'.format(room_desc, exits_desc)
+
+        actors = self.get_entities(BaseActor)
+        if len(actors) > 0:
+            # {} are here.
+            desc += '\n' + lang.sentence('{} är här.', lang.list(actors))
+
+        items = self.get_entities(BaseItem)
+        if len(items) > 0:
+            desc += '\n' + lang.sentence('{}', lang.list(items))
+
+        return desc
 
     # ------- MESSAGES -------
 

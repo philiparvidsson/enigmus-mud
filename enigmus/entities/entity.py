@@ -47,6 +47,9 @@ class BaseEntity(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __str__(self):
+        return self.get_description()
+
     def destroy(self):
         """ Performs cleanup and destruction logic for the entity, and removes
             it from the game.
@@ -54,6 +57,29 @@ class BaseEntity(object):
 
         self.post_message('entity_cleanup')
         self.post_message('entity_destroy')
+
+    def get_description(self, indeterminate=True):
+        """ Retrieves the entity description in determinate or indeterminate
+            form.
+
+            :param indeterminate: Decides whether the returned description
+                                 should be indeterminate.
+
+            :returns: The entity description.
+        """
+        if isinstance(self.description, basestring):
+            # Simple string description.
+            return self.description
+
+        i          = 0 if indeterminate else 1
+        desc       = self.description[i]
+        article    = desc[0]
+        adjectives = [adjective for adjective in desc[1]]
+        noun       = desc[2]
+
+        s = '{} {} {}'.format(article, ' '.join(adjectives), noun)
+
+        return s
 
     def handle_message(self, target, msg, args):
         """ Handles the specified message if it has been subscribed to by the
@@ -64,6 +90,7 @@ class BaseEntity(object):
             :param msg:    The message.
             :param args:   The message arguments.
         """
+
         if self.is_destroyed:
             return
 
@@ -74,7 +101,7 @@ class BaseEntity(object):
             if filter(target):
                 func(*args)
 
-    def matches(self, description):
+    def matches(self, text):
         """ Checks if the specified description matches the entity.
 
             :param description: The description to test against.
@@ -82,8 +109,7 @@ class BaseEntity(object):
             :returns: True if the description matches the entity.
         """
 
-        # TODO: Come up with a better general matching technique.
-        return self.description == description
+        return self.description == text
 
     def on_message(self, msg, func, filter=None):
         """ Subscribes a handler function for the specified message, using the

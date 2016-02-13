@@ -40,7 +40,7 @@ class DropCommand(BaseEntity):
         for entity in actor.container.get_entities(Player):
             if entity is not actor:
                 # {} dropped {} on the ground.
-                entity.send('{} slängde {} på marken.'.format(actor.description, item.description))
+                entity.send('{} slängde {} på marken.'.format(actor.get_description(indeterminate=False), item.get_description()))
 
     def __player_command(self, player, command):
         if not player.container:
@@ -91,7 +91,7 @@ class InventoryCommand(BaseEntity):
             player.send('Du bär inte på någonting just nu.')
             return
 
-        items = ', '.join([x.description for x in player.inventory.entities])
+        items = ', '.join([x.get_description() for x in player.inventory.entities])
 
         # You're carrying: {}
         player.send('Du bär på: {}'.format(items))
@@ -119,10 +119,10 @@ class TakeCommand(BaseEntity):
         for entity in actor.container.get_entities(Player):
             if entity is actor:
                 # You took {}.
-                entity.send('Du tog {}.'.format(item.description))
+                entity.send('Du tog {}.'.format(item.get_description(indeterminate=False)))
             else:
                 # {} took {}.
-                entity.send('{} tog {}.'.format(actor.description, item.description))
+                entity.send('{} tog {}.'.format(actor.get_description(indeterminate=False), item.get_description(indeterminate=False)))
 
     def __player_command(self, player, command):
         if not player.container:

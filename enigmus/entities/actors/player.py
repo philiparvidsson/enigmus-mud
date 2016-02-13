@@ -29,9 +29,8 @@ class Player(BaseActor):
 
         self.state = LoggingInState(self)
 
-        self.on_message('actor_say'   , self.__on_actor_speak, filter=messages.for_nearby_entities(self))
-        self.on_message('room_enter'    , self.__on_room_enter,  filter=messages.for_nearby_entities(self))
-        self.on_message('room_leave'    , self.__on_room_leave,  filter=messages.for_nearby_entities(self))
+        #self.on_message('room_enter'    , self.__on_room_enter,  filter=messages.for_nearby_entities(self))
+        #self.on_message('room_leave'    , self.__on_room_leave,  filter=messages.for_nearby_entities(self))
         self.on_message('player_command', self.__on_player_command)
 
     def disconnect(self):
@@ -58,35 +57,10 @@ class Player(BaseActor):
         self.state.perform(command)
 
     def send(self, text, end='\r\n'):
+        text = text.replace('\r', '').replace('\n', '\r\n')
+
         self._connection.send(text.decode('utf-8').encode('iso-8859-1'))
         self._connection.send(end .decode('utf-8').encode('iso-8859-1'))
-
-    def __on_actor_speak(self, actor, sentence):
-        #if actor is self:
-        #    self.send('Du säger "{}"'.format(sentence))
-        #else:
-        #    self.send('{} säger "{}"'.format(actor.description, sentence))
-        pass
-
-    def __on_room_enter(self, container, entity):
-        if not isinstance(entity, BaseActor):
-            return
-
-        if entity is not self:
-            self.send('{} kom.'.format(entity.description))
-        elif isinstance(container, Room) and entity is self:
-            room = container
-            self.send(room.description)
-            self.send('Utgångar: {}'.format(', '.join(room.exits.keys())))
-
-            s = ', '.join([e.description for e in room.entities])
-            self.send('Här finns {}'.format(s))
-
-    def __on_room_leave(self, container, entity):
-        if not isinstance(entity, BaseActor) or entity is self:
-            return
-
-        self.send('{} gick.'.format(entity.description))
 
     def __on_player_command(self, player, command):
         if player is not self:

@@ -73,7 +73,9 @@ class Mouse(BaseActor):
         self.go(self.container.exits.keys()[0])
 
     def __on_entity_init(self):
-        self.description = 'en grå mus'
+        self.description = (('en' , ['liten', 'mysig'] , 'mus'  ),
+                            ('den', ['lilla', 'mysiga'], 'musen'))
+
         self.mouse_room = enigmus.create_room('En varm tarm. Du undrar vad som händer om du sparkar till den.')
 
         self.on_message('player_command', self._on_player_command, filter=messages.for_entities_in(self.mouse_room))

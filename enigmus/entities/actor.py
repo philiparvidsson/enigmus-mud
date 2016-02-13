@@ -9,7 +9,6 @@
 from entities.entity    import BaseEntity
 from entities.item      import BaseItem
 from entities.container import Container
-from entities.room      import Room
 
 #-----------------------------------------------------------
 # CLASSES
@@ -53,7 +52,7 @@ class BaseActor(BaseEntity):
 
         room = self.container
 
-        if not isinstance(room, Room): return False
+        #if not isinstance(room, Room): return False # TODO: Circular dependency.
         if exit not in room.exits    : return False
 
         room.remove_entity(self)

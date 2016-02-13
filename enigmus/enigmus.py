@@ -11,6 +11,7 @@ from entities.commands.go  import GoCommand
 from entities.commands.inventory  import TakeCommand
 from entities.commands.inventory  import DropCommand
 from entities.commands.inventory  import InventoryCommand
+from entities.commands.look  import LookCommand
 from entities.entity        import BaseEntity
 from entities.actors.player import Player
 from entities.room           import Room
@@ -183,6 +184,7 @@ def load_commands():
     TakeCommand()
     DropCommand()
     InventoryCommand()
+    LookCommand()
 
 def load_rooms():
     room1 = create_room('Du står i ett konstigt rum. Det är inrett på ett homosexuellt vis. Du känner dig hemma.')
@@ -209,25 +211,3 @@ def load_actors():
 
     fl = Flashlight()
     get_entity('Room_2').add_entity(fl)
-
-
-"""
-
-class Mouse(Actor):
-    def init(self):
-        self.description.definite   = 'den grå musen'
-        self.description.indefinite = 'en grå mus'
-        self.description.long       = 'Den grå musen har gråbrun, mjuk päls. '
-                                      'Baktill har den en lång, smal, naken '
-                                      'svans. Dessutom saknar den morrhår. '
-                                      'Underligt!'
-
-        self.walk_timer = self.timer(1.0 , self.walk_around)
-        self.talk_timer = self.timer(10.0, self.talk)
-
-    def talk(self):
-        self.say('Jag tror jag är förföljd!')
-
-    def walk_around(self):
-        self.leave_room(0)
-"""
