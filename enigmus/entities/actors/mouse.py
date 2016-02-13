@@ -27,22 +27,23 @@ class Flashlight(BaseItem):
     def __init__(self):
         super(Flashlight, self).__init__()
 
-        self.description = 'en blå ficklampa'
+        self.describe('en' , ['blå'], ['ficklampa' , 'lampa' ],
+                      'den', ['blå'], ['ficklampan', 'lampan'],
+                      'Den är gjord i plast och påminner om 80-talet. En'  \
+                      'liten svart knapp sitter i mitten på den, vilket '  \
+                      'möjligtvis kan vara startknappen som sätter igång ' \
+                      'ficklampan. Längst ut har den en tjock, röd kant'   \
+                      'runt lamphuset.')
 
         self.on_message('player_command', self._on_player_command, messages.for_nearby_entities(self))
 
     def _on_player_command(self, player, command):
         if command == 'tänd':
-            self.description = 'en lysande, blå ficklampa (den lyser som fan)'
-            for p in player.container.get_entities(Player):
-                p.send('{} tände en blå ficklampa.'.format(player.name))
-            return True
+            self.description.add_indefinite_adjective('tänd', index=0)
+            player.emote('tände {}'.format(self.get_description(indefinite=False)))
         elif command == 'släck':
-            self.description = 'en blå ficklampa'
-            for p in player.container.get_entities(Player):
-                p.send('{} släckte en blå ficklampa.'.format(player.name))
-            return True
-        return False
+            self.description.remove_indefinite_adjective('tänd')
+            player.emote('släckte {}'.format(self.get_description(indefinite=False)))
 
 class Mouse(BaseActor):
     def __init__(self):
@@ -50,8 +51,8 @@ class Mouse(BaseActor):
 
         self.on_message('entity_init', self.__on_entity_init)
         self.on_message('actor_say', self._actor_speak, filter=messages.for_nearby_entities(self))
-        self.on_message('room_enter', self._container_add, filter=messages.for_nearby_entities(self))
-        self.on_message('room_leave', self._container_remove, filter=messages.for_nearby_entities(self))
+        #self.on_message('room_enter', self._container_add, filter=messages.for_nearby_entities(self))
+        #self.on_message('room_leave', self._container_remove, filter=messages.all())
 
     def talk(self):
         d = [
@@ -64,7 +65,11 @@ class Mouse(BaseActor):
         self.timer(self.talk, 22.0)
 
     def walk_around(self):
-        self.go(self.container.exits.keys()[0])
+        e = self.container.exits.keys()[:]
+        if 'mus' in e:
+            e.remove('mus')
+
+        self.go(random.choice(e))
         self.timer(self.walk_around, 60.0)
 
         for p in self.mouse_room.get_entities(Player):
@@ -85,19 +90,24 @@ class Mouse(BaseActor):
             'DRA DIT PEPPARN VÄXER!',
         ]
         self.say(random.choice(d))
-        self.go(self.container.exits.keys()[0])
+        e = self.container.exits.keys()[:]
+        if 'mus' in e:
+            e.remove('mus')
+
+        self.go(random.choice(e))
 
     def __on_entity_init(self):
-        self.description = (('en' , ['liten', 'mysig'] , 'mus'  ),
-                            ('den', ['lilla', 'mysiga'], 'musen'))
+        self.describe('en' , ['liten', 'mysig'] , ['mus'  ],
+                      'den', ['lilla', 'mysiga'], ['musen'])
+
         self.long_description = 'Han ser fruktansvärt ilsken ut och darrar '  \
                                 'nästan lite när han ser sig omkring. Hans '  \
                                 'ögonbryn formar ett ilsket, svartmuskigt V ' \
-                                'i pannan. Han ser fruktansvärt överviktig'   \
+                                'i pannan. Han ser fruktansvärt överviktig '  \
                                 'ut för att vara en mus, och har ett gap så ' \
                                 'stort att du får för dig att du skulle'      \
-                                'kunna kliva in i det om du ville. Du får en' \
-                                'känsla av att han inte gillar din närvaro.'
+                                'kunna kliva in i det om du ville. Du får'    \
+                                'en känsla av att han inte gillar din närvaro.'
 
         self.mouse_room = enigmus.create_room('En varm tarm. Du undrar vad som händer om du sparkar till den.')
 

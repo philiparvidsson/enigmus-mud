@@ -6,9 +6,11 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+from core                   import lang
 from core                   import messages
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
+from entities.room          import Detail
 
 #-----------------------------------------------------------
 # CLASSES
@@ -48,12 +50,18 @@ class LookCommand(BaseEntity):
         if len(args) > 1 and args[0] == 'på':
             args = args[1:]
 
-        entity_of_interest = ' '.join(args)
+        text = ' '.join(args)
 
-        for entity in player.container.entities:
-            if not entity.matches(entity_of_interest):
-                continue
+        entity_of_interest = player.container.find_match(text)
 
-            # You see {}.
-            player.send('Du ser {}.'.format(entity.get_description()))
-            player.send(entity.long_description)
+        if not entity_of_interest:
+            entity_of_interest = player.inventory.find_match(text)
+
+        if not entity_of_interest:
+            # Look at what?
+            player.send('Titta på vad?')
+            return
+
+        if not isinstance(entity_of_interest, Detail):
+            player.send(lang.sentence(entity_of_interest.get_description()))
+        player.send(entity_of_interest.long_description)

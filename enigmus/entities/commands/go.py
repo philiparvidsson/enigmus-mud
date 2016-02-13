@@ -69,12 +69,13 @@ class GoCommand(BaseEntity):
         if not isinstance(actor, BaseActor):
             return
 
+        entity_desc = entity.get_description()
         for player in room.get_entities(Player):
             if player == actor:
                 player.send(room.get_description(exclude_actor=player))
             else:
                 # {} arrived.
-                player.send(lang.sentence('{} kom in.', entity.get_description()))
+                player.send(lang.sentence('{} kom in.', entity_desc))
 
     def __room_leave(self, room, entity):
         actor = entity
@@ -82,8 +83,8 @@ class GoCommand(BaseEntity):
         if not isinstance(actor, BaseActor):
             return
 
+        entity_desc = entity.get_description(indefinite=False)
         for player in room.get_entities(Player):
-            s = entity.get_description(indeterminate=False)
             # {} left.
-            player.send(lang.sentence('{} gick.', s))
+            player.send(lang.sentence('{} gick.', entity_desc))
 

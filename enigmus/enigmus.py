@@ -12,6 +12,8 @@ from entities.commands.inventory  import TakeCommand
 from entities.commands.inventory  import DropCommand
 from entities.commands.inventory  import InventoryCommand
 from entities.commands.look  import LookCommand
+from entities.commands.emotes  import EmoteHandler
+#from entities.commands.emote  import KissCommand
 from entities.entity        import BaseEntity
 from entities.actors.player import Player
 from entities.room           import Room
@@ -72,7 +74,12 @@ class Enigmus(object):
                 log.warn('message dropped: {}, {}, {}', target.id, msg, args)
 
             for entity in self.entities.values():
-                entity.handle_message(target, msg, args)
+                #try:
+                    entity.handle_message(target, msg, args)
+                #except Exception as e:
+                #    log.error('message {} ({}) for {} resulted in exception',
+                #        msg, args, target)
+                #    log.error(str(e))
 
         self._msg_queue = []
 
@@ -128,7 +135,7 @@ def get_entity(id):
 
 def create_room(description):
     room = Room()
-    room.description = description
+    room.describe(description)
     return room
 
 def connect_rooms(room1, room2, exit1, exit2):
@@ -179,6 +186,7 @@ def run():
     instance.cleanup()
 
 def load_commands():
+    EmoteHandler()
     SayCommand()
     GoCommand()
     TakeCommand()
@@ -187,10 +195,23 @@ def load_commands():
     LookCommand()
 
 def load_rooms():
-    room1 = create_room('Du står i ett konstigt rum. Det är inrett på ett homosexuellt vis. Du känner dig hemma.')
-    room2 = create_room('Du finner dig själv i en liten trädgård med en fontän. Solen lyser på den blå himlen. Inifrån hörs glad bögmusik spelas. Någon kanske tittar på Melodifestivalen? Även dörren till köket (som går rätt ut, vad fan?) är öppen.')
-    room3 = create_room('Du är nu i köket. Köket borde vara fullt av kvinnor som lagar mat, men spisen är avstängd och rummet fyllas av en ljuv tystnad.')
-    room4 = create_room('Skamvrån. Vad gör du här? Vad skäms du för? En tanke slår dig; det kanske är du som är Bögen med stort B.')
+    room1 = Room()
+    room2 = Room()
+    room3 = Room()
+    room4 = Room()
+
+    room1.describe('Du står i ett konstigt rum. Det är inrett på ett homosexuellt vis. Du känner dig SOM hemma. Förbannat som hemma. Dessutom hänger det en sexgunga i taket.')
+    room1.detail('ett tak', 'Det är ett vitt tak. Det hänger en sexgunga i det.')
+    room1.detail('en sexgunga', 'En sexgunga i svartläder. Där stjärten planceras sitter det en dildo. Det ser ut som man kan ha riktigt trevligt här. Om man är bög. Och det är du. En bög. Japp.')
+
+    room2.describe('Du finner dig själv i en liten trädgård med en fontän. Solen lyser på den blå himlen. Inifrån hörs glad bögmusik spelas. Någon kanske tittar på Melodifestivalen? Även dörren till köket (som går rätt ut, vad fan?) är öppen.')
+    room2.detail('en fontän', 'Det är en liten, vit marmorfontän. Jävlar vad den sprutar. Den får dig att tänka snuskiga tankar, så du slutar genast titta på den och låtsas som ingenting.')
+    room2.detail('solen', 'Den lyser utav bara helvete.')
+
+    room3.describe('Du är nu i köket. Köket borde vara fullt av kvinnor som lagar mat, men spisen är avstängd och rummet fyllas av en ljuv tystnad.')
+    room3.detail('tystnad', 'Det är helt jävla knäpptyst. Inte ett luder som kacklar. Fyfan vad skönt, tänker du.')
+
+    room4.describe('Skamvrån. Vad gör du här? Vad skäms du för? En tanke slår dig; det kanske är du som är Bögen med stort B.')
 
     connect_rooms(room1, room2, 'ut', 'in')
     connect_rooms(room1, room3, 'kök', 'hall')

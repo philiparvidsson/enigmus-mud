@@ -35,6 +35,16 @@ class Container(BaseEntity):
 
         self.post_message('container_add', self, entity)
 
+    def find_match(self, text):
+        best_match = (0, None)
+
+        for entity in self.entities:
+            match = (entity.match(text), entity)
+            if match[0] > best_match[0]:
+                best_match = match
+
+        return best_match[1]
+
     def get_entities(self, class_=BaseEntity):
         """ Retrieves all entities of the specified class inside the container.
 

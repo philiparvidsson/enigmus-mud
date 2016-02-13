@@ -42,6 +42,9 @@ class BaseActor(BaseEntity):
 
         return True
 
+    def emote(self, verb, noun=None):
+        self.post_message('actor_emote', self, verb, noun)
+
     def go(self, exit):
         """ Exits the room through the specified exit.
 

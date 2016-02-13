@@ -10,6 +10,7 @@ def list(items):
     if len(items) == 1:
         return items[0]
 
+    # and
     text = ', '.join([str(x) for x in items[:-1]]) + ' och ' + str(items[-1])
 
     return text

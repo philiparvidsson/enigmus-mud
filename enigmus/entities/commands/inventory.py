@@ -6,6 +6,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+from core                   import lang
 from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
@@ -38,9 +39,12 @@ class DropCommand(BaseEntity):
             return
 
         for entity in actor.container.get_entities(Player):
-            if entity is not actor:
+            if entity is actor:
+                # You dropped {} on the ground.
+                entity.send('Du slängde {} på marken.'.format(item.get_description()))
+            else:
                 # {} dropped {} on the ground.
-                entity.send('{} slängde {} på marken.'.format(actor.get_description(indeterminate=False), item.get_description()))
+                entity.send('{} slängde {} på marken.'.format(actor.get_description(indefinite=False), item.get_description()))
 
     def __player_command(self, player, command):
         if not player.container:
@@ -53,17 +57,14 @@ class DropCommand(BaseEntity):
         if command != 'släng':
             return
 
-        item_to_drop = ' '.join(args[1:])
+        item_to_drop = player.inventory.find_match(' '.join(args[1:]))
 
-        for item in player.inventory.entities:
-            if not item.matches(item_to_drop):
-                continue
-
-            player.drop(item)
+        if not item_to_drop:
+            # Drop what?
+            player.send('Släng vadå?')
             return
 
-        # Drop what?
-        player.send('Släng vadå?')
+        player.drop(item_to_drop)
 
 class InventoryCommand(BaseEntity):
     """ Command entity for handling the inventory command. """
@@ -120,10 +121,10 @@ class TakeCommand(BaseEntity):
         for entity in actor.container.get_entities(Player):
             if entity is actor:
                 # You took {}.
-                entity.send('Du tog {}.'.format(item.get_description(indeterminate=False)))
+                entity.send('Du tog {}.'.format(item.get_description(indefinite=False)))
             else:
                 # {} took {}.
-                entity.send('{} tog {}.'.format(actor.get_description(indeterminate=False), item.get_description(indeterminate=False)))
+                entity.send('{} tog {}.'.format(actor.get_description(indefinite=False), item.get_description(indefinite=False)))
 
     def __player_command(self, player, command):
         if not player.container:
@@ -136,19 +137,13 @@ class TakeCommand(BaseEntity):
         if command != 'ta':
             return
 
-        item_to_take = ' '.join(args[1:])
-
-        for entity in player.container.entities:
-            if not entity.matches(item_to_take):
-                continue
-
-            if not player.take(entity):
-                # You can't take that!
-                player.send('Den kan du inte ta!')
-                return
-
-            # The item has been taken when this point is reached.
+        item_to_take = player.container.find_match(' '.join(args[1:]))
+        if not item_to_take:
+            # Take what?
+            player.send('Ta vad?')
             return
 
-        # Take what?
-        player.send('Ta vad?')
+        if not player.take(item_to_take):
+            # You can't take that!
+            player.send('Den kan du inte ta!')
+            return

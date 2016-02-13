@@ -42,7 +42,7 @@ class SayCommand(BaseEntity):
                 entity.send('Du säger "{}"'.format(sentence))
             else:
                 # {} says "{}"
-                entity.send(lang.sentence('{} säger "{}"', actor.get_description(indeterminate=False), sentence))
+                entity.send(lang.sentence('{} säger "{}"', actor.get_description(indefinite=False), sentence))
 
     def __player_command(self, player, command):
         # say

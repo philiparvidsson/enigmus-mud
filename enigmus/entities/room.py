@@ -9,6 +9,7 @@
 from core               import lang
 from core               import messages
 from entities.actor     import BaseActor
+from entities.entity    import BaseEntity
 from entities.container import Container
 from entities.item      import BaseItem
 
@@ -25,11 +26,27 @@ class Room(Container):
         super(Room, self).__init__()
 
         self.description = '<{} is missing a description.>'.format(self.id)
+        self.details     = []
         self.exits       = {}
 
 
         self.on_message('container_add'   , self.__container_add   )
         self.on_message('container_remove', self.__container_remove)
+
+    def detail(self, description, long_description):
+        self.details.append(Detail(self, description, long_description))
+
+    def find_match(self, text):
+        match = super(Room, self).find_match(text)
+
+        best_match = (0, super(Room, self).find_match(text))
+
+        for detail in self.details:
+            match = (detail.match(text), detail)
+            if match[0] > best_match[0]:
+                best_match = match
+
+        return best_match[1]
 
     def get_description(self, exclude_actor=None):
         """ Retrieves a description of the room.
@@ -64,3 +81,11 @@ class Room(Container):
 
     def __container_remove(self, container, entity):
         self.post_message('room_leave', self, entity)
+
+class Detail(BaseEntity):
+    def __init__(self, room, description, long_description):
+        super(Detail, self).__init__()
+
+        self.room = room
+
+        self.describe(description, long_description)
