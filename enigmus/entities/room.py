@@ -31,7 +31,7 @@ class Room(Container):
         self.on_message('container_add'   , self.__container_add   )
         self.on_message('container_remove', self.__container_remove)
 
-    def get_description(self):
+    def get_description(self, exclude_actor=None):
         """ Retrieves a description of the room.
 
             :returns: A description of the room, including its exits, any actors
@@ -45,6 +45,8 @@ class Room(Container):
         desc = '{}\nUtgångar: {}'.format(room_desc, exits_desc)
 
         actors = self.get_entities(BaseActor)
+        if exclude_actor in actors:
+            actors.remove(exclude_actor)
         if len(actors) > 0:
             # {} are here.
             desc += '\n' + lang.sentence('{} är här.', lang.list(actors))

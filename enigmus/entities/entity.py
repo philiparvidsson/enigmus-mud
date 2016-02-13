@@ -26,10 +26,11 @@ class BaseEntity(object):
         self.id = self.__class__.__name__ + '_' + str(BaseEntity._next_id)
         BaseEntity._next_id += 1
 
-        self.container    = None
-        self.description  = '<{}>'.format(self.__class__.__name__)
-        self.is_destroyed = False
-        self.timers       = []
+        self.container        = None
+        self.description      = '<{}>'.format(self.__class__.__name__)
+        self.is_destroyed     = False
+        self.long_description = object.__str__(self)
+        self.timers           = []
 
         self._msg_funcs = {}
 
@@ -109,7 +110,7 @@ class BaseEntity(object):
             :returns: True if the description matches the entity.
         """
 
-        return self.description == text
+        return self.get_description() == text
 
     def on_message(self, msg, func, filter=None):
         """ Subscribes a handler function for the specified message, using the

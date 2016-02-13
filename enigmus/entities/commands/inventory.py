@@ -91,7 +91,8 @@ class InventoryCommand(BaseEntity):
             player.send('Du bär inte på någonting just nu.')
             return
 
-        items = ', '.join([x.get_description() for x in player.inventory.entities])
+        inventory = player.inventory.entities
+        items     = lang.list([x.get_description() for x in inventory])
 
         # You're carrying: {}
         player.send('Du bär på: {}'.format(items))

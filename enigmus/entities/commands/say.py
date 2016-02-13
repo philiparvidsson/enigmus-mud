@@ -7,6 +7,7 @@
 #-----------------------------------------------------------
 
 from core                   import messages
+from core                   import lang
 from entities.actor         import BaseActor
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
@@ -41,7 +42,7 @@ class SayCommand(BaseEntity):
                 entity.send('Du säger "{}"'.format(sentence))
             else:
                 # {} says "{}"
-                entity.send('{} säger "{}"'.format(actor.get_description(indeterminate=False), sentence))
+                entity.send(lang.sentence('{} säger "{}"', actor.get_description(indeterminate=False), sentence))
 
     def __player_command(self, player, command):
         # say

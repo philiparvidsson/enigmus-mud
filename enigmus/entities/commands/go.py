@@ -6,6 +6,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+from core                   import lang
 from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
@@ -70,10 +71,10 @@ class GoCommand(BaseEntity):
 
         for player in room.get_entities(Player):
             if player == actor:
-                player.send(room.get_description())
+                player.send(room.get_description(exclude_actor=player))
             else:
                 # {} arrived.
-                player.send('{} kommer in.'.format(entity.get_description()))
+                player.send(lang.sentence('{} kom in.', entity.get_description()))
 
     def __room_leave(self, room, entity):
         actor = entity
@@ -84,5 +85,5 @@ class GoCommand(BaseEntity):
         for player in room.get_entities(Player):
             s = entity.get_description(indeterminate=False)
             # {} left.
-            player.send('{} gick.'.format(s))
+            player.send(lang.sentence('{} gick.', s))
 

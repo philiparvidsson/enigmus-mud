@@ -56,11 +56,44 @@ class Player(BaseActor):
 
         self.state.perform(command)
 
-    def send(self, text, end='\r\n'):
-        text = text.replace('\r', '').replace('\n', '\r\n')
+    def send(self, text, end='\n'):
+        text = text.replace('\r', '')
 
-        self._connection.send(text.decode('utf-8').encode('iso-8859-1'))
-        self._connection.send(end .decode('utf-8').encode('iso-8859-1'))
+        s = ''
+
+        while len(text) > 0:
+            last_space = 0
+            linebreak  = False
+            counter    = 0
+
+            for i in xrange(len(text)):
+                if text[i] == ' ':
+                    last_space = i
+                elif text[i] == '\n':
+                    counter = 0
+
+                if counter >= 80:
+                    if last_space == 0:
+                        s   += text[:80] + '\n'
+                        text = text[80:]
+                    else:
+                        s   += text[:last_space] + '\n'
+                        text = text[last_space+1:]
+
+                    linebreak = True
+                    break
+
+                counter += 1
+
+            if not linebreak:
+                s   += text
+                text = ''
+
+        s   = s  .replace('\n', '\r\n')
+        end = end.replace('\n', '\r\n')
+
+        self._connection.send(s  .decode('utf-8').encode('iso-8859-1'))
+        self._connection.send(end.decode('utf-8').encode('iso-8859-1'))
 
     def __on_player_command(self, player, command):
         if player is not self:

@@ -35,13 +35,18 @@ class LookCommand(BaseEntity):
         command = args[0]
 
         # look
-        if (command == 't' or command == 'titta') and len(args) == 1:
-            player.send(player.container.get_description())
+        if command != 't' and command != 'titta':
             return
 
+        if len(args) == 1:
+            player.send(player.container.get_description(exclude_actor=player))
+            return
+
+        args = args[1:]
+
         # at
-        if len(args) > 1 and args[1] == 'på':
-            args = args[2:]
+        if len(args) > 1 and args[0] == 'på':
+            args = args[1:]
 
         entity_of_interest = ' '.join(args)
 
@@ -49,6 +54,6 @@ class LookCommand(BaseEntity):
             if not entity.matches(entity_of_interest):
                 continue
 
-            # You see {}
-            player.send('Du ser {}'.format(entity.get_description()))
-            #player.send(entity.long_description) not yet implemented
+            # You see {}.
+            player.send('Du ser {}.'.format(entity.get_description()))
+            player.send(entity.long_description)

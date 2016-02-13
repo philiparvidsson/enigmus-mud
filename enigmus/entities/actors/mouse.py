@@ -13,6 +13,8 @@ from entities.actors.player import Player
 from entities.item import BaseItem
 from entities.room import Room
 
+import random
+
 #-----------------------------------------------------------
 # GLOBALS
 #-----------------------------------------------------------
@@ -52,7 +54,13 @@ class Mouse(BaseActor):
         self.on_message('room_leave', self._container_remove, filter=messages.for_nearby_entities(self))
 
     def talk(self):
-        self.say('Käft! Tilltala mig inte!')
+        d = [
+            'Käft! Tilltala mig inte!',
+            'Säg. Inte. Ett. Jävla. Ord',
+            'Hah, vilken ful jävel!',
+            'Jag tror jag är förföljd!'
+        ]
+        self.say(random.choice(d))
         self.timer(self.talk, 22.0)
 
     def walk_around(self):
@@ -69,12 +77,27 @@ class Mouse(BaseActor):
         if sentence.find('mus') == -1:
             return
 
-        self.say('Jamen skit i mig säger jag!!!!')
+        d = [
+            'Jamen skit i mig säger jag!!!!',
+            'Alltså det var då själva FAAN!',
+            'Nä nu jävlar får det vara NOG!!',
+            'Det var det värsta!',
+            'DRA DIT PEPPARN VÄXER!',
+        ]
+        self.say(random.choice(d))
         self.go(self.container.exits.keys()[0])
 
     def __on_entity_init(self):
         self.description = (('en' , ['liten', 'mysig'] , 'mus'  ),
                             ('den', ['lilla', 'mysiga'], 'musen'))
+        self.long_description = 'Han ser fruktansvärt ilsken ut och darrar '  \
+                                'nästan lite när han ser sig omkring. Hans '  \
+                                'ögonbryn formar ett ilsket, svartmuskigt V ' \
+                                'i pannan. Han ser fruktansvärt överviktig'   \
+                                'ut för att vara en mus, och har ett gap så ' \
+                                'stort att du får för dig att du skulle'      \
+                                'kunna kliva in i det om du ville. Du får en' \
+                                'känsla av att han inte gillar din närvaro.'
 
         self.mouse_room = enigmus.create_room('En varm tarm. Du undrar vad som händer om du sparkar till den.')
 
