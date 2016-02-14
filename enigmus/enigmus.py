@@ -5,6 +5,7 @@
 #-----------------------------------------------------------
 
 from cli                    import console
+from core                    import messages
 from core                   import log
 from entities.commands.say  import SayCommand
 from entities.commands.go  import GoCommand
@@ -144,9 +145,10 @@ def create_room(description):
     room.describe(description)
     return room
 
-def connect_rooms(room1, exit1, exit_desc1, exit_desc2, room2, exit2, exit_desc3, exit_desc4):
+def connect_rooms(room1, exit1, exit_desc1, exit_desc2, room2, exit2=None, exit_desc3=None, exit_desc4=None):
     room1.exits[exit1] = (room2, exit_desc1, exit_desc2)
-    room2.exits[exit2] = (room1, exit_desc3, exit_desc4)
+    if exit2 is not None:
+        room2.exits[exit2] = (room1, exit_desc3, exit_desc4)
 
 def exit():
     instance._done = True
@@ -203,7 +205,93 @@ def load_commands():
     QuitCommand()
     HelpCommand()
 
+def load_room(data):
+    room  = {}
+    data  = data.replace('\r', '')
+    lines = data.split('\n')
+
+    room['description'] = ''
+    room['details'    ] = []
+    room['exits'      ] = []
+
+    i = 0
+    while i < len(lines):
+        s = lines[i].strip()
+        i += 1
+
+        if s.startswith('!'):
+            detail = s[1:].strip().split(':', 1)
+
+            while s != '':
+                s = lines[i].strip()
+                i += 1
+                detail[1] += s + ' '
+
+            room['details'].append([detail[0].strip(), detail[1].strip()])
+            pass
+        elif s.startswith('#'):
+            exit = s[1:].strip().split(' ', 1)
+            room['exits'].append([exit[0].strip(), exit[1].strip()])
+            pass
+        else:
+            if len(s) > 0:
+                room['description'] += s + ' '
+
+    room['description'] = room['description'].strip()
+
+    return room
+
 def load_rooms():
+    import os
+    import imp
+    import json
+
+    rooms = {}
+
+    #-----------------------------------
+    # 1. Load rooms
+    #-----------------------------------
+
+    for filename in os.listdir('data/rooms'):
+        if not filename.endswith('.txt'):
+            continue
+
+        room_name = filename[:filename.find('.txt')]
+        filename  = 'data/rooms/' + filename
+
+        with open(filename) as room_file:
+            room_data = load_room(room_file.read())
+
+        room              = Room()
+        room.data         = room_data
+        room.data['name'] = room_name
+        rooms[room_name]  = room
+
+    #-----------------------------------
+    # 2. Setup rooms
+    #-----------------------------------
+
+    for room in rooms.values():
+        room.describe(room.data['description'])
+
+        for detail in room.data['details']:
+            room.detail(detail[0],
+                        detail[1])
+
+        for exit in room.data['exits']:
+            room.add_exit(      exit[0],
+                          rooms[exit[1]])
+
+        script_name = room.data['name'] + '_script'
+        script_file = 'data/rooms/' + room.data['name'] + '.py'
+
+        if os.path.isfile(script_file):
+            script_module = imp.load_source(script_name, script_file)
+            script_module.room = room
+            script_module.init()
+
+        del room.data
+
     ''' room1 = Room()
     room2 = Room()
     room3 = Room()
@@ -240,33 +328,63 @@ def load_rooms():
         for e in room1.get_entities(Player):
             e.send('Det låter som att någon går runt i trädgården.')
     room2.on_message('container_add', lol)'''
+    return
 
-    room1 = Room()
+    room1 = rooms['room1']
     room2 = Room()
     room3 = Room()
     room4 = Room()
     room5 = Room()
     room6 = Room()
+    room7 = Room()
 
-    room1.describe('Du befinner dig i en stor entrésal. Taket är flera meter högt upp, golvet är av svart laminat och väggarna är vitmålade. En tavla sitter på väggen framför dig, och till vänster sitter några TV-skärmar på väggen och flimrar. Rakt fram fortsätter salen mot en korridor, även den med lika högt i tak. Till höger finns glasdörrar som går in till ett trapphus.')
-    room1.detail('skärmar', 'Skärmarna flimrar och visar bara brus för tillfället.')
-    room1.detail('en tavla', 'Det ser ut som ett inglasat diplom av något slag. Det finns lite text på tavlan, men den går inte att läsa. Du känner däremot att du har koll på hur man tittar föremål. Det känns väl bra?')
-    room1.detail('en text', 'Texten på tavlan är svårläst. Du kan inte riktigt tyda den.')
-    room1.detail('ett trapphus', 'Innanför glasdörren syns ett trapphus. Du kan gå dit om du vill.')
+    #room1.describe('Du befinner dig i en stor entrésal. Taket är flera meter högt upp, golvet är av svart laminat och väggarna är vitmålade. En tavla sitter på väggen framför dig, och till vänster sitter några TV-skärmar på väggen och flimrar. Rakt fram fortsätter salen mot en korridor, även den med lika högt i tak. Till höger finns glasdörrar som går in till ett trapphus.')
+    #room1.detail('skärmar', 'Skärmarna flimrar och visar bara brus för tillfället.')
+    #room1.detail('en tavla', 'Det ser ut som ett inglasat diplom av något slag. Det finns lite text på tavlan, men den går inte att läsa. Du känner däremot att du har koll på hur man tittar föremål. Det känns väl bra?')
+    #room1.detail('en text', 'Texten på tavlan är svårläst. Du kan inte riktigt tyda den.')
+    #room1.detail('ett trapphus', 'Innanför glasdörren syns ett trapphus. Du kan gå dit om du vill.')
 
     room2.describe('Du befinner dig längst ned i ett trapphus. Väggarna är vita och trappan är gjord av sten. Det finns ett svart räcke som följer trappan. Rummet är belyst av ett fönster längre upp i trappan.')
     room2.detail('ett fönster', 'Fönstret släpper in ljus i trapphuset, som i övrigt inte har några lampor. Genom fönstret kan man skymta en grå himmel utanför.')
 
-    room3.describe('Du står i en korridor. Bredvid dig finns en datasal med glasdörrar. Dörrarna är låsta med en liten kodterminal. Framför dig ser du trappor som leder en våning upp. Det finns även toaletter i närheten för den som behöver uträtta sina behov.')
-    room3.detail('en terminal', 'Det är en liten kodterminal för att slå in koder med. Du förmodar att dörrarna till datasalen låses upp om man slår in rätt kod.')
+    room3.describe('Du står i en korridor. Bredvid dig finns en datasal med glasdörrar. Dörrarna är låsta med ett litet kodlås. Framför dig ser du trappor som leder en våning upp. Det finns även toaletter i närheten för den som behöver uträtta sina behov.')
+    room3.detail('ett kodlås', 'Det är en liten kodterminal för att trycka in koder med. Du förmodar att dörrarna till datasalen låses upp om man trycker in rätt kod.')
     room3.detail('en datasal', 'Du ser rätt in i datasalen som ligger innanför glasdörrarna. Om du bara kunde låsa upp dörren på något vis...')
     room3.detail('toaletter', 'En dörr leder in till toaletterna. Du kan gå in om du behöver uträtta dina behov.')
+
+    def enter_code(player, command):
+        args = command.split(' ')
+        if args[0] != 'tryck': return
+        if len(args) < 2 or args[1] != 'kod':
+            player.send('Tryck vad? Kod?')
+            return
+        if len(args) < 3:
+            player.send('Vilken kod vill du slå in?')
+            return
+        code = args[2]
+        player.emote('slår in en kod.')
+        player.text('*beep* *boop* *bip* piper terminalen när du trycker på knapparna och slår in koden {}'.format(code))
+        if code != '4973':
+            player.text('Ingenting händer.')
+            return
+        room = player.container
+        for p in room.get_entities(Player):
+            p.text('Glasdörrarna till datasalen slår upp så snabbt att du hoppar bakåt.')
+        player.emote('går in i datasalen.')
+        player.text('Glasdörrarna slår igen bakom dig.')
+        room7.add_entity(player)
+        player.text(room7.get_description(exclude_actor=player))
+        for p in room.get_entities(Player):
+            p.text('Lika snabbt som de öppnas slår dörrarna igen, alldeles för snabbt för att du skulle hinna gå in utan att vara beredd.')
+
+    room3.on_message('player_command', enter_code, filter=messages.for_entities_in(room3))
+
 
     room4.describe('Du står i en korridor. Bredvid dig finns en stor ljussal. Det finns trappor här som leder en våning ner, till en korridor. Väggen här är av träpanel, medan golvet är av laminat.')
 
     room5.describe('Du står i en stor ljussal. Taket är säkert femton meter upp och av glas så att man ser himlen. Väggarna är vita, golvet är av svart laminat. Salen är fylld av trästolar och träbord som förmodligen är tänkta att ätas vid. Längst upp på ena väggen är flera fönster som leder in i andra rum i byggnaden. Rummen ser mörka och små ut härifrån. På den andra väggen kan du se en klocka. En öppen dörr med en skylt på leder in i ett annat rum.')
     room5.detail('en klocka', 'Det sitter en stor, gammaldags klocka ett par meter upp på väggen. Det är en gammal skolklocka. Den verkar ha stannat på 13:37. Lustigt!')
-    room5.detail('ett fönster', 'Taket är mycket högt upp och av glas. Det är inte plant, utan format i flera små pyramider. Du förmodar tanken är glastaket ska släppa in mycket ljus, men himlen utanför är så pass grå och mörk att belysningen ändå är ganska dov. Jösses, vilken mulen dag.')
+    room5.detail('ett fönster', 'Taket är mycket högt upp och av glas. Det är inte plant, utan format i flera små pyramider. Du förmodar tanken är att glastaket ska släppa in mycket ljus, men himlen utanför är så pass grå och mörk att belysningen ändå är ganska dov. Jösses, vilken mulen dag.')
     room5.detail('bord', 'Det är flera runda bord i rummet med stolar placerade runt dem.')
     room5.detail('stolar', 'Stolarna är noggrant placerade runt alla borden. En av stolarna står lite snett. Du undrar om någon använt den nyligen. Hmm...')
     room5.detail('rum', 'Rummen är i en annan del av byggnaden, men du kan skymta dem härifrån genom fönstrena längst upp på den ena väggen. Det är svårt att se in i dem eftersom de är så mörka. I ett av fönstrena tycker du dig kunna skymta ett ansikte som tittar ner på dig, men du får för dig att det bara är inbillning - att det egentligen bara är en kruka eller liknande som står i fönstret.')
@@ -276,6 +394,15 @@ def load_rooms():
     room6.describe('Ett litet mörkt rum. Det luktar gammal mat i det här rummet. Runtom väggarna finns flera microvågsugnar utplacerade på hyllor. Väggarna är mörkturkos. Du ser en svart, rund soptunna i ett av rummets hörn.')
     room6.detail('en micro', 'Det är en vanlig microvågsugn. Den ser billig ut. Det finns gamla fastbrända matrester i den. Usch!')
     room6.detail('matrester', 'Någon har slarvat och struntat i att göra rent efter sig. Matresterna är nog micrade så pass många gånger att de i princip är omöjliga att få bort vid det här laget.')
+
+    room7.describe('Du står i en datasal vid några glasdörrar. Datorer finns överallt, men alla verkar vara avstängda. Rummet är belyst av ett grönaktigt sken från alla de lysrör som sitter i taket. En soptunna står vid väggen bredvid dig.')
+    room7.detail('datorer', 'Datasalen är fylld med säkert femtio datorer.')
+
+    trashcan = Container()
+    trashcan.describe('en' , ['svart'] , ['soptunna' , 'tunna'],
+                      'den', ['svarta'], ['soptunnan', 'tunnan'],
+                      'Soptunnan är rund och svart. Den är gjord av billig glansig plast och verkar ganska ömtålig för att vara soptunna. Trots det förefaller den fylla sin funktion eftersom man åtminstone kan stoppa saker i den.')
+    room7.add_entity(trashcan)
 
     note = Item()
     note.describe('en' , ['gul' ], ['lapp', 'lappar' ],
@@ -304,11 +431,11 @@ def load_rooms():
     room2.add_entity(backpack)
     room6.add_entity(trashcan)
 
-    connect_rooms(room1, 'norr' , 'norrut' , 'söderifrån',
-                  room3, 'söder', 'söderut', 'norrifrån')
+    #connect_rooms(room1, 'norr' , 'norrut' , 'söderifrån',
+    #              room3, 'söder', 'söderut', 'norrifrån')
 
-    connect_rooms(room1, 'öster' , 'österut' , 'västerifrån',
-                  room2, 'väster', 'västerut', 'österifrån')
+    #connect_rooms(room1, 'öster' , 'österut' , 'västerifrån',
+    #              room2, 'väster', 'västerut', 'österifrån')
 
     connect_rooms(room3, 'upp', 'upp för trapporna', 'nerifrån trapporna',
                   room4, 'ner', 'ner för trapporna', 'uppifrån trapporna')
@@ -318,6 +445,9 @@ def load_rooms():
 
     connect_rooms(room5, 'norr' , 'in i rummet', 'in i rummet',
                   room6, 'söder', 'ut ur rummet' , 'ut ur rummet')
+
+    connect_rooms(room7, 'ut' , 'ut från datasalen', 'in genom glasdörrarna',
+                  room3)
 
 def load_actors():
     '''from entities.actors.mouse import Mouse

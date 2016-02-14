@@ -35,9 +35,10 @@ class HelpCommand(BaseEntity):
 Skriv säg <text> för att säga något till andra spelare:
   säg hej, hur går det?
 
-Skriv titta för att se dig omkring. Du kan även titta på <något>:
+Skriv titta för att se dig omkring. Du kan även titta på eller i något:
   titta
   titta på tavla
+  titta i låda
 
 Du kan även plocka upp saker från marken eller behållare:
   ta penna

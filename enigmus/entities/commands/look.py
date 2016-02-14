@@ -70,7 +70,7 @@ class LookCommand(BaseEntity):
         if look_inside:
             if len(entity.entities) == 0:
                 # {} is empty.
-                player.send(lang.sentence('{} är tom.', entity.get_description(indefinite=True)))
+                player.send(lang.sentence('{} är tom.', entity.get_description(indefinite=False)))
                 return
 
             s = lang.list([x.get_description() for x in entity.entities])

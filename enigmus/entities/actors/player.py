@@ -30,6 +30,7 @@ class Player(BaseActor):
         self.state = LoggingInState(self)
 
         self.on_message('player_command', self.__on_player_command)
+        self.on_message('player_text', self.__player_text)
 
     def disconnect(self):
         self._connection.close()
@@ -106,16 +107,20 @@ class Player(BaseActor):
         s   = s  .replace('\n', '\r\n')
         end = end.replace('\n', '\r\n')
 
-
-
         self._connection.send(s  .decode('utf-8').encode('iso-8859-1'))
         self._connection.send(end.decode('utf-8').encode('iso-8859-1'))
+
+    def text(self, text):
+        self.post_message('player_text', text)
 
     def __on_player_command(self, player, command):
         if player is not self:
             return False
 
         args = command.split(' ')
+
+    def __player_text(self, text):
+        self.send(text)
 
 class State(object):
     def __init__(self, player):

@@ -28,6 +28,9 @@ class Room(Container):
         self.description = '<{} is missing a description.>'.format(self.id)
         self.exits       = {}
 
+    def add_exit(self, exit, room):
+        self.exits[exit] = (room, 'hej', 'hej2')
+
     def get_description(self, exclude_actor=None):
         """ Retrieves a description of the room.
 
@@ -36,7 +39,7 @@ class Room(Container):
         """
 
         room_desc  = lang.sentence(super(Room, self).get_description())
-        exits_desc = lang.list(self.exits.keys())
+        exits_desc = lang.list(self.exits.keys()) if len(self.exits) > 0 else 0
 
         # {}\nExits: {}
         desc = '{}\nUtgångar: {}'.format(room_desc, exits_desc)
