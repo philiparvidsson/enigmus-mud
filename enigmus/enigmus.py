@@ -19,6 +19,7 @@ from entities.commands.help  import HelpCommand
 #from entities.commands.emote  import KissCommand
 from entities.entity        import BaseEntity
 from entities.item        import Item
+from entities.container        import Container
 from entities.container        import ContainerItem
 from entities.actors.player import Player
 from entities.room           import Room
@@ -280,8 +281,8 @@ def load_rooms():
                   'den', ['gula'], ['lappen'],
                   'En liten skrynklig lapp som någon försökt göra sig av med en gång i tiden. På lappen står det skrivet med stora siffror: "4973"')
 
-    trashcan = ContainerItem()
-    trashcan.takeable = False
+    trashcan = Container()
+    #trashcan.takeable = False
     trashcan.describe('en' , ['svart'] , ['soptunna' , 'tunna'],
                       'den', ['svarta'], ['soptunnan', 'tunnan'],
                       'Soptunnan är rund och svart. Den är gjord av billig glansig plast och verkar ganska ömtålig för att vara soptunna. Trots det förefaller den fylla sin funktion eftersom man åtminstone kan stoppa saker i den.')

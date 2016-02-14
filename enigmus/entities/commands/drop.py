@@ -59,6 +59,9 @@ class DropCommand(BaseEntity):
             container = player.container.find_match(' '.join(args[i+1:]))
 
             if not container:
+                container = player.inventory.find_match(' '.join(args[i+1:]))
+
+            if not container:
                 player.send('Släng i vad?')
                 return
 
