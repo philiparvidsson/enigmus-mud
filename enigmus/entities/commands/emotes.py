@@ -101,7 +101,7 @@ class EmoteHandler(BaseEntity):
                 if isinstance(arg, basestring):
                     s += ' ' + arg
                 else:
-                    s += ' dig' if arg == actor else ' ' + arg.get_description()
+                    s += ' dig' if arg == actor else ' ' + arg.get_description(indefinite=False)
 
             player.send(lang.sentence(s))
 
