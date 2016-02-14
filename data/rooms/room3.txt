@@ -1,4 +1,4 @@
-@ room3.py
+@ room3.py:Room3
 
 Du står i en korridor. Bredvid dig finns en datasal med glasdörrar. Dörrarna är
 låsta med ett litet kodlås. Framför dig ser du trappor som leder en våning upp.

@@ -47,6 +47,17 @@ class BaseActor(BaseEntity):
 
         return True
 
+    def find_matches(self, text, keep_scores=False):
+        matches = super(BaseActor, self).find_matches(text, keep_scores=True)
+
+        matches.extend(self.inventory.find_matches(text, keep_scores=True))
+
+        matches = sorted(matches, key=lambda x: x[0], reverse=True)
+        if keep_scores:
+            return matches
+
+        return [x[1] for x in matches]
+
     def emote(self, verb, noun=None):
         self.post_message('actor_emote', self, verb, noun)
 

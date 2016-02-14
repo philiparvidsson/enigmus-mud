@@ -51,6 +51,13 @@ class Container(BaseEntity):
             if match[0] > 0:
                 matches.append(match)
 
+            # Also match against the entities details since they are on the
+            # 'outside' of it.
+            for detail in entity.details:
+                match = (detail.match(text), detail)
+                if match[0] > 0:
+                    matches.append(match)
+
         matches = sorted(matches, key=lambda x: x[0], reverse=True)
         if keep_scores:
             return matches

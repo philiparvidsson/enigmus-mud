@@ -3,3 +3,5 @@ Du står i en datasal vid några glasdörrar. Datorer finns överallt, men alla 
 ! datorer: Datasalen är fylld med säkert femtio datorer.
 
 # ut room3
+
+$ trashcan.py:Trashcan

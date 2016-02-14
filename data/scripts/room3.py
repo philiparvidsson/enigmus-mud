@@ -4,17 +4,19 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+import enigmus
+
 from core                   import messages
 from entities.actors.player import Player
 from entities.room          import BaseRoom
 
 #-----------------------------------------------------------
-# FUNCTIONS
+# CLASSES
 #-----------------------------------------------------------
 
-class Room(BaseRoom):
+class Room3(BaseRoom):
     def __init__(self):
-        super(Room, self).__init__()
+        super(Room3, self).__init__()
 
         self.on_message('player_command', self.enter_code,
             filter=messages.for_entities_in(self))
@@ -52,8 +54,8 @@ class Room(BaseRoom):
         player.emote('går in i datasalen.')
         player.text('Glasdörrarna slår igen bakom dig.')
 
-        #room7.add_entity(player)
-        #player.text(room7.get_description(exclude_actor=player))
+        enigmus.rooms['room7'].add_entity(player)
+        player.text(player.container.get_description(exclude_actor=player))
 
         for p in room.get_entities(Player):
             p.text('Lika snabbt som de öppnas slår dörrarna igen, alldeles för '

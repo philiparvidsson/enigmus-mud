@@ -63,7 +63,11 @@ class TakeCommand(BaseEntity):
             i = args.index('i') if 'i' in args else -1
 
         if i > 0:
-            container = player.find_best_match(' '.join(args[i+1:]))
+            s = ' '.join(args[i+1:])
+            container = player.find_best_match(s)
+
+            if not container:
+                container = player.container.find_best_match(s)
 
             if not container or not isinstance(container, Container):
                 # Take from what?

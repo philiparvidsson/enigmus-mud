@@ -35,23 +35,6 @@ class Player(BaseActor):
     def disconnect(self):
         self._connection.close()
 
-    def find_matches(self, text, keep_scores=False):
-        matches = super(Player, self).find_matches(text, keep_scores=True)
-
-        if self.container:
-            matches.extend(self.container.find_matches(text, keep_scores=True))
-
-        for item in self.inventory.entities:
-            match = (item.match(text), item)
-            if match[0] > 0:
-                matches.append(match)
-
-        matches = sorted(matches, key=lambda x: x[0], reverse=True)
-        if keep_scores:
-            return matches
-
-        return [x[1] for x in matches]
-
     def receive(self, text):
         self._buffer += text.decode('iso-8859-1').encode('utf-8')
 

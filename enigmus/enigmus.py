@@ -27,14 +27,16 @@ from entities.actors.player import Player
 from entities.room           import BaseRoom
 from network.server         import TcpServer
 
+import imp
+import os
 import time
 
 #-----------------------------------------------------------
 # GLOBALS
 #-----------------------------------------------------------
 
-rooms          = {}
-entity_classes = {}
+rooms   = {}
+scripts = {}
 instance = None
 
 #-----------------------------------------------------------
@@ -232,7 +234,7 @@ def load_data(lines, indent_level=0):
         lines.pop(0)
 
         if text.startswith('@'):
-            data['script'] = text[1:].strip()
+            data['script'] = text[1:].strip().split(':')
         elif text.startswith('%'):
             attribute = text[1:].split(':', 1)
             data['attributes'].append((attribute[0].strip(), attribute[1].strip()))
@@ -248,15 +250,22 @@ def load_data(lines, indent_level=0):
             exit = text[1:].strip().split(' ', 1)
             data['exits'].append((exit[0].strip(), exit[1].strip()))
         elif text.startswith('$'):
-            class_name = text[1:].strip()
-            indef_desc = [x for x in lines.pop(0).strip().split(' ') if x != '']
-            def_desc   = [x for x in lines.pop(0).strip().split(' ') if x != '']
+            script_data = text[1:].strip().split(':')
+
+            indef_desc = None
+            def_desc   = None
+
+            s = lines[0].strip()
+            if len(s) > 0 and not (s.startswith('!') or s.startswith('$') or s.startswith('$')):
+                indef_desc  = [x for x in lines.pop(0).strip().split(' ') if x != '']
+                def_desc    = [x for x in lines.pop(0).strip().split(' ') if x != '']
 
             entity_data = load_data(lines, indent_level+1)
+            entity_data['script'] = script_data
 
-            entity_data['class'     ] = class_name
-            entity_data['indef_desc'] = (indef_desc[0], indef_desc[1].split('|'), indef_desc[2].split('|'))
-            entity_data['def_desc'  ] = (def_desc[0], def_desc[1].split('|'), def_desc[2].split('|'))
+            if indef_desc is not None and def_desc is not None:
+                entity_data['indef_desc'] = (indef_desc[0], indef_desc[1].split('|'), indef_desc[2].split('|'))
+                entity_data['def_desc'  ] = (def_desc[0], def_desc[1].split('|'), def_desc[2].split('|'))
 
             data['entities'].append(entity_data)
         else:
@@ -267,11 +276,35 @@ def load_data(lines, indent_level=0):
 
     return data
 
+def load_script(filename):
+        script_name = '_script' + filename[:filename.index('.py')]
+
+        if script_name in scripts:
+            return scripts[script_name]
+
+        script_module = imp.load_source(script_name, 'data/scripts/' + filename)
+        scripts[script_name] = script_module
+
+        print 'loaded script', filename
+
+        return script_module
+
 def create_entity(data):
-    if isinstance(data['class'], basestring):
-        class_ = entity_classes[data['class']]
+    class_ = None
+
+    if 'script' in data:
+        if len(data['script']) == 2:
+            script_name = data['script'][0]
+            class_name  = data['script'][1]
+
+            script_module = load_script(script_name)
+            class_        = getattr(script_module, class_name)
+        else:
+            if   data['script'][0] == 'container': class_ = Container
+            elif data['script'][0] == 'item'     : class_ = Item
     else:
-        class_ = data['class']
+        # No script specified means it's a room without script.
+        class_ = BaseRoom
 
     entity = class_()
 
@@ -282,7 +315,7 @@ def create_entity(data):
         entity.describe(indef_desc[0], indef_desc[1], indef_desc[2],
                         def_desc  [0],   def_desc[1],   def_desc[2],
                         data['long_desc'])
-    else:
+    elif len(data['long_desc']) > 0:
         entity.describe(data['long_desc'])
 
     for detail_data in data['details']:
@@ -297,13 +330,6 @@ def create_entity(data):
     return entity
 
 def load_rooms():
-    import os
-    import imp
-    import json
-
-    entity_classes['container'] = Container
-    entity_classes['item']      = Item
-
     #-----------------------------------
     # 1. Load rooms
     #-----------------------------------
@@ -326,15 +352,6 @@ def load_rooms():
     #-----------------------------------
 
     for room_name, room_data in rooms.items():
-        room_data['class'] = BaseRoom
-
-        if 'script' in room_data:
-            script_name = room_data['script']
-            script_name = '_script' + script_name[:script_name.index('.py')]
-            script_module = imp.load_source(script_name, 'data/scripts/' + room_data['script'])
-            print 'loaded script', room_data['script']
-            room_data['class'] = script_module.Room
-
         room = create_entity(room_data)
         room.data = room_data
         rooms[room_name] = room

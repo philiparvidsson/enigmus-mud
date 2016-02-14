@@ -5,23 +5,10 @@ Ett litet mörkt rum. Det luktar gammal mat i det här rummet. Runtom väggarna 
 
 # söder room5
 
-$ container
-    en  svart  soptunna|tunna
-    den svarta soptunnan|tunnan
-
-    Soptunnan är rund och svart. Den är gjord av billig glansig plast och
-    verkar ganska ömtålig för att vara soptunna. Trots det förefaller den fylla
-    sin funktion eftersom man åtminstone kan stoppa saker i den.
-
-    % weight: 10.0
-
-    ! detalj2: Japp, detaljen på tunnan funkar också.
-
+$ trashcan.py:Trashcan
     $ item
         en gul lapp|lappar
         den gula lappen
 
         En liten skrynklig lapp som någon försökt göra sig av med en gång i
         tiden. På lappen står det skrivet med stora siffror: "4973"
-
-        ! testdetalj: Japp, testdetaljen funkar.

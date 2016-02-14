@@ -59,6 +59,9 @@ class LookCommand(BaseEntity):
         text   = ' '.join(args)
         entity = player.find_best_match(text)
 
+        if not entity:
+            entity = player.container.find_best_match(text)
+
         if look_inside and not isinstance(entity, Container):
             entity = None
 
