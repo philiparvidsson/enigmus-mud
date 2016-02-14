@@ -1,0 +1,4 @@
+Du står i en korridor. Bredvid dig finns en stor ljussal. Det finns trappor här som leder en våning ner, till en korridor. Väggen här är av träpanel, medan golvet är av laminat.
+
+# ner    room3
+# väster room5

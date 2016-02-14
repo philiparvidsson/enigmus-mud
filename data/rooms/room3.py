@@ -11,6 +11,7 @@ from entities.actors.player import Player
 # GLOBALS
 #-----------------------------------------------------------
 
+# Set automatically.
 room = None
 
 #-----------------------------------------------------------

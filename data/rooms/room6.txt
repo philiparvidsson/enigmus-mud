@@ -1,0 +1,6 @@
+Ett litet mörkt rum. Det luktar gammal mat i det här rummet. Runtom väggarna finns flera microvågsugnar utplacerade på hyllor. Väggarna är mörkturkos. Du ser en svart, rund soptunna i ett av rummets hörn.
+
+! en micro: Det är en vanlig microvågsugn. Den ser billig ut. Det finns gamla fastbrända matrester i den. Usch!
+! matrester: Någon har slarvat och struntat i att göra rent efter sig. Matresterna är nog micrade så pass många gånger att de i princip är omöjliga att få bort vid det här laget.
+
+# söder room5
