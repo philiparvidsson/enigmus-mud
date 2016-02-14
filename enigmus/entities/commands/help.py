@@ -1,0 +1,51 @@
+# coding=utf-8
+
+""" Provides the help command handler. """
+
+#-----------------------------------------------------------
+# IMPORTS
+#-----------------------------------------------------------
+
+from core                   import messages
+from entities.actors.player import Player
+from entities.entity        import BaseEntity
+
+#-----------------------------------------------------------
+# CLASSES
+#-----------------------------------------------------------
+
+class HelpCommand(BaseEntity):
+    """ Command entity for handling the help command. """
+
+    def __init__(self):
+        """ Initializes the command. """
+
+        super(HelpCommand, self).__init__()
+
+        self.on_message('player_command', self.__player_command,
+            filter=messages.for_entities_of_class(Player))
+
+    # ------- MESSAGES -------
+
+    def __player_command(self, player, command):
+        if command != 'hjälp':
+            return
+
+        player.send('''
+Skriv säg <text> för att säga något till andra spelare:
+  säg hej, hur går det?
+
+Skriv titta för att se dig omkring. Du kan även titta på <något>:
+  titta
+  titta på tavla
+
+Du kan även plocka upp saker från marken eller behållare:
+  ta penna
+  ta penna från låda
+
+...och såklart lägga tillbaka saker:
+  släng penna
+  lägg penna i låda
+
+För att navigera skriver du helt enkelt namnet på den utgång du vill lämna rummet genom. Exempelvis skriver du norr för att gå norrut, och kommer då till nästa rum. Var noga med att läsa av din omgivning. Det finns ledtrådar överallt! Lycka till!
+''')

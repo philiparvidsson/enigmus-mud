@@ -295,12 +295,15 @@ class Description(object):
     def remove_indefinite_adjective(self, adj):
         if adj in self.indefinite[1]: self.indefinite[1].remove(adj)
 
+#-------------------------------------------------------------------------------
+
 class Detail(BaseEntity):
     def __init__(self, entity):
         super(Detail, self).__init__()
 
         self.entity = entity
 
+#-------------------------------------------------------------------------------
 
 class Timer(object):
     """  Represents an entity timer. """

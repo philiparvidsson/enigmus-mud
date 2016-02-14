@@ -86,7 +86,6 @@ class EmoteHandler(BaseEntity):
         # waves to
         player.emote('vinkar till', entity)
 
-
     # ------- MESSAGES -------
 
     def __actor_emote(self, actor, verb, noun):

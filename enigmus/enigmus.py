@@ -8,13 +8,14 @@ from cli                    import console
 from core                   import log
 from entities.commands.say  import SayCommand
 from entities.commands.go  import GoCommand
-from entities.commands.inventory  import TakeCommand
-from entities.commands.inventory  import DropCommand
+from entities.commands.take  import TakeCommand
+from entities.commands.drop  import DropCommand
 from entities.commands.inventory  import InventoryCommand
-from entities.commands.inventory  import GiveCommand
+from entities.commands.give  import GiveCommand
 from entities.commands.look  import LookCommand
 from entities.commands.quit  import QuitCommand
 from entities.commands.emotes  import EmoteHandler
+from entities.commands.help  import HelpCommand
 #from entities.commands.emote  import KissCommand
 from entities.entity        import BaseEntity
 from entities.item        import Item
@@ -199,6 +200,7 @@ def load_commands():
     LookCommand()
     GiveCommand()
     QuitCommand()
+    HelpCommand()
 
 def load_rooms():
     ''' room1 = Room()
@@ -247,7 +249,7 @@ def load_rooms():
 
     room1.describe('Du befinner dig i en stor entrésal. Taket är flera meter högt upp, golvet är av svart laminat och väggarna är vitmålade. En tavla sitter på väggen framför dig, och till vänster sitter några TV-skärmar på väggen och flimrar. Rakt fram fortsätter salen mot en korridor, även den med lika högt i tak. Till höger finns glasdörrar som går in till ett trapphus.')
     room1.detail('skärmar', 'Skärmarna flimrar och visar bara brus för tillfället.')
-    room1.detail('en tavla', 'Det ser ut som ett inglasat diplom av något slag. Det finns lite text på tavlan, men den går inte att läsa.')
+    room1.detail('en tavla', 'Det ser ut som ett inglasat diplom av något slag. Det finns lite text på tavlan, men den går inte att läsa. Du känner däremot att du har koll på hur man tittar föremål. Det känns väl bra?')
     room1.detail('en text', 'Texten på tavlan är svårläst. Du kan inte riktigt tyda den.')
     room1.detail('ett trapphus', 'Innanför glasdörren syns ett trapphus. Du kan gå dit om du vill.')
 
@@ -291,6 +293,7 @@ def load_rooms():
                       'den', ['grå'], ['ryggsäcken'],
                       'Det är en grå ryggsäck.')
 
+    room2.add_entity(backpack)
     room6.add_entity(trashcan)
 
     connect_rooms(room1, 'norr' , 'norrut' , 'söderifrån',

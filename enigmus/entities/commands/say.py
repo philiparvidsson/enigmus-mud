@@ -49,7 +49,7 @@ class SayCommand(BaseEntity):
             text = text[1:]
         else:
             # say
-            text = text[3:]
+            text = text[5:]
 
         text = text.strip()
 

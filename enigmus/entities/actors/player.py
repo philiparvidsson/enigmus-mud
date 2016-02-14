@@ -56,10 +56,9 @@ class Player(BaseActor):
 
         self.state.perform(command)
 
-    def send(self, text, end='\n'):
+    def send(self, text, end='\n', hard_breaks=True):
         text = text.replace('\r', '')
-
-        s = ''
+        s    = ''
 
         while len(text) > 0:
             last_space = 0
@@ -72,7 +71,7 @@ class Player(BaseActor):
                 elif text[i] == '\n':
                     counter = 0
 
-                if counter >= 80:
+                if hard_breaks and counter >= 80:
                     if last_space == 0:
                         s   += text[:80] + '\n'
                         text = text[80:]
@@ -91,6 +90,8 @@ class Player(BaseActor):
 
         s   = s  .replace('\n', '\r\n')
         end = end.replace('\n', '\r\n')
+
+
 
         self._connection.send(s  .decode('utf-8').encode('iso-8859-1'))
         self._connection.send(end.decode('utf-8').encode('iso-8859-1'))
@@ -112,13 +113,24 @@ class LoggingInState(State):
     def __init__(self, player):
         super(LoggingInState, self).__init__(player)
 
-        self.player.send('Välkommen till Enigmus!')
-        self.player.send('Vad heter du? ', end='')
+        self.player.send('''
+   Välkommen till...
+ ________            _
+|_   __  |          (_)
+  | |_ \_| _ .--.   __   .--./) _ .--..--.  __   _   .--.
+  |  _| _ [ `.-. | [  | / /'`\;[ `.-. .-. |[  | | | ( (`\]
+ _| |__/ | | | | |  | | \ \._// | | | | | | | \_/ |, `'.'.
+|________|[___||__][___].',__` [___||__||__]'.__.'_/[\__) )
+                       ( ( __))                    MUD       ''',
+            hard_breaks=False)
+
+        self.player.send('\nDet bästa spelet som någonsin gjorts!\n')
+        self.player.send('Ange ditt namn: ', end='')
 
     def perform(self, command):
         if not hasattr(self.player, 'name'):
             self.player.name = command
-            self.player.send('Hej, {}! Lösenord: '.format(command), end='')
+            self.player.send('Hej {}! Ange lösenord: '.format(command), end='')
         elif not hasattr(self.player, 'password'):
             self.player.password = command
 
@@ -130,6 +142,7 @@ class LoggingInState(State):
             self.player.state       = PlayingState(self.player)
 
             enigmus.instance.entities['Room_1'].add_entity(self.player)
+            self.player.send(self.player.container.get_description(exclude_actor=self.player))
 
 class PlayingState(State):
     def __init__(self, player):
