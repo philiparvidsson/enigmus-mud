@@ -12,6 +12,8 @@ from entities.actor         import BaseActor
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
 from entities.room          import BaseRoom
+import enigmus
+import random
 
 #-----------------------------------------------------------
 # CLASSES
@@ -32,11 +34,44 @@ class EmoteHandler(BaseEntity):
             filter=messages.for_entities_of_class(BaseActor))
 
         self.emotes = {
-            'peka' : self.point,
-            'pussa': self.kiss,
-            'vinka': self.wave,
-            'dansa': self.dance,
+            'peka'  : self.point,
+            'pussa' : self.kiss,
+            'vinka' : self.wave,
+            'dansa' : self.dance,
+            'smiska': self.spank
         }
+
+    def spank(self, player, args):
+        # check for modifier
+        mod = 0
+        if 'hårt' in args:
+            args.remove('hårt')
+            mod = 1
+
+        matches = player.container.find_matches(' '.join(args))
+        if len(matches) == 0 or (len(matches) == 1 and matches[0] == player):
+            player.send('Smiska vem?')
+            return
+
+        for entity in matches:
+            # spank
+            if mod == 0:
+                player.emote('smiskar', entity)
+            else:
+                s = random.choice([
+                        '*SMACK*',
+                        '*SMISK*',
+                        '*SMASK*',
+                        '*KAH-TISH*',
+                    ])
+
+                for agent in enigmus.instance.players:
+                    if not agent.container:
+                        continue
+
+                    agent.text(s)
+
+                player.emote('smiskar', entity, 'hårt som fan! Det här måste handla om en fetish')
 
     def kiss(self, player, args):
         matches = player.container.find_matches(' '.join(args))
