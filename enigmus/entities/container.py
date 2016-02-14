@@ -43,25 +43,20 @@ class Container(BaseEntity):
         self.entities.append(entity)
         self.post_message('container_add', self, entity)
 
-    def find_match(self, text):
-        best_match = (0, None)
+    def find_matches(self, text, keep_scores=False):
+        matches = super(Container, self).find_matches(text, keep_scores=True)
 
         for entity in self.entities:
             match = (entity.match(text), entity)
-            if match[0] > best_match[0]:
-                best_match = match
+            if match[0] > 0:
+                matches.append(match)
 
-            for detail in entity.details:
-                match = (detail.match(text), detail)
-                if match[0] > best_match[0]:
-                    best_match = match
+        matches = sorted(matches, key=lambda x: x[0], reverse=True)
+        if keep_scores:
+            return matches
 
-        for detail in self.details:
-            match = (detail.match(text), detail)
-            if match[0] > best_match[0]:
-                best_match = match
+        return [x[1] for x in matches]
 
-        return best_match[1]
 
     def get_entities(self, class_=BaseEntity):
         """ Retrieves all entities of the specified class inside the container.

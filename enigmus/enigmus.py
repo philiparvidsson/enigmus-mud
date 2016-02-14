@@ -259,6 +259,7 @@ def load_rooms():
 
     room3.describe('Du står i en korridor. Bredvid dig finns en datasal med glasdörrar. Dörrarna är låsta med en liten kodterminal. Framför dig ser du trappor som leder en våning upp. Det finns även toaletter i närheten för den som behöver uträtta sina behov.')
     room3.detail('en terminal', 'Det är en liten kodterminal för att slå in koder med. Du förmodar att dörrarna till datasalen låses upp om man slår in rätt kod.')
+    room3.detail('en datasal', 'Du ser rätt in i datasalen som ligger innanför glasdörrarna. Om du bara kunde låsa upp dörren på något vis...')
     room3.detail('toaletter', 'En dörr leder in till toaletterna. Du kan gå in om du behöver uträtta dina behov.')
 
     room4.describe('Du står i en korridor. Bredvid dig finns en stor ljussal. Det finns trappor här som leder en våning ner, till en korridor. Väggen här är av träpanel, medan golvet är av laminat.')
@@ -277,9 +278,14 @@ def load_rooms():
     room6.detail('matrester', 'Någon har slarvat och struntat i att göra rent efter sig. Matresterna är nog micrade så pass många gånger att de i princip är omöjliga att få bort vid det här laget.')
 
     note = Item()
-    note.describe('en' , ['gul'] , ['lapp'],
-                  'den', ['gula'], ['lappen'],
+    note.describe('en' , ['gul' ], ['lapp', 'lappar' ],
+                  'den', ['gula'], ['lappen'         ],
                   'En liten skrynklig lapp som någon försökt göra sig av med en gång i tiden. På lappen står det skrivet med stora siffror: "4973"')
+
+    tissue = Item()
+    tissue.describe('en' , ['äcklig' ], ['näsduk'  ],
+                    'den', ['äckliga'], ['näsduken'],
+                    'En ihopskrynklad vit pappersnäsduk. Tänk om någon har snytit sig i den? Usch!')
 
     trashcan = Container()
     #trashcan.takeable = False
@@ -288,6 +294,7 @@ def load_rooms():
                       'Soptunnan är rund och svart. Den är gjord av billig glansig plast och verkar ganska ömtålig för att vara soptunna. Trots det förefaller den fylla sin funktion eftersom man åtminstone kan stoppa saker i den.')
 
     trashcan.add_entity(note)
+    trashcan.add_entity(tissue)
 
     backpack = ContainerItem()
     backpack.describe('en' , ['grå'], ['ryggsäck'  ],

@@ -91,6 +91,19 @@ class BaseActor(BaseEntity):
 
         return True
 
+    def match(self, text):
+        """ Checks if the specified description matches the entity.
+
+            :param description: The description to test against.
+
+            :returns: True if the description matches the entity.
+        """
+
+        if text == 'alla':
+            return 1
+
+        return super(BaseActor, self).match(text)
+
     def say(self, text):
         """ Says the specified text.
 

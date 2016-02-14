@@ -68,6 +68,15 @@ class GoCommand(BaseEntity):
         else:
             direction = command
 
+        # north / down
+        if direction == 'n':
+            direction = 'norr' if 'norr' in room.exits else 'ner'
+
+        if direction == 's': direction = 'söder'  # south
+        if direction == 'u': direction = 'upp'    # up
+        if direction == 'v': direction = 'väster' # west
+        if direction == 'ö': direction = 'öster'  # east
+
         for exit in room.exits:
             if exit == direction:
                 player.go(exit)

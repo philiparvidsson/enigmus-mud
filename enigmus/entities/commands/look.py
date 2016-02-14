@@ -57,10 +57,7 @@ class LookCommand(BaseEntity):
             look_inside = True
 
         text   = ' '.join(args)
-        entity = player.container.find_match(text)
-
-        if not entity:
-            entity = player.inventory.find_match(text)
+        entity = player.find_best_match(text)
 
         if look_inside and not isinstance(entity, Container):
             entity = None
@@ -72,7 +69,8 @@ class LookCommand(BaseEntity):
 
         if look_inside:
             if len(entity.entities) == 0:
-                player.send(lang.sentence('{} är tom.', entity))
+                # {} is empty.
+                player.send(lang.sentence('{} är tom.', entity.get_description(indefinite=True)))
                 return
 
             s = lang.list([x.get_description() for x in entity.entities])

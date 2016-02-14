@@ -9,6 +9,7 @@
 from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
+from entities.container     import Container
 from entities.entity        import BaseEntity
 
 #-----------------------------------------------------------
@@ -56,22 +57,21 @@ class DropCommand(BaseEntity):
         # in
         i = args.index('i') if 'i' in args else -1
         if i >= 0:
-            container = player.container.find_match(' '.join(args[i+1:]))
+            container = player.find_best_match(' '.join(args[i+1:]))
 
-            if not container:
-                container = player.inventory.find_match(' '.join(args[i+1:]))
-
-            if not container:
+            if not container or not isinstance(container, Container):
                 player.send('Släng i vad?')
                 return
 
             args = args[:i]
 
-        item = player.inventory.find_match(' '.join(args))
+        items = player.find_matches(' '.join(args))
 
-        if not item or item == container:
+        if len(items) == 0 or (len(items) == 1 and items[0] == container):
             # Drop what?
             player.send('Släng vadå?')
             return
 
-        player.drop(item, container)
+        for item in items:
+            if item != container:
+                player.drop(item, container)

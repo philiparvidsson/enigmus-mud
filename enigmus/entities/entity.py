@@ -85,6 +85,28 @@ class BaseEntity(object):
         self.post_message('entity_cleanup')
         self.post_message('entity_destroy')
 
+    def find_best_match(self, text):
+        matches = self.find_matches(text)
+
+        if len(matches) == 0:
+            return None
+
+        return matches[0]
+
+    def find_matches(self, text, keep_scores=False):
+        matches = []
+
+        for detail in self.details:
+            match = (detail.match(text), detail)
+            if match[0] > 0:
+                matches.append(match)
+
+        matches = sorted(matches, key=lambda x: x[0], reverse=True)
+        if keep_scores:
+            return matches
+
+        return [x[1] for x in matches]
+
     def get_description(self, indefinite=True):
         """ Retrieves the entity description in definite or indefinite
             form.
@@ -174,7 +196,9 @@ class BaseEntity(object):
 
     def match(self, text):
         """ Checks if the specified description matches the entity.
+
             :param description: The description to test against.
+
             :returns: True if the description matches the entity.
         """
 
@@ -213,7 +237,7 @@ class BaseEntity(object):
         if match_adjectives == -1:
             return 0
 
-        return match_object + match_adjectives
+        return match_object + match_adjectives + 1
     #---------------------------------------------------------------------------
 
     def on_message(self, msg, func, filter=None):

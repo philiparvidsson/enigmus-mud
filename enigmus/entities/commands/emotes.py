@@ -32,21 +32,21 @@ class EmoteHandler(BaseEntity):
             filter=messages.for_entities_of_class(BaseActor))
 
         self.emotes = {
-            'pussa': self.kiss,
             'peka' : self.point,
+            'pussa': self.kiss,
             'vinka': self.wave
         }
 
     def kiss(self, player, args):
-        entity = player.container.find_match(' '.join(args))
+        matches = player.container.find_matches(' '.join(args))
 
-        if not entity or entity == player:
-            # Kiss who?
+        if len(matches) == 0 or (len(matches) == 1 and matches[0] == player):
             player.send('Pussa vem?')
             return
 
-        # kisses
-        player.emote('pussar', entity)
+        for entity in matches:
+            # kisses
+            player.emote('pussar', entity)
 
     def point(self, player, args):
         if len(args) == 0:
@@ -58,7 +58,7 @@ class EmoteHandler(BaseEntity):
         if args[0] == 'på':
             args = args[1:]
 
-        entity = player.container.find_match(' '.join(args))
+        entity = player.container.find_best_match(' '.join(args))
         if not entity or entity == player:
             # Point at what?
             player.send('Peka på vad?')
@@ -77,7 +77,7 @@ class EmoteHandler(BaseEntity):
         if args[0] == 'till':
             args = args[1:]
 
-        entity = player.container.find_match(' '.join(args))
+        entity = player.container.find_best_match(' '.join(args))
         if not entity or entity == player:
             # Wave to who?
             player.send('Vinka till vem?')

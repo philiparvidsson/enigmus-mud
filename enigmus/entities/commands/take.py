@@ -9,7 +9,9 @@
 from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
+from entities.container     import Container
 from entities.entity        import BaseEntity
+from entities.entity        import Detail
 
 #-----------------------------------------------------------
 # CLASSES
@@ -61,22 +63,27 @@ class TakeCommand(BaseEntity):
             i = args.index('i') if 'i' in args else -1
 
         if i > 0:
-            container = player.container.find_match(' '.join(args[i+1:]))
+            container = player.find_best_match(' '.join(args[i+1:]))
 
-            if not container:
+            if not container or not isinstance(container, Container):
                 # Take from what?
                 player.send('Ta från vad?')
                 return
 
             args = args[:i]
 
-        item = container.find_match(' '.join(args))
-        if not item:
+        items = container.find_matches(' '.join(args))
+
+        if len(items) == 0:
             # Take what?
             player.send('Ta vad?')
             return
 
-        if not player.take(item):
-            # You can't take that!
-            player.send('Den kan du inte ta!')
-            return
+        for item in items:
+            if isinstance(item, Detail):
+                continue
+
+            if not player.take(item):
+                # tries to take {} but fails.
+                item_desc = item.get_description(indefinite=False)
+                player.emote('försöker ta {} men misslyckas.'.format(item_desc))
