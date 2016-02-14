@@ -31,6 +31,62 @@ class EmoteHandler(BaseEntity):
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(BaseActor))
 
+        self.emotes = {
+            'pussa': self.kiss,
+            'peka' : self.point,
+            'vinka': self.wave
+        }
+
+    def kiss(self, player, args):
+        entity = player.container.find_match(' '.join(args))
+
+        if not entity or entity == player:
+            # Kiss who?
+            player.send('Pussa vem?')
+            return
+
+        # kisses
+        player.emote('pussar', entity)
+
+    def point(self, player, args):
+        if len(args) == 0:
+            # points straight ahead
+            player.emote('pekar rakt fram')
+            return
+
+        # at
+        if args[0] == 'på':
+            args = args[1:]
+
+        entity = player.container.find_match(' '.join(args))
+        if not entity or entity == player:
+            # Point at what?
+            player.send('Peka på vad?')
+            return
+
+        # points at
+        player.emote('pekar på', entity)
+
+    def wave(self, player, args):
+        if len(args) == 0:
+            # waves
+            player.emote('vinkar')
+            return
+
+        # to
+        if args[0] == 'till':
+            args = args[1:]
+
+        entity = player.container.find_match(' '.join(args))
+        if not entity or entity == player:
+            # Wave to who?
+            player.send('Vinka till vem?')
+            return
+
+        # waves to
+        player.emote('vinkar till', entity)
+
+
     # ------- MESSAGES -------
 
     def __actor_emote(self, actor, verb, noun):
@@ -56,46 +112,5 @@ class EmoteHandler(BaseEntity):
         command = args[0]
         args    = args[1:]
 
-        # kiss
-        if len(args) >= 1 and command == 'pussa':
-            entity = player.container.find_match(' '.join(args))
-            if entity and entity != player:
-                # kisses
-                player.emote('pussar', entity)
-            else:
-                # Kiss what?
-                player.send('Pussa vad?')
-        # wave
-        elif command == 'vinka':
-            if len(args) == 0:
-                # waves
-                player.emote('vinkar')
-            else:
-                # to
-                if args[0] == 'till':
-                    args = args[1:]
-
-                entity = player.container.find_match(' '.join(args))
-                if entity and entity != player:
-                    # waves to
-                    player.emote('vinkar till', entity)
-                else:
-                    # Wave to who?
-                    player.send('Vinka till vem?')
-        # point
-        elif command == 'peka':
-            if len(args) == 0:
-                # points straight ahead
-                player.emote('pekar rakt fram')
-            else:
-                # at
-                if args[0] == 'på':
-                    args = args[1:]
-
-                entity = player.container.find_match(' '.join(args))
-                if entity and entity != player:
-                    # points at
-                    player.emote('pekar på', entity)
-                else:
-                    # Point at what?
-                    player.send('Peka på vad?')
+        if command in self.emotes:
+            self.emotes[command](player, args)

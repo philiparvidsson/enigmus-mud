@@ -13,6 +13,7 @@ from entities.commands.inventory  import DropCommand
 from entities.commands.inventory  import InventoryCommand
 from entities.commands.inventory  import GiveCommand
 from entities.commands.look  import LookCommand
+from entities.commands.quit  import QuitCommand
 from entities.commands.emotes  import EmoteHandler
 #from entities.commands.emote  import KissCommand
 from entities.entity        import BaseEntity
@@ -197,6 +198,7 @@ def load_commands():
     InventoryCommand()
     LookCommand()
     GiveCommand()
+    QuitCommand()
 
 def load_rooms():
     ''' room1 = Room()
@@ -281,7 +283,13 @@ def load_rooms():
     trashcan.describe('en' , ['svart'] , ['soptunna' , 'tunna'],
                       'den', ['svarta'], ['soptunnan', 'tunnan'],
                       'Soptunnan är rund och svart. Den är gjord av billig glansig plast och verkar ganska ömtålig för att vara soptunna. Trots det förefaller den fylla sin funktion eftersom man åtminstone kan stoppa saker i den.')
+
     trashcan.add_entity(note)
+
+    backpack = ContainerItem()
+    backpack.describe('en' , ['grå'], ['ryggsäck'  ],
+                      'den', ['grå'], ['ryggsäcken'],
+                      'Det är en grå ryggsäck.')
 
     room6.add_entity(trashcan)
 

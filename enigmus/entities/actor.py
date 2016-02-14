@@ -129,6 +129,8 @@ class BaseActor(BaseEntity):
         self.inventory.destroy()
         self.inventory = None
 
+#-------------------------------------------------------------------------------
+
 class Inventory(Container):
     """ Represents an actor inventory. """
 

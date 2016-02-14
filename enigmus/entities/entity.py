@@ -37,7 +37,6 @@ class BaseEntity(object):
 
         enigmus.instance.register_entity(self)
 
-        self.on_message('entity_cleanup', self.__entity_cleanup)
         self.on_message('entity_destroy', self.__entity_destroy)
         self.on_message('entity_tick'   , self.__entity_tick   )
 
@@ -263,13 +262,12 @@ class BaseEntity(object):
 
     # ------- MESSAGES -------
 
-    def __entity_cleanup(self):
+    def __entity_destroy(self):
+        self.timers = None
+
         if self.container:
             self.container.remove_entity(self)
 
-        self.timers = None
-
-    def __entity_destroy(self):
         self.is_destroyed = True
         enigmus.instance.remove_entity(self)
 

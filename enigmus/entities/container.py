@@ -110,10 +110,12 @@ class Container(BaseEntity):
 
         self.entities = None
 
+#-------------------------------------------------------------------------------
+
 class ContainerItem(Container, Item):
     """ Represents a container item that can contain other entities. """
 
     def __init__(self):
-        """ Initializes the container. """
+        """ Initializes the container item. """
 
         super(ContainerItem, self).__init__()

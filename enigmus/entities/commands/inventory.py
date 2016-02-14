@@ -37,10 +37,10 @@ class DropCommand(BaseEntity):
     def __actor_drop(self, actor, container, item):
         if container != actor.container:
             # put {} in
-            actor.emote('lade {} i'.format(item.get_description()), container)
+            actor.emote('la {} i'.format(item.get_description()), container)
         else:
             # put {} on the ground.
-            actor.emote('lade {} på marken.'.format(item.get_description()))
+            actor.emote('la {} på marken.'.format(item.get_description()))
 
     def __player_command(self, player, command):
         if not player.container:
@@ -50,8 +50,8 @@ class DropCommand(BaseEntity):
         command = args[0]
         args    = args[1:]
 
-        # drop
-        if command != 'släng':
+        # drop / put
+        if command != 'släng' and command != 'lägg':
             return
 
         container = None
@@ -75,6 +75,8 @@ class DropCommand(BaseEntity):
             return
 
         player.drop(item, container)
+
+#-------------------------------------------------------------------------------
 
 class GiveCommand(BaseEntity):
     """ Command entity for handling the give command. """
@@ -133,6 +135,8 @@ class GiveCommand(BaseEntity):
 
         player.give(actor, item)
 
+#-------------------------------------------------------------------------------
+
 class InventoryCommand(BaseEntity):
     """ Command entity for handling the inventory command. """
 
@@ -155,15 +159,17 @@ class InventoryCommand(BaseEntity):
             return
 
         if player.inventory.is_empty():
-            # You're not carrying anything right now.
-            player.send('Du bär inte på någonting just nu.')
+            # You don't have anything.
+            player.send('Du har ingenting.')
             return
 
         inventory = player.inventory.entities
         items     = lang.list([x.get_description() for x in inventory])
 
-        # You're carrying: {}
-        player.send('Du bär på: {}'.format(items))
+        # You have: {}
+        player.send('Du har: {}'.format(items))
+
+#-------------------------------------------------------------------------------
 
 class TakeCommand(BaseEntity):
     """ Command entity for handling the take command. """
@@ -205,6 +211,11 @@ class TakeCommand(BaseEntity):
 
         # from
         i = args.index('från') if 'från' in args else -1
+
+        # in
+        if i == -1:
+            i = args.index('i') if 'i' in args else -1
+
         if i > 0:
             container = player.container.find_match(' '.join(args[i+1:]))
 
