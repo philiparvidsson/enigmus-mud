@@ -88,23 +88,22 @@ class EmoteHandler(BaseEntity):
 
     # ------- MESSAGES -------
 
-    def __actor_emote(self, actor, verb, noun):
+    def __actor_emote(self, actor, args):
         room = actor.container
 
         if not room or not isinstance(room, BaseRoom):
             return
 
-        noun_desc = noun.get_description(indefinite=False) if noun else None
-        format    = '{} {} {}'                             if noun else '{} {}'
-
         for player in room.get_entities(Player):
-            is_actor = (player == actor)
-            is_noun  = (player == noun )
+            s = 'Du' if player == actor else actor.get_description()
 
-            a = 'Du'  if is_actor else actor.get_description()
-            b = 'dig' if is_noun  else noun_desc
+            for arg in args:
+                if isinstance(arg, basestring):
+                    s += ' ' + arg
+                else:
+                    s += ' dig' if arg == actor else ' ' + arg.get_description()
 
-            player.send(lang.sentence(format, a, verb, b))
+            player.send(lang.sentence(s))
 
     def __player_command(self, player, command):
         args    = command.split(' ')

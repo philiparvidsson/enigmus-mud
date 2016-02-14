@@ -3,3 +3,8 @@ Du befinner dig längst ned i ett trapphus. Väggarna är vita och trappan är g
 ! ett fönster: Fönstret släpper in ljus i trapphuset, som i övrigt inte har några lampor. Genom fönstret kan man skymta en grå himmel utanför.
 
 # väster room1
+
+$ containeritem
+    en  grå ryggsäck
+    den grå ryggsäcken
+    Det är en grå ryggsäck som man kan stoppa saker i.

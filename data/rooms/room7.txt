@@ -5,3 +5,4 @@ Du står i en datasal vid några glasdörrar. Datorer finns överallt, men alla 
 # ut room3
 
 $ trashcan.py:Trashcan
+$ cissi.py:Cissi

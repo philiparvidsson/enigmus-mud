@@ -14,7 +14,7 @@ class Trashcan(Container):
     def __init__(self):
         super(Trashcan, self).__init__()
 
-        self.describe('en'  , ['svart' ], ['soptunna' , 'tunna'],
+        self.describe('en'  , ['svart' ], ['soptunna' , 'tunna' ],
                       'den' , ['svarta'], ['soptunnan', 'tunnan'],
                       'Soptunnan är rund och svart. Den är gjord av billig '
                       'glansig plast och verkar ganska ömtålig för att vara '

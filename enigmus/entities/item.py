@@ -27,3 +27,8 @@ class Item(BaseEntity):
             return 1
 
         return super(Item, self).match(text)
+
+
+class WearableItem(Item):
+    """ Represents an item in the game. """
+    pass

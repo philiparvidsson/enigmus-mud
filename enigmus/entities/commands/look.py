@@ -83,4 +83,4 @@ class LookCommand(BaseEntity):
 
         if not isinstance(entity, Detail):
             player.send(lang.sentence(entity.get_description()))
-        player.send(entity.long_description)
+        player.send(entity.get_long_description())

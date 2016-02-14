@@ -28,11 +28,11 @@ class Room3(BaseRoom):
             return
 
         if len(args) < 2 or args[1] != 'kod':
-            player.send('Tryck vad? Kod?')
+            player.text('Tryck vad? Kod?')
             return
 
         if len(args) < 3:
-            player.send('Vilken kod vill du slå in?')
+            player.text('Vilken kod vill du trycka?')
             return
 
         code = args[2]

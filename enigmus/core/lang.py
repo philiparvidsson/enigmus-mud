@@ -23,3 +23,7 @@ def sentence(text, *args):
         text += '.'
 
     return text
+
+def sex(s):
+    return 'han' if s == 'male' else 'hon'
+

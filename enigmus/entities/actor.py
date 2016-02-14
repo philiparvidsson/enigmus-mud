@@ -6,6 +6,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+from core               import lang
 from entities.entity    import BaseEntity
 from entities.item      import Item
 from entities.container import Container
@@ -23,7 +24,12 @@ class BaseActor(BaseEntity):
         super(BaseActor, self).__init__()
 
         self.inventory = Inventory(10, self)
+        self.sex       = 'male'
+        self.wearables = []
 
+        self.on_message('actor_drop'    , self.__actor_drop)
+        self.on_message('actor_give'    , self.__actor_give)
+        self.on_message('actor_go'      , self.__actor_go)
         self.on_message('entity_cleanup', self.__entity_cleanup)
 
     def drop(self, item, container=None):
@@ -42,9 +48,7 @@ class BaseActor(BaseEntity):
         if not container:
             container = self.container
 
-        container.add_entity(item)
         self.post_message('actor_drop', self, container, item)
-
         return True
 
     def find_matches(self, text, keep_scores=False):
@@ -58,8 +62,18 @@ class BaseActor(BaseEntity):
 
         return [x[1] for x in matches]
 
-    def emote(self, verb, noun=None):
-        self.post_message('actor_emote', self, verb, noun)
+    def emote(self, *args):
+        self.post_message('actor_emote', self, args)
+
+    def get_long_description(self):
+        desc = super(BaseActor, self).get_long_description()
+
+        if len(self.wearables) > 0:
+            wearable_descs = [x.get_description() for x in self.wearables]
+            # {} is wearing {}.
+            desc += '\n' + lang.sentence('{} har {} på sig.', lang.sex(self.sex), lang.list(wearable_descs))
+
+        return desc
 
     def give(self, actor, item):
         """ Gives the specified item to the specified actor.
@@ -72,10 +86,7 @@ class BaseActor(BaseEntity):
 
         if item.container != self.inventory: return False
 
-        self.inventory.remove_entity(item)
-        actor.inventory.add_entity(item)
         self.post_message('actor_give', self, actor, item)
-
         return True
 
     def go(self, direction):
@@ -86,20 +97,13 @@ class BaseActor(BaseEntity):
             :returns: True if the room was exited successfully.
         """
 
+
         room = self.container
 
         #if not isinstance(room, Room): return False # TODO: Circular dependency.
         if direction not in room.exits: return False
 
-        exit     = room.exits[direction]
-        new_room = exit[0]
-
-        room.remove_entity(self)
-        self.post_message('actor_leave', self, room, exit[1])
-
-        new_room.add_entity(self)
-        self.post_message('actor_enter', self, new_room, exit[2])
-
+        self.post_message('actor_go', direction)
         return True
 
     def match(self, text):
@@ -142,6 +146,25 @@ class BaseActor(BaseEntity):
         return True
 
     # ------- MESSAGES -------
+
+    def __actor_drop(self, actor, container, item):
+        container.add_entity(item)
+
+    def __actor_give(giver, receiver, item):
+        self.inventory.remove_entity(item)
+        actor.inventory.add_entity(item)
+
+    def __actor_go(self, direction):
+        room = self.container
+
+        exit     = room.exits[direction]
+        new_room = exit[0]
+
+        room.remove_entity(self)
+        self.post_message('actor_leave', self, room, exit[1])
+
+        new_room.add_entity(self)
+        self.post_message('actor_enter', self, new_room, exit[2])
 
     def __entity_cleanup(self):
         if not self.inventory:

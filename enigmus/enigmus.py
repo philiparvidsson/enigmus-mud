@@ -192,9 +192,9 @@ def run():
     load_commands()
     load_actors()
 
-    while instance.tick(1.0/5.0):
+    while instance.tick(1.0/30.0):
         console.update()
-        time.sleep(1.0/5.0)
+        time.sleep(1.0/30.0)
 
     instance.cleanup()
 
@@ -243,7 +243,7 @@ def load_data(lines, indent_level=0):
 
             while len(text) > 0:
                 text       = lines.pop(0).strip()
-                detail[1] += text + ' '
+                detail[1] += ' ' + text
 
             data['details'].append((detail[0].strip(), detail[1].strip()))
         elif text.startswith('#'):
@@ -289,7 +289,21 @@ def load_script(filename):
 
         return script_module
 
+def load_scripts():
+    for filename in os.listdir('data/rooms'):
+        if not filename.endswith('.py'):
+            continue
+
+        load_script(filename)
+
 def create_entity(data):
+    # TODO: This shit should be another function.
+    if isinstance(data, basestring):
+        a = data.split(':')
+        b = load_script(a[0])
+        c = getattr(b, a[1])
+        return c()
+
     class_ = None
 
     if 'script' in data:
@@ -300,8 +314,9 @@ def create_entity(data):
             script_module = load_script(script_name)
             class_        = getattr(script_module, class_name)
         else:
-            if   data['script'][0] == 'container': class_ = Container
-            elif data['script'][0] == 'item'     : class_ = Item
+            if   data['script'][0] == 'container'    : class_ = Container
+            elif data['script'][0] == 'containeritem': class_ = ContainerItem
+            elif data['script'][0] == 'item'         : class_ = Item
     else:
         # No script specified means it's a room without script.
         class_ = BaseRoom
@@ -322,10 +337,14 @@ def create_entity(data):
         entity.detail(detail_data[0], detail_data[1])
 
     for entity_data in data['entities']:
+        e = create_entity(entity_data)
         if isinstance(entity, BaseActor):
-            entity.inventory.add_entity(create_entity(entity_data))
+            if isinstance(e, WearableItem):
+                entity.wearables.append(e)
+            else:
+                entity.inventory.add_entity(e)
         else:
-            entity.add_entity(create_entity(entity_data))
+            entity.add_entity(e)
 
     return entity
 

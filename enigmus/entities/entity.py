@@ -125,9 +125,15 @@ class BaseEntity(object):
         adjectives = [adjective for adjective in desc[1]]
         noun       = desc[2][0]
 
-        s = '{} {} {}'.format(article, ' '.join(adjectives), noun)
+        if len(adjectives) > 0:
+            s = '{} {} {}'.format(article, ' '.join(adjectives), noun)
+        else:
+            s = '{} {}'.format(article, noun)
 
         return s
+
+    def get_long_description(self):
+        return self.long_description
 
     def handle_message(self, target, msg, args):
         """ Handles the specified message if it has been subscribed to by the
@@ -274,7 +280,7 @@ class BaseEntity(object):
 
         self.post_message('entity_tick', dt)
 
-    def timer(self, func, interval, repeat=1):
+    def timer(self, func, interval, args=None, repeat=1):
         """  Creates a timer.
 
              :param func:     The timeout function.
@@ -282,7 +288,7 @@ class BaseEntity(object):
              :param repeat:   The number of repetitions.
         """
 
-        self.timers.append(Timer(func, interval, repeat))
+        self.timers.append(Timer(args, func, interval, repeat))
 
     # ------- MESSAGES -------
 
@@ -332,7 +338,7 @@ class Detail(BaseEntity):
 class Timer(object):
     """  Represents an entity timer. """
 
-    def __init__(self, func, interval, repeat):
+    def __init__(self, args, func, interval, repeat):
         """  Initializes the timer.
 
              :param func:     The timeout function.
@@ -340,6 +346,7 @@ class Timer(object):
              :param repeat:   The number of repetitions.
          """
 
+        self.args     = args
         self.finished = False
         self.func     = func
         self.interval = interval
@@ -357,7 +364,10 @@ class Timer(object):
         if self.time > 0.0:
             return
 
-        self.func()
+        if self.args:
+            self.func(*self.args)
+        else:
+            self.func()
 
         self.time = self.interval
 
