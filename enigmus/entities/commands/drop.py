@@ -60,7 +60,7 @@ class DropCommand(BaseEntity):
             container = player.find_best_match(' '.join(args[i+1:]))
 
             if not container or not isinstance(container, Container):
-                player.send('Släng i vad?')
+                player.text('Släng i vad?')
                 return
 
             args = args[:i]
@@ -69,7 +69,7 @@ class DropCommand(BaseEntity):
 
         if len(items) == 0 or (len(items) == 1 and items[0] == container):
             # Drop what?
-            player.send('Släng vadå?')
+            player.text('Släng vadå?')
             return
 
         for item in items:

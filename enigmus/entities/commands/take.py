@@ -71,7 +71,7 @@ class TakeCommand(BaseEntity):
 
             if not container or not isinstance(container, Container):
                 # Take from what?
-                player.send('Ta från vad?')
+                player.text('Ta från vad?')
                 return
 
             args = args[:i]
@@ -80,7 +80,7 @@ class TakeCommand(BaseEntity):
 
         if len(items) == 0:
             # Take what?
-            player.send('Ta vad?')
+            player.text('Ta vad?')
             return
 
         for item in items:

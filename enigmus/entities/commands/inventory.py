@@ -38,11 +38,11 @@ class InventoryCommand(BaseEntity):
 
         if player.inventory.is_empty():
             # You don't have anything.
-            player.send('Du har ingenting.')
+            player.text('Du har ingenting.')
             return
 
         inventory = player.inventory.entities
         items     = lang.list([x.get_description() for x in inventory])
 
         # You have: {}
-        player.send('Du har: {}'.format(items))
+        player.text('Du har: {}'.format(items))

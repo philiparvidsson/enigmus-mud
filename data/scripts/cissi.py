@@ -30,8 +30,8 @@ class Cissi(BaseActor):
 
         self.wearables.append(enigmus.create_entity('glasses.py:Glasses'))
 
-        #self.on_message('container_add', self.__container_add,
-        #    filter=messages.for_nearby_entities(self))
+        self.on_message('container_add', self.__container_add,
+            filter=messages.for_nearby_entities(self))
 
     def push_player_out(self, player):
         if player.container != self.container:

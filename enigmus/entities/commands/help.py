@@ -31,7 +31,7 @@ class HelpCommand(BaseEntity):
         if command != 'hjälp':
             return
 
-        player.send('''
+        player.text('''
 Skriv säg <text> för att säga något till andra spelare:
   säg hej, hur går det?
 

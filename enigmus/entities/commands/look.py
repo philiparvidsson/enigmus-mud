@@ -42,7 +42,7 @@ class LookCommand(BaseEntity):
             return
 
         if len(args) == 1:
-            player.send(player.container.get_description(exclude_actor=player))
+            player.text(player.container.get_description(exclude_actor=player))
             return
 
         args        = args[1:]
@@ -67,20 +67,20 @@ class LookCommand(BaseEntity):
 
         if not entity:
             # Look at/in what?
-            player.send('Titta {} vad?'.format('i' if look_inside else 'på'))
+            player.text('Titta {} vad?'.format('i' if look_inside else 'på'))
             return
 
         if look_inside:
             if len(entity.entities) == 0:
                 # {} is empty.
-                player.send(lang.sentence('{} är tom.', entity.get_description(indefinite=False)))
+                player.text(lang.sentence('{} är tom.', entity.get_description(indefinite=False)))
                 return
 
             s = lang.list([x.get_description() for x in entity.entities])
             # {} contains: {}
-            player.send(lang.sentence('{} innehåller: {}', entity.get_description(indefinite=False), s))
+            player.text(lang.sentence('{} innehåller: {}', entity.get_description(indefinite=False), s))
             return
 
         if not isinstance(entity, Detail):
-            player.send(lang.sentence(entity.get_description()))
-        player.send(entity.get_long_description())
+            player.text(lang.sentence(entity.get_description()))
+        player.text(entity.get_long_description())

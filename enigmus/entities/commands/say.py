@@ -55,7 +55,7 @@ class SayCommand(BaseEntity):
 
         if len(text) == 0:
             # Say what?
-            player.send('Säg vadå?')
+            player.text('Säg vadå?')
             return
 
         player.say(text)

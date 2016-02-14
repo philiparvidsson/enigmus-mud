@@ -125,12 +125,13 @@ class BaseEntity(object):
         adjectives = [adjective for adjective in desc[1]]
         noun       = desc[2][0]
 
-        if len(adjectives) > 0:
-            s = '{} {} {}'.format(article, ' '.join(adjectives), noun)
-        else:
-            s = '{} {}'.format(article, noun)
 
-        return s
+        if len(adjectives) > 0:
+            s = '{0} {1} {2}' if len(article) > 0 else '{1} {2}'
+        else:
+            s = '{0} {2}' if len(article) > 0 else '{2}'
+
+        return s.format(article, ' '.join(adjectives), noun)
 
     def get_long_description(self):
         return self.long_description

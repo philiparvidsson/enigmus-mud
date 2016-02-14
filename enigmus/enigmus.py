@@ -17,6 +17,7 @@ from entities.commands.look  import LookCommand
 from entities.commands.quit  import QuitCommand
 from entities.commands.emotes  import EmoteHandler
 from entities.commands.help  import HelpCommand
+from entities.commands.wear  import WearCommand
 #from entities.commands.emote  import KissCommand
 from entities.entity        import BaseEntity
 from entities.item        import Item
@@ -209,6 +210,7 @@ def load_commands():
     GiveCommand()
     QuitCommand()
     HelpCommand()
+    WearCommand()
 
 def load_room(s):
     lines = s.replace('\r', '').split('\n')

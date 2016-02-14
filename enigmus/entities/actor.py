@@ -27,9 +27,11 @@ class BaseActor(BaseEntity):
         self.sex       = 'male'
         self.wearables = []
 
-        self.on_message('actor_drop'    , self.__actor_drop)
-        self.on_message('actor_give'    , self.__actor_give)
-        self.on_message('actor_go'      , self.__actor_go)
+        self.on_message('actor_drop'    , self.__actor_drop    )
+        self.on_message('actor_give'    , self.__actor_give    )
+        self.on_message('actor_go'      , self.__actor_go      )
+        self.on_message('actor_remove'  , self.__actor_remove  )
+        self.on_message('actor_wear'    , self.__actor_wear    )
         self.on_message('entity_cleanup', self.__entity_cleanup)
 
     def drop(self, item, container=None):
@@ -119,6 +121,12 @@ class BaseActor(BaseEntity):
 
         return super(BaseActor, self).match(text)
 
+    def remove(self, wearable):
+        if not wearable in self.wearables: return False
+
+        self.post_message('actor_remove', self, wearable)
+        return True
+
     def say(self, text):
         """ Says the specified text.
 
@@ -145,6 +153,13 @@ class BaseActor(BaseEntity):
 
         return True
 
+    def wear(self, wearable):
+        if wearable.container != self.inventory: return False
+        if wearable in self.wearables          : return False
+
+        self.post_message('actor_wear', self, wearable)
+        return True
+
     # ------- MESSAGES -------
 
     def __actor_drop(self, actor, container, item):
@@ -165,6 +180,14 @@ class BaseActor(BaseEntity):
 
         new_room.add_entity(self)
         self.post_message('actor_enter', self, new_room, exit[2])
+
+    def __actor_remove(self, actor, wearable):
+        self.wearables.remove(wearable)
+        self.inventory.add_entity(wearable)
+
+    def __actor_wear(self, actor, wearable):
+        self.inventory.remove_entity(wearable)
+        self.wearables.append(wearable)
 
     def __entity_cleanup(self):
         if not self.inventory:

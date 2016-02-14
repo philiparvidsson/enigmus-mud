@@ -49,7 +49,7 @@ class GiveCommand(BaseEntity):
 
         if i == -1:
             # Give what?
-            player.send('Ge vad?')
+            player.text('Ge vad?')
             return
 
         item_desc  = ' '.join(args[:i]  )
@@ -60,14 +60,14 @@ class GiveCommand(BaseEntity):
 
         if not item:
             # Give what?
-            player.send('Ge vad?')
+            player.text('Ge vad?')
             return
 
         item_desc = item.get_description(indefinite=False)
 
         if not actor or actor == player or not isinstance(actor, BaseActor):
             # Give {} to who?
-            player.send('Ge {} till vem?'.format(item_desc))
+            player.text('Ge {} till vem?'.format(item_desc))
             return
 
         player.give(actor, item)

@@ -40,16 +40,16 @@ class GoCommand(BaseEntity):
         actor_desc = actor.get_description()
         for player in room.get_entities(Player):
             if player == actor:
-                player.send(room.get_description(exclude_actor=player))
+                player.text(room.get_description(exclude_actor=player))
             else:
                 # {} comes {}.
-                player.send(lang.sentence('{} kommer {}.', actor_desc, exit))
+                player.text(lang.sentence('{} kommer {}.', actor_desc, exit))
 
     def __actor_leave(self, actor, room, exit):
         actor_desc = actor.get_description(indefinite=False)
         for player in room.get_entities(Player):
             # {} left {}.
-            player.send(lang.sentence('{} gick {}.', actor_desc, exit))
+            player.text(lang.sentence('{} gick {}.', actor_desc, exit))
 
     def __player_command(self, player, command):
         if not player.container:
@@ -85,4 +85,4 @@ class GoCommand(BaseEntity):
         # go
         if args[0] == 'gå':
             # Go where?
-            player.send('Gå vart?')
+            player.text('Gå vart?')
