@@ -11,7 +11,7 @@ from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
-from entities.room          import Room
+from entities.room          import BaseRoom
 
 #-----------------------------------------------------------
 # CLASSES
@@ -91,7 +91,7 @@ class EmoteHandler(BaseEntity):
     def __actor_emote(self, actor, verb, noun):
         room = actor.container
 
-        if not room or not isinstance(room, Room):
+        if not room or not isinstance(room, BaseRoom):
             return
 
         noun_desc = noun.get_description(indefinite=False) if noun else None

@@ -17,13 +17,13 @@ from entities.item      import Item
 # CLASSES
 #-----------------------------------------------------------
 
-class Room(Container):
+class BaseRoom(Container):
     """ Represents a room with entities. """
 
     def __init__(self):
         """ Initializes the room. """
 
-        super(Room, self).__init__()
+        super(BaseRoom, self).__init__()
 
         self.description = '<{} is missing a description.>'.format(self.id)
         self.exits       = {}
@@ -38,7 +38,7 @@ class Room(Container):
                       in the room and any items in it.
         """
 
-        room_desc  = lang.sentence(super(Room, self).get_description())
+        room_desc  = lang.sentence(super(BaseRoom, self).get_description())
         exits_desc = lang.list(self.exits.keys()) if len(self.exits) > 0 else 0
 
         # {}\nExits: {}

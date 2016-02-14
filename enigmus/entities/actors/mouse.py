@@ -11,7 +11,7 @@ from entities.entity import BaseEntity
 from entities.actor import BaseActor
 from entities.actors.player import Player
 from entities.item import Item
-from entities.room import Room
+from entities.room import BaseRoom
 
 import random
 

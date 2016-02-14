@@ -11,7 +11,7 @@ from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
-from entities.room          import Room
+from entities.room          import BaseRoom
 
 #-----------------------------------------------------------
 # CLASSES
@@ -56,7 +56,7 @@ class GoCommand(BaseEntity):
             return
 
         room = player.container
-        if not isinstance(room, Room):
+        if not isinstance(room, BaseRoom):
             return
 
         args      = command.split(' ')

@@ -8,7 +8,7 @@ import enigmus
 
 from core                      import messages
 from entities.actor import BaseActor
-from entities.room       import Room
+from entities.room       import BaseRoom
 
 #-----------------------------------------------------------
 # CONSTANTS
@@ -161,7 +161,7 @@ class LoggingInState(State):
             self.player.description = self.player.name
             self.player.state       = PlayingState(self.player)
 
-            enigmus.instance.entities['Room_1'].add_entity(self.player)
+            enigmus.rooms['room1'].add_entity(self.player)
             self.player.send(self.player.container.get_description(exclude_actor=self.player))
 
 class PlayingState(State):

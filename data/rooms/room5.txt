@@ -1,12 +1,38 @@
-Du står i en stor ljussal. Taket är säkert femton meter upp och av glas så att man ser himlen. Väggarna är vita, golvet är av svart laminat. Salen är fylld av trästolar och träbord som förmodligen är tänkta att ätas vid. Längst upp på ena väggen är flera fönster som leder in i andra rum i byggnaden. Rummen ser mörka och små ut härifrån. På den andra väggen kan du se en klocka. En öppen dörr med en skylt på leder in i ett annat rum.
+Du står i en stor ljussal. Taket är säkert femton meter upp och av glas så att
+man ser himlen. Väggarna är vita, golvet är av svart laminat. Salen är fylld av
+trästolar och träbord som förmodligen är tänkta att ätas vid. Längst upp på ena
+väggen är flera fönster som leder in i andra rum i byggnaden. Rummen ser mörka
+och små ut härifrån. På den andra väggen kan du se en klocka. En öppen dörr med
+en skylt på leder in i ett annat rum.
 
-! en klocka: Det sitter en stor, gammaldags klocka ett par meter upp på väggen. Det är en gammal skolklocka. Den verkar ha stannat på 13:37. Lustigt!
-! ett fönster: Taket är mycket högt upp och av glas. Det är inte plant, utan format i flera små pyramider. Du förmodar tanken är att glastaket ska släppa in mycket ljus, men himlen utanför är så pass grå och mörk att belysningen ändå är ganska dov. Jösses, vilken mulen dag.
-! bord: Det är flera runda bord i rummet med stolar placerade runt dem.
-! stolar: Stolarna är noggrant placerade runt alla borden. En av stolarna står lite snett. Du undrar om någon använt den nyligen. Hmm...
-! rum: Rummen är i en annan del av byggnaden, men du kan skymta dem härifrån genom fönstrena längst upp på den ena väggen. Det är svårt att se in i dem eftersom de är så mörka. I ett av fönstrena tycker du dig kunna skymta ett ansikte som tittar ner på dig, men du får för dig att det bara är inbillning - att det egentligen bara är en kruka eller liknande som står i fönstret.
-! ett ansikte: I ett av fönstrena tycker du dig skymta ett ansikte. Det är helt orörligt och ser ut att stirra rätt ner i salen. Riktigt obehagligt!
-! en skylt: På skylten står det: "Värm din mat här!
+! en klocka:   Det sitter en stor, gammaldags klocka ett par meter upp på
+               väggen.
+               Det är en gammal skolklocka. Den verkar ha stannat på 13:37.
+               Lustigt!
+
+! ett fönster: Taket är mycket högt upp och av glas. Det är inte plant, utan
+               format i flera små pyramider. Du förmodar tanken är att
+               glastaket ska släppa in mycket ljus, men himlen utanför är så
+               pass grå och mörk att belysningen ändå är ganska dov. Jösses,
+               vilken mulen dag.
+
+! bord:        Det är flera runda bord i rummet med stolar placerade runt dem.
+
+! stolar:      Stolarna är noggrant placerade runt alla borden. En av stolarna
+               står lite snett. Du undrar om någon använt den nyligen. Hmm...
+
+! rum:         Rummen är i en annan del av byggnaden, men du kan skymta dem
+               härifrån genom fönstrena längst upp på den ena väggen. Det är
+               svårt att se in i dem eftersom de är så mörka. I ett av
+               fönstrena tycker du dig kunna skymta ett ansikte som tittar ner
+               på dig, men du får för dig att det bara är inbillning - att det
+               egentligen bara är en kruka eller liknande som står i fönstret.
+
+! ett ansikte: I ett av fönstrena tycker du dig skymta ett ansikte. Det är helt
+               orörligt och ser ut att stirra rätt ner i salen. Riktigt
+               obehagligt!
+
+! en skylt:    På skylten står det: "Värm din mat här!
 
 # norr  room6
 # öster room4

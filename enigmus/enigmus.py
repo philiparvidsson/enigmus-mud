@@ -22,8 +22,9 @@ from entities.entity        import BaseEntity
 from entities.item        import Item
 from entities.container        import Container
 from entities.container        import ContainerItem
+from entities.actor import BaseActor
 from entities.actors.player import Player
-from entities.room           import Room
+from entities.room           import BaseRoom
 from network.server         import TcpServer
 
 import time
@@ -32,6 +33,8 @@ import time
 # GLOBALS
 #-----------------------------------------------------------
 
+rooms          = {}
+entity_classes = {}
 instance = None
 
 #-----------------------------------------------------------
@@ -205,48 +208,101 @@ def load_commands():
     QuitCommand()
     HelpCommand()
 
-def load_room(data):
-    room  = {}
-    data  = data.replace('\r', '')
-    lines = data.split('\n')
+def load_room(s):
+    lines = s.replace('\r', '').split('\n')
+    return load_data(lines)
 
-    room['description'] = ''
-    room['details'    ] = []
-    room['exits'      ] = []
+def load_data(lines, indent_level=0):
+    data = {}
 
-    i = 0
-    while i < len(lines):
-        s = lines[i].strip()
-        i += 1
+    data['attributes'] = []
+    data['long_desc' ] = ''
+    data['details'   ] = []
+    data['entities'  ] = []
+    data['exits'     ] = []
 
-        if s.startswith('!'):
-            detail = s[1:].strip().split(':', 1)
+    while len(lines) > 0:
+        text = lines[0]
 
-            while s != '':
-                s = lines[i].strip()
-                i += 1
-                detail[1] += s + ' '
+        if len(text) > 0 and not text.startswith('    ' * indent_level):
+            return data
 
-            room['details'].append([detail[0].strip(), detail[1].strip()])
-            pass
-        elif s.startswith('#'):
-            exit = s[1:].strip().split(' ', 1)
-            room['exits'].append([exit[0].strip(), exit[1].strip()])
-            pass
+        text = text[4*indent_level:].strip()
+
+        lines.pop(0)
+
+        if text.startswith('@'):
+            data['script'] = text[1:].strip()
+        elif text.startswith('%'):
+            attribute = text[1:].split(':', 1)
+            data['attributes'].append((attribute[0].strip(), attribute[1].strip()))
+        elif text.startswith('!'):
+            detail = text[1:].strip().split(':', 1)
+
+            while len(text) > 0:
+                text       = lines.pop(0).strip()
+                detail[1] += text + ' '
+
+            data['details'].append((detail[0].strip(), detail[1].strip()))
+        elif text.startswith('#'):
+            exit = text[1:].strip().split(' ', 1)
+            data['exits'].append((exit[0].strip(), exit[1].strip()))
+        elif text.startswith('$'):
+            class_name = text[1:].strip()
+            indef_desc = [x for x in lines.pop(0).strip().split(' ') if x != '']
+            def_desc   = [x for x in lines.pop(0).strip().split(' ') if x != '']
+
+            entity_data = load_data(lines, indent_level+1)
+
+            entity_data['class'     ] = class_name
+            entity_data['indef_desc'] = (indef_desc[0], indef_desc[1].split('|'), indef_desc[2].split('|'))
+            entity_data['def_desc'  ] = (def_desc[0], def_desc[1].split('|'), def_desc[2].split('|'))
+
+            data['entities'].append(entity_data)
         else:
-            if len(s) > 0:
-                room['description'] += s + ' '
+            if len(text) > 0:
+                data['long_desc'] += text + ' '
 
-    room['description'] = room['description'].strip()
+    data['long_desc'] = data['long_desc'].strip()
 
-    return room
+    return data
+
+def create_entity(data):
+    if isinstance(data['class'], basestring):
+        class_ = entity_classes[data['class']]
+    else:
+        class_ = data['class']
+
+    entity = class_()
+
+    if 'def_desc' in data and 'indef_desc' in data:
+        def_desc   = data['def_desc'  ]
+        indef_desc = data['indef_desc']
+
+        entity.describe(indef_desc[0], indef_desc[1], indef_desc[2],
+                        def_desc  [0],   def_desc[1],   def_desc[2],
+                        data['long_desc'])
+    else:
+        entity.describe(data['long_desc'])
+
+    for detail_data in data['details']:
+        entity.detail(detail_data[0], detail_data[1])
+
+    for entity_data in data['entities']:
+        if isinstance(entity, BaseActor):
+            entity.inventory.add_entity(create_entity(entity_data))
+        else:
+            entity.add_entity(create_entity(entity_data))
+
+    return entity
 
 def load_rooms():
     import os
     import imp
     import json
 
-    rooms = {}
+    entity_classes['container'] = Container
+    entity_classes['item']      = Item
 
     #-----------------------------------
     # 1. Load rooms
@@ -262,33 +318,34 @@ def load_rooms():
         with open(filename) as room_file:
             room_data = load_room(room_file.read())
 
-        room              = Room()
-        room.data         = room_data
-        room.data['name'] = room_name
-        rooms[room_name]  = room
+        room_data['name'] = room_name
+        rooms[room_name]  = room_data
 
     #-----------------------------------
-    # 2. Setup rooms
+    # 2. Setup rooms, entitites etc.
+    #-----------------------------------
+
+    for room_name, room_data in rooms.items():
+        room_data['class'] = BaseRoom
+
+        if 'script' in room_data:
+            script_name = room_data['script']
+            script_name = '_script' + script_name[:script_name.index('.py')]
+            script_module = imp.load_source(script_name, 'data/scripts/' + room_data['script'])
+            print 'loaded script', room_data['script']
+            room_data['class'] = script_module.Room
+
+        room = create_entity(room_data)
+        room.data = room_data
+        rooms[room_name] = room
+
+    #-----------------------------------
+    # 3. Setup exits.
     #-----------------------------------
 
     for room in rooms.values():
-        room.describe(room.data['description'])
-
-        for detail in room.data['details']:
-            room.detail(detail[0],
-                        detail[1])
-
-        for exit in room.data['exits']:
-            room.add_exit(      exit[0],
-                          rooms[exit[1]])
-
-        script_name = room.data['name'] + '_script'
-        script_file = 'data/rooms/' + room.data['name'] + '.py'
-
-        if os.path.isfile(script_file):
-            script_module = imp.load_source(script_name, script_file)
-            script_module.room = room
-            script_module.init()
+        for exit_data in room.data['exits']:
+            room.add_exit(exit_data[0], rooms[exit_data[1]])
 
         del room.data
 
@@ -330,7 +387,7 @@ def load_rooms():
     room2.on_message('container_add', lol)'''
     return
 
-    room1 = rooms['room1']
+    '''room1 = rooms['room1']
     room2 = Room()
     room3 = Room()
     room4 = Room()
@@ -396,7 +453,7 @@ def load_rooms():
                   room6, 'söder', 'ut ur rummet' , 'ut ur rummet')
 
     connect_rooms(room7, 'ut' , 'ut från datasalen', 'in genom glasdörrarna',
-                  room3)
+                  room3)'''
 
 def load_actors():
     '''from entities.actors.mouse import Mouse
