@@ -34,7 +34,8 @@ class EmoteHandler(BaseEntity):
         self.emotes = {
             'peka' : self.point,
             'pussa': self.kiss,
-            'vinka': self.wave
+            'vinka': self.wave,
+            'dansa': self.dance,
         }
 
     def kiss(self, player, args):
@@ -66,6 +67,73 @@ class EmoteHandler(BaseEntity):
 
         # points at
         player.emote('pekar på', entity)
+
+    def dance(self, player, args):
+        if len(args) == 0:
+            # dances
+            player.emote('dansar en glad svängom med Herman, den osynlige kompisen')
+            return
+
+        if args[0] == 'med':
+            args = args[1:]
+            entity = player.container.find_best_match(' '.join(args))
+            if not entity or entity == player:
+                # Dance with what?
+                player.send('Dansa med vem?')
+                return
+
+            player.emote('dansar livligt med', entity)
+
+        def handle_tango(args):
+            if len(args) == 0:
+                player.emote('dansar en het tango')
+                return
+
+            if args[0] == 'med':
+                args = args[1:]
+                entity = player.container.find_best_match(' '.join(args))
+                if not entity or entity == player:
+                    # Dance with what?
+                    player.send('Dansa med vem?')
+                    return
+
+                player.emote('dansar tango med', entity, 'så det svänger')
+
+        def handle_kalinka(args):
+            if len(args) == 0:
+                player.emote('nynnar på Rysk folkmusik och dansar kalinka med framgång')
+                return
+
+            if args[0] == 'med':
+                args = args[1:]
+                entity = player.container.find_best_match(' '.join(args))
+                if not entity or entity == player:
+                    # Dance with what?
+                    player.send('Dansa med vem?')
+                    return
+
+                player.emote('dansar kalinka framför', entity, 'som säkert undrar vad det ska vara bra för')
+
+        def handle_bugg(args):
+            if len(args) == 0:
+                player.emote('tar en bugg själv på dansgolvet')
+                return
+
+            if args[0] == 'med':
+                args = args[1:]
+                entity = player.container.find_best_match(' '.join(args))
+                if not entity or entity == player:
+                    # Dance with what?
+                    player.send('Dansa med vem?')
+                    return
+
+                player.emote('svänger lös med en uppfriskande bugg med', entity)
+
+        dances = {'bugg', 'tango', 'kalinka'}
+        if args[0] in dances:
+            if   args[0] == 'bugg'   : handle_bugg(args[1:])
+            elif args[0] == 'tango'  : handle_tango(args[1:])
+            elif args[0] == 'kalinka': handle_kalinka(args[1:])
 
     def wave(self, player, args):
         if len(args) == 0:
