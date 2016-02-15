@@ -18,13 +18,13 @@ import random
 # CLASSES
 #-----------------------------------------------------------
 
-class EmoteHandler(BaseEntity):
+class Emotes(BaseEntity):
     """ Entity for handling emotes. """
 
     def __init__(self):
         """ Initializes the emote handler. """
 
-        super(EmoteHandler, self).__init__()
+        super(Emotes, self).__init__()
 
         self.on_message('actor_emote', self.__actor_emote,
             filter=messages.for_entities_of_class(BaseActor))

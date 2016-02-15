@@ -17,13 +17,13 @@ from entities.entity        import BaseEntity
 # CLASSES
 #-----------------------------------------------------------
 
-class DropCommand(BaseEntity):
+class Command(BaseEntity):
     """ Command entity for handling the drop command. """
 
     def __init__(self):
         """ Initializes the command. """
 
-        super(DropCommand, self).__init__()
+        super(Command, self).__init__()
 
         self.on_message('actor_drop', self.__actor_drop,
             filter=messages.for_entities_of_class(BaseActor))

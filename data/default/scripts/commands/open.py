@@ -1,6 +1,6 @@
 # coding=utf-8
 
-""" Provides the close command handler. """
+""" Provides the open command handler. """
 
 #-----------------------------------------------------------
 # IMPORTS
@@ -17,13 +17,13 @@ from entities.entity        import BaseEntity
 # CLASSES
 #-----------------------------------------------------------
 
-class CloseCommand(BaseEntity):
-    """ Command entity for handling the close command. """
+class Command(BaseEntity):
+    """ Command entity for handling the open command. """
 
     def __init__(self):
         """ Initializes the command. """
 
-        super(CloseCommand, self).__init__()
+        super(Command, self).__init__()
 
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(Player))
@@ -38,8 +38,8 @@ class CloseCommand(BaseEntity):
         command = args[0]
         args    = args[1:]
 
-        # close
-        if command != 'stäng':
+        # open
+        if command != 'öppna':
             return
 
         s = ' '.join(args)
@@ -49,15 +49,15 @@ class CloseCommand(BaseEntity):
             container = player.container.find_best_match(s)
 
         if not container or not isinstance(container, Container):
-            # Close what?
-            player.text('Stäng vad?')
+            # Open what?
+            player.text('Öppna vad?')
             return
 
-        if not container.is_open:
-            # {} is already closed.
-            player.text(lang.sentence('{} är redan stängd.', container.get_description(indefinite=False)))
+        if container.is_open:
+            # {} is already open.
+            player.text(lang.sentence('{} är redan öppen.', container.get_description(indefinite=False)))
             return
 
-        container.close()
-        # closed
-        player.emote('stängde', container)
+        container.open()
+        # opened
+        player.emote('öppnade', container)

@@ -18,13 +18,13 @@ from entities.entity        import Detail
 # CLASSES
 #-----------------------------------------------------------
 
-class TakeCommand(BaseEntity):
+class Command(BaseEntity):
     """ Command entity for handling the take command. """
 
     def __init__(self):
         """ Initializes the command. """
 
-        super(TakeCommand, self).__init__()
+        super(Command, self).__init__()
 
         self.on_message('actor_take', self.__actor_take,
             filter=messages.for_entities_of_class(BaseActor))

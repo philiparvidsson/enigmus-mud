@@ -15,13 +15,13 @@ from entities.entity        import BaseEntity
 # CLASSES
 #-----------------------------------------------------------
 
-class GiveCommand(BaseEntity):
+class Command(BaseEntity):
     """ Command entity for handling the give command. """
 
     def __init__(self):
         """ Initializes the command. """
 
-        super(GiveCommand, self).__init__()
+        super(Command, self).__init__()
 
         self.on_message('actor_give', self.__actor_give,
             filter=messages.for_entities_of_class(BaseActor))

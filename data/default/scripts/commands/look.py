@@ -18,13 +18,13 @@ from entities.container     import Container
 # CLASSES
 #-----------------------------------------------------------
 
-class LookCommand(BaseEntity):
+class Command(BaseEntity):
     """ Command entity for handling the look command. """
 
     def __init__(self):
         """ Initializes the command. """
 
-        super(LookCommand, self).__init__()
+        super(Command, self).__init__()
 
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(Player))

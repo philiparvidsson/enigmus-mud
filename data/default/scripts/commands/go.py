@@ -17,13 +17,13 @@ from entities.room          import BaseRoom
 # CLASSES
 #-----------------------------------------------------------
 
-class GoCommand(BaseEntity):
+class Command(BaseEntity):
     """ Command entity for handling the go command. """
 
     def __init__(self):
         """ Initializes the command. """
 
-        super(GoCommand, self).__init__()
+        super(Command, self).__init__()
 
         self.on_message('actor_enter', self.__actor_enter,
             filter=messages.for_entities_of_class(BaseActor))

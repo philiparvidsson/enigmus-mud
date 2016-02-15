@@ -1,1 +1,33 @@
 @ _global.py:Global
+
+:: Special commands.
+
+$ commands/help.py:Command
+$ commands/quit.py:Command
+
+:: Commands for interacting with the room.
+
+$ commands/go.py:Command
+
+:: Social commands for communication.
+
+$ commands/emotes.py:Emotes
+$ commands/say.py:Command
+$ commands/shout.py:Command
+
+:: Inventory commands for item management.
+
+$ commands/give.py:Command
+$ commands/inventory.py:Command
+$ commands/drop.py:Command
+$ commands/take.py:Command
+
+:: Commands for interacting with containers.
+
+$ commands/look.py:Command
+$ commands/close.py:Command
+$ commands/open.py:Command
+
+:: Commands for handling equipment.
+
+$ commands/wear.py:Command

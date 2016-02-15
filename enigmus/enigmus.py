@@ -7,21 +7,7 @@
 from cli                    import console
 from core                    import messages
 from core                   import log
-from entities.commands.say  import SayCommand
-from entities.commands.go  import GoCommand
-from entities.commands.take  import TakeCommand
-from entities.commands.drop  import DropCommand
-from entities.commands.inventory  import InventoryCommand
-from entities.commands.give  import GiveCommand
-from entities.commands.look  import LookCommand
-from entities.commands.quit  import QuitCommand
-from entities.commands.emotes  import EmoteHandler
-from entities.commands.shout  import ShoutCommand
-from entities.commands.help  import HelpCommand
-from entities.commands.open  import OpenCommand
-from entities.commands.close  import CloseCommand
-from entities.commands.wear  import WearCommand
-#from entities.commands.emote  import KissCommand
+
 from entities.entity        import BaseEntity
 from entities.item        import Item
 from entities.container        import Container
@@ -194,10 +180,8 @@ def run():
     instance.init()
     console.init()
 
-    load_scripts()
+    #load_scripts()
     load_rooms()
-    load_commands()
-    load_actors()
 
     while instance.tick(1.0/30.0):
         console.update()
@@ -205,21 +189,6 @@ def run():
 
     instance.cleanup()
 
-def load_commands():
-    EmoteHandler()
-    SayCommand()
-    GoCommand()
-    TakeCommand()
-    DropCommand()
-    InventoryCommand()
-    LookCommand()
-    GiveCommand()
-    QuitCommand()
-    HelpCommand()
-    WearCommand()
-    ShoutCommand()
-    OpenCommand()
-    CloseCommand()
 
 def load_room(s):
     lines = s.replace('\r', '').split('\n')
@@ -237,6 +206,10 @@ def load_data(lines, indent_level=0):
     while len(lines) > 0:
         text = lines[0]
 
+        if text.startswith('::') or text.strip().startswith('::'):
+            lines.pop(0)
+            continue
+
         if len(text) > 0 and not text.startswith('    ' * indent_level):
             return data
 
@@ -252,6 +225,11 @@ def load_data(lines, indent_level=0):
 
                 while len(text) > 0:
                     text = lines[0].strip()
+
+                    if text.startswith('::') or text.strip().startswith('::'):
+                        lines.pop(0)
+                        continue
+
                     if not text.startswith('%'):
                         break
 
@@ -266,6 +244,10 @@ def load_data(lines, indent_level=0):
             detail = text[1:].strip().split(':', 1)
 
             while len(text) > 0:
+                if text.startswith('::') or text.strip().startswith('::'):
+                    lines.pop(0)
+                    continue
+
                 text       = lines.pop(0).strip()
                 detail[1] += ' ' + text
 
@@ -433,122 +415,3 @@ def load_rooms():
             room.add_exit(exit_data[0], rooms[exit_data[1]])
 
         del room.data
-
-    ''' room1 = Room()
-    room2 = Room()
-    room3 = Room()
-    room4 = Room()
-
-    room1.describe('Du står i ett konstigt rum. Det är inrett på ett homosexuellt vis. Du känner dig SOM hemma. Förbannat som hemma. Dessutom hänger det en sexgunga i taket.')
-    room1.detail('ett tak', 'Det är ett vitt tak. Det hänger en sexgunga i det.')
-    room1.detail('en sexgunga', 'En sexgunga i svartläder. Där stjärten planceras sitter det en dildo. Det ser ut som man kan ha riktigt trevligt här. Om man är bög. Och det är du. En bög. Japp.')
-
-    room2.describe('Du finner dig själv i en liten trädgård med en fontän. Solen lyser på den blå himlen. Inifrån hörs glad bögmusik spelas. Någon kanske tittar på Melodifestivalen? Även dörren till köket (som går rätt ut, vad fan?) är öppen.')
-    room2.detail('en fontän', 'Det är en liten, vit marmorfontän. Jävlar vad den sprutar. Den får dig att tänka snuskiga tankar, så du slutar genast titta på den och låtsas som ingenting.')
-    room2.detail('solen', 'Den lyser utav bara helvete.')
-
-    room3.describe('Du är nu i köket. Köket borde vara fullt av kvinnor som lagar mat, men spisen är avstängd och rummet fyllas av en ljuv tystnad.')
-    room3.detail('tystnad', 'Det är helt jävla knäpptyst. Inte ett luder som kacklar. Fyfan vad skönt, tänker du.')
-
-    room4.describe('Skamvrån. Vad gör du här? Vad skäms du för? En tanke slår dig; det kanske är du som är Bögen med stort B. Någon har ristat in en text på väggen.')
-    room4.detail('en text', 'Någon har ristat in text på väggen med ett vasst föremål. Det står: "DEN SOM LÄSER DETTA ÄR GAY"')
-
-    connect_rooms(room1, 'ut', 'ut', 'ut',
-                  room2, 'in', 'in', 'in')
-
-    connect_rooms(room1, 'kök',  'in i köket' , 'in från hallen',
-                  room3, 'hall', 'ut i hallen', 'ut från köket')
-
-    connect_rooms(room3, 'vrå'     , 'in i skamvrån'   , 'in från köket',
-                  room4, 'tillbaka', 'ut från skamvrån', 'in från skamvrån')
-
-    connect_rooms(room3, 'ut' , 'ut i trädgården' , 'ut från hallen',
-                  room2, 'kök', 'in i köket'      , 'in från trändgården')
-
-
-    def lol(room, entity):
-        for e in room1.get_entities(Player):
-            e.send('Det låter som att någon går runt i trädgården.')
-    room2.on_message('container_add', lol)'''
-    return
-
-    '''room1 = rooms['room1']
-    room2 = Room()
-    room3 = Room()
-    room4 = Room()
-    room5 = Room()
-    room6 = Room()
-    room7 = Room()
-
-    #room1.describe('Du befinner dig i en stor entrésal. Taket är flera meter högt upp, golvet är av svart laminat och väggarna är vitmålade. En tavla sitter på väggen framför dig, och till vänster sitter några TV-skärmar på väggen och flimrar. Rakt fram fortsätter salen mot en korridor, även den med lika högt i tak. Till höger finns glasdörrar som går in till ett trapphus.')
-    #room1.detail('skärmar', 'Skärmarna flimrar och visar bara brus för tillfället.')
-    #room1.detail('en tavla', 'Det ser ut som ett inglasat diplom av något slag. Det finns lite text på tavlan, men den går inte att läsa. Du känner däremot att du har koll på hur man tittar föremål. Det känns väl bra?')
-    #room1.detail('en text', 'Texten på tavlan är svårläst. Du kan inte riktigt tyda den.')
-    #room1.detail('ett trapphus', 'Innanför glasdörren syns ett trapphus. Du kan gå dit om du vill.')
-
-
-
-    room6.describe('')
-    room6.detail('en micro', '')
-    room6.detail('matrester', '')
-
-    room7.describe('')
-    room7.detail('datorer', '')
-
-    trashcan = Container()
-    trashcan.describe('en' , ['svart'] , ['soptunna' , 'tunna'],
-                      'den', ['svarta'], ['soptunnan', 'tunnan'],
-                      'Soptunnan är rund och svart. Den är gjord av billig glansig plast och verkar ganska ömtålig för att vara soptunna. Trots det förefaller den fylla sin funktion eftersom man åtminstone kan stoppa saker i den.')
-    room7.add_entity(trashcan)
-
-    note = Item()
-    note.describe('en' , ['gul' ], ['lapp', 'lappar' ],
-                  'den', ['gula'], ['lappen'         ],
-                  'En liten skrynklig lapp som någon försökt göra sig av med en gång i tiden. På lappen står det skrivet med stora siffror: "4973"')
-
-    tissue = Item()
-    tissue.describe('en' , ['äcklig' ], ['näsduk'  ],
-                    'den', ['äckliga'], ['näsduken'],
-                    'En ihopskrynklad vit pappersnäsduk. Tänk om någon har snytit sig i den? Usch!')
-
-    trashcan = Container()
-    #trashcan.takeable = False
-    trashcan.describe('en' , ['svart'] , ['soptunna' , 'tunna'],
-                      'den', ['svarta'], ['soptunnan', 'tunnan'],
-                      'Soptunnan är rund och svart. Den är gjord av billig glansig plast och verkar ganska ömtålig för att vara soptunna. Trots det förefaller den fylla sin funktion eftersom man åtminstone kan stoppa saker i den.')
-
-    trashcan.add_entity(note)
-    trashcan.add_entity(tissue)
-
-    backpack = ContainerItem()
-    backpack.describe('en' , ['grå'], ['ryggsäck'  ],
-                      'den', ['grå'], ['ryggsäcken'],
-                      'Det är en grå ryggsäck.')
-
-    room2.add_entity(backpack)
-    room6.add_entity(trashcan)
-
-    #connect_rooms(room1, 'norr' , 'norrut' , 'söderifrån',
-    #              room3, 'söder', 'söderut', 'norrifrån')
-
-    #connect_rooms(room1, 'öster' , 'österut' , 'västerifrån',
-    #              room2, 'väster', 'västerut', 'österifrån')
-
-    connect_rooms(room5, 'norr' , 'in i rummet', 'in i rummet',
-                  room6, 'söder', 'ut ur rummet' , 'ut ur rummet')
-
-    connect_rooms(room7, 'ut' , 'ut från datasalen', 'in genom glasdörrarna',
-                  room3)'''
-
-def load_actors():
-    '''from entities.actors.mouse import Mouse
-    from entities.actors.mouse import Flashlight
-    from entities.actors.mouse import MattPresent
-    mouse = Mouse()
-    get_entity('Room_1').add_entity(mouse)
-
-    fl = Flashlight()
-    get_entity('Room_2').add_entity(fl)
-
-    mp = MattPresent()
-    get_entity('Room_4').add_entity(mp)'''

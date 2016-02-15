@@ -16,15 +16,15 @@ from entities.entity        import BaseEntity
 # CLASSES
 #-----------------------------------------------------------
 
-class SayCommand(BaseEntity):
+class Command(BaseEntity):
     """ Command entity for handling the say command. """
 
     def __init__(self):
         """ Initializes the command. """
 
-        super(SayCommand, self).__init__()
+        super(Command, self).__init__()
 
-        self.on_message('actor_say', self.__actor_say,
+        self.on_message('actor_shout', self.__actor_shout,
             filter=messages.for_entities_of_class(BaseActor))
 
         self.on_message('player_command', self.__player_command,
@@ -32,30 +32,30 @@ class SayCommand(BaseEntity):
 
     # ------- MESSAGES -------
 
-    def __actor_say(self, actor, sentence):
+    def __actor_shout(self, actor, sentence):
         # says "{}"
-        actor.emote('säger "{}"'.format(sentence))
+        actor.emote('skriker "{}"'.format(sentence.upper()))
 
     def __player_command(self, player, command):
-        # say
-        if command.find('\'') != 0 and command.find('säg') != 0:
+        # shout
+        if command.find('S') != 0 and command.find('skrik') != 0:
             return
 
         text = command
 
-        i = text.find('\'')
+        i = text.find('S')
         if i == 0:
             # '
             text = text[1:]
         else:
-            # say
+            # skrik
             text = text[5:]
 
         text = text.strip()
 
         if len(text) == 0:
-            # Say what?
-            player.text('Säg vadå?')
+            # Shout what?
+            player.text('Skrik vadå?')
             return
 
-        player.say(text)
+        player.shout(text)
