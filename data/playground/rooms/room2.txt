@@ -1,0 +1,12 @@
+Du finner dig själv i en liten trädgård med en fontän. Solen lyser på den blå himlen. Inifrån hörs glad bögmusik spelas. Någon kanske tittar på Melodifestivalen? Även dörren till köket (som går rätt ut, vad fan?) är öppen.
+
+! en fontän: Det är en liten, vit marmorfontän. Jävlar vad den sprutar. Den får
+             dig att tänka snuskiga tankar, så du slutar genast titta på den
+             och låtsas som ingenting.
+
+! solen:     Den lyser utav bara helvete.
+
+# kök room3
+# in  room1
+
+$ items/flashlight.py:Flashlight

@@ -317,7 +317,7 @@ def load_script(filename):
         if script_name in scripts:
             return scripts[script_name]
 
-        script_module = imp.load_source(script_name, 'data/scripts/' + filename)
+        script_module = imp.load_source(script_name, 'data/default/scripts/' + filename)
         scripts[script_name] = script_module
 
         print 'loaded script', filename
@@ -325,7 +325,7 @@ def load_script(filename):
         return script_module
 
 def load_scripts():
-    for filename in os.listdir('data/scripts'):
+    for filename in os.listdir('data/default/scripts'):
         if not filename.endswith('.py'):
             continue
 
@@ -402,12 +402,12 @@ def load_rooms():
     # 1. Load rooms
     #-----------------------------------
 
-    for filename in os.listdir('data/rooms'):
+    for filename in os.listdir('data/default/rooms'):
         if not filename.endswith('.txt'):
             continue
 
         room_name = filename[:filename.find('.txt')]
-        filename  = 'data/rooms/' + filename
+        filename  = 'data/default/rooms/' + filename
 
         with open(filename) as room_file:
             room_data = load_room(room_file.read())

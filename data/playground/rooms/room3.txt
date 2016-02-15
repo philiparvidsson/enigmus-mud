@@ -1,0 +1,9 @@
+Du är nu i köket. Köket borde vara fullt av kvinnor som lagar mat, men spisen
+är avstängd och rummet fyllas av en ljuv tystnad.
+
+! tystnad: Det är helt jävla knäpptyst. Inte ett luder som kacklar. Fyfan vad
+           skönt, tänker du.
+
+# hall room1
+# ut  room2
+# vrå  room4

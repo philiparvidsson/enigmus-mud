@@ -1,0 +1,9 @@
+Skamvrån. Vad gör du här? Vad skäms du för? En tanke slår dig; det kanske är du
+som är Bögen med stort B. Någon har ristat in en text på väggen.
+
+! en text: Någon har ristat in text på väggen med ett vasst föremål. Det står:
+           "DEN SOM LÄSER DETTA ÄR GAY"
+
+# tillbaka room3
+
+$ items/mattpresent.py:MattPresent

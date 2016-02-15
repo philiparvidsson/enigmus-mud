@@ -1,0 +1,13 @@
+Du står i ett konstigt rum. Det är inrett på ett homosexuellt vis. Du känner
+dig SOM hemma. Förbannat som hemma. Dessutom hänger det en sexgunga i taket.
+
+! en sexunga: En sexgunga i svartläder. Där stjärten planceras sitter det en
+              dildo. Det ser ut som man kan ha riktigt trevligt här. Om man är
+              bög. Och det är du. En bög. Japp.
+
+! ett tak:    Det är ett vitt tak. Det hänger en sexgunga i det.
+
+# kök room3
+# ut  room2
+
+$ actors/mouse.py:Mouse

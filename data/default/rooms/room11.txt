@@ -24,6 +24,8 @@ skrivbord.
 ! papper:        En bunt med papper ligger på skrivbordet. De är fyllda med
                  anteckningar och klotter.
 
+# norr room10
+
 $ container
     en översta skrivbordslåda|låda
     den översta skrivbordslådan|lådan
@@ -49,5 +51,3 @@ $ container
     en nedersta skrivbordslåda|låda
     den nedersta skrivbordslådan|lådan
     Detta är den nedersta skrivbordslådan.
-
-# norr room10
