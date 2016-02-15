@@ -17,9 +17,9 @@ $ commands/shout.py:Command
 
 :: Inventory commands for item management.
 
+$ commands/drop.py:Command
 $ commands/give.py:Command
 $ commands/inventory.py:Command
-$ commands/drop.py:Command
 $ commands/take.py:Command
 
 :: Commands for interacting with containers.
