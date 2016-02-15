@@ -12,7 +12,6 @@ from entities.actor         import BaseActor
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
 from entities.room          import BaseRoom
-import enigmus
 import random
 
 #-----------------------------------------------------------
@@ -65,10 +64,7 @@ class EmoteHandler(BaseEntity):
                         '*KAH-TISH*',
                     ])
 
-                for agent in enigmus.instance.players:
-                    if not agent.container:
-                        continue
-
+                for agent in player.room.get_entities(Player):
                     agent.text(s)
 
                 player.emote('smiskar', entity, 'hårt som fan! Det här måste handla om en fetish')
