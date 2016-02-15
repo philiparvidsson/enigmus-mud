@@ -30,5 +30,5 @@ class Item(BaseEntity):
 
 
 class WearableItem(Item):
-    """ Represents an item in the game. """
+    """ Represents a wearable item in the game. """
     pass

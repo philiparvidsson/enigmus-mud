@@ -28,7 +28,7 @@ class Cissi(BaseActor):
                       'snäll och trevlig ut, men något med hennes hållning '
                       'ger dig en stark känsla av pondus.')
 
-        self.wearables.append(enigmus.create_entity('glasses.py:Glasses'))
+        #self.wearables.append(enigmus.create_entity('glasses.py:Glasses'))
 
         self.on_message('actor_give', self.__actor_give,
             filter=messages.for_nearby_entities(self))
@@ -46,7 +46,7 @@ class Cissi(BaseActor):
         book = book[0]
         key  = key[0]
 
-        self.say('Du! Gör mig en tjänst! Gå upp till mitt kontoret och lägg boken i mitt skåp')
+        self.say('Du! Gör mig en tjänst! Gå upp till mitt kontor och lägg boken i mitt skåp')
         self.give(player, book)
         self.give(player, key)
 
@@ -65,7 +65,7 @@ class Cissi(BaseActor):
         if not has_book:
             return
 
-        r = random.randint(0, 8)
+        r = random.randint(0, 7)
 
         if   r == 0: self.emote('sätter fingret på en sida i boken och ser väldigt fundersam ut.')
         elif r == 1:
@@ -77,7 +77,7 @@ class Cissi(BaseActor):
         elif r == 5: self.emote('gör en fundersam min.')
         elif r == 6: self.emote('sätter pekfingret mot glasögonen och skjuter dem intill näsan.')
 
-        r = random.randint(0, 1)
+        r = random.randint(0, 2)
         if r == 0:
             self.say(random.choice([
                 'Hah, här står det ju om red-black trees!',
@@ -90,19 +90,27 @@ class Cissi(BaseActor):
                 'Här kan man ju läsa om massa spännande algoritmer!'
             ]))
 
-        self.timer(self.read_book, random.uniform(15.0, 25.0))
+        self.timer(self.read_book, random.uniform(7.0, 21.0))
 
     def __actor_give(self, giver, receiver, item):
         if receiver != self:
             return
 
+        def give_back():
+            self.give(giver, item)
+
+
         if not hasattr(item, 'cissi_wants_it'):
             self.say('Det där joxet vill jag inte ha!')
-            def give_back(): self.give(giver, item)
             self.timer(give_back, 0.5)
             return
 
         def react():
+            if not any(hasattr(e, 'quest_item') for e in self.inventory.entities):
+                self.say('Lägg den i mitt skåp säger jag!')
+                self.timer(give_back, 0.5)
+                return
+
             self.say('Hmmm..! Vad spännande!')
             self.emote('bläddrar i', item)
             self.timer(self.read_book, random.uniform(3.0, 7.0))

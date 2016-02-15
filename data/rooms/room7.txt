@@ -6,18 +6,9 @@ lysrör som sitter i taket. En soptunna står vid väggen bredvid dig.
 
 # ut room3
 
-$ trashcan.py:Trashcan
+$ actors/cissi.py:Cissi
 
-    $ item
-        en vit näsduk
-        den vita näsduken
-        Det är en vit, skrynklig näsduk. Äckligt, tänk om någon har snytit sig
-        i den!
-
-    $ notebook.py:Notebook
-    $ notebook.py:Pen
-
-$ cissi.py:Cissi
+    $ wearables/glasses.py:Glasses
 
     $ item
         en nyckel|nycklar
@@ -27,3 +18,14 @@ $ cissi.py:Cissi
         särskilt spännande.
 
         % quest_item: true
+
+$ containers/trashcan.py:Trashcan
+
+    $ item
+        en vit näsduk
+        den vita näsduken
+        Det är en vit, skrynklig näsduk. Äckligt, tänk om någon har snytit sig
+        i den!
+
+    $ items/notebook.py:Notebook
+    $ items/notebook.py:Pen

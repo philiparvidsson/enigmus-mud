@@ -43,7 +43,7 @@ $ container
     Det är en bokhylla i trä. Den ser alldaglig, tråkig och billig ut. Du får
     för dig att den är till för att ställa böcker i.
 
-    $ algorithmbook.py:AlgorithmBook
+    $ items/algorithmbook.py:AlgorithmBook
 
     $ item
         en blå bok|böcker

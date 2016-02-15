@@ -7,21 +7,34 @@
 import enigmus
 
 from core                   import messages
+from entities.entity        import BaseEntity
 from entities.actors.player import Player
 from entities.room          import BaseRoom
+
+import random
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Room3(BaseRoom):
+class DoorCode(BaseEntity):
     def __init__(self):
-        super(Room3, self).__init__()
+        super(DoorCode, self).__init__()
 
-        self.on_message('player_command', self.enter_code,
-            filter=messages.for_entities_in(self))
+        # Set from room file.
+        self.code = ''
+        self.room = ''
 
-    def enter_code(self, player, command):
+        self.describe('ett', [], ['kodlås'  , 'lås'  ],
+                      ''   , [], ['kodlåset', 'låset'],
+                      'Det är en liten kodterminal för att trycka in koder '
+                      'med. Du förmodar att dörrarna till datasalen låses upp '
+                      'om man trycker in rätt kod.')
+
+        self.on_message('player_command', self.__player_command,
+            filter=messages.for_nearby_entities(self))
+
+    def __player_command(self, player, command):
         args = command.split(' ')
 
         if args[0] != 'tryck':
@@ -39,10 +52,11 @@ class Room3(BaseRoom):
 
         player.emote('slår in en kod.')
 
-        player.text('*beep* *boop* *bip* piper terminalen när du trycker på '
-                    'knapparna och slår in koden {}'.format(code))
+        beeps = random.sample(['*beep*', '*bzzzt*', '*boop*', '*bip*', '*BEEP*'], min(4, len(code)))
+        player.text('{} piper terminalen när du trycker på '
+                    'knapparna och slår in koden {}'.format(' '.join(beeps), code))
 
-        if code != '4973':
+        if code != self.code:
             player.text('Ingenting händer.')
             return
 
@@ -54,7 +68,7 @@ class Room3(BaseRoom):
         player.emote('går in i datasalen.')
         player.text('Glasdörrarna slår igen bakom dig.')
 
-        enigmus.rooms['room7'].add_entity(player)
+        enigmus.rooms[self.room].add_entity(player)
         player.text(player.container.get_description(exclude_actor=player))
 
         for p in room.get_entities(Player):

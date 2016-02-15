@@ -246,6 +246,19 @@ def load_data(lines, indent_level=0):
 
         if text.startswith('@'):
             data['script'] = text[1:].strip().split(':')
+
+            if lines[0].startswith('    %'):
+                data['attributes'] = []
+
+                while len(text) > 0:
+                    text = lines[0].strip()
+                    if not text.startswith('%'):
+                        break
+
+                    attribute = text[1:].split(':', 1)
+                    data['attributes'].append([attribute[0].strip(), attribute[1].strip()])
+                    lines.pop(0)
+
         elif text.startswith('%'):
             attribute = text[1:].split(':', 1)
             data['attributes'].append((attribute[0].strip(), attribute[1].strip()))

@@ -1,5 +1,3 @@
-@ room3.py:Room3
-
 Du står i en korridor. Bredvid dig finns en datasal med glasdörrar. Dörrarna är
 låsta med ett litet kodlås. Framför dig ser du trappor som leder en våning upp.
 Det finns även toaletter i närheten för den som behöver uträtta sina behov.
@@ -7,12 +5,13 @@ Det finns även toaletter i närheten för den som behöver uträtta sina behov.
 ! en datasal: Du ser rätt in i datasalen som ligger innanför glasdörrarna. Om
               du bara kunde låsa upp dörren på något vis...
 
-! ett kodlås: Det är en liten kodterminal för att trycka in koder med. Du
-              förmodar att dörrarna till datasalen låses upp om man trycker in
-              rätt kod.
-
 ! toaletter:  En dörr leder in till toaletterna. Du kan gå in om du behöver
               uträtta dina behov.
 
 # söder room1
 # upp   room4
+
+$ special/doorcode.py:DoorCode
+
+    % code: "4973"
+    % room: "room7"

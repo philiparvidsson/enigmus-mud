@@ -30,6 +30,6 @@ class Global(BaseRoom):
                 '*BANG BANNNNGG* Rummet blixtrar till och fönstrena skallrar av den höga smällen.'
             ])
 
-            #player.text(s)
+            #player.text(self.s)
 
         #self.timer(self.thunder, random.uniform(20.0, 90.0))
