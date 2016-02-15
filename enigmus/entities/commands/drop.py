@@ -57,7 +57,11 @@ class DropCommand(BaseEntity):
         # in
         i = args.index('i') if 'i' in args else -1
         if i >= 0:
-            container = player.find_best_match(' '.join(args[i+1:]))
+            s = ' '.join(args[i+1:])
+            container = player.find_best_match(s)
+
+            if not container:
+                container = player.container.find_best_match(s)
 
             if not container or not isinstance(container, Container):
                 player.text('Släng i vad?')
@@ -73,5 +77,10 @@ class DropCommand(BaseEntity):
             return
 
         for item in items:
+            if item in player.wearables:
+                # Remove {} first.
+                player.text('Ta av dig {} först.'.format(item.get_description(indefinite=False)))
+                continue
+
             if item != container:
                 player.drop(item, container)

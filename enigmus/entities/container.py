@@ -9,6 +9,7 @@
 from core            import log
 from entities.entity import BaseEntity
 from entities.item   import Item
+from entities.item   import WearableItem
 
 #-----------------------------------------------------------
 # CLASSES
@@ -121,3 +122,13 @@ class ContainerItem(Container, Item):
         """ Initializes the container item. """
 
         super(ContainerItem, self).__init__()
+
+#-------------------------------------------------------------------------------
+
+class WearableContainer(WearableItem, Container):
+    """ Represents a wearable item that can contain other entities. """
+
+    def __init__(self):
+        """ Initializes the wearable container. """
+
+        super(WearableContainer, self).__init__()

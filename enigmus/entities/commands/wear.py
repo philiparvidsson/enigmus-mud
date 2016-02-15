@@ -38,7 +38,7 @@ class WearCommand(BaseEntity):
 
     def __actor_remove(self, actor, wearable):
         # removed
-        actor.emote('tog av sig', wearable)
+        actor.emote('tog av', actor, wearable)
 
     def __actor_wear(self, actor, wearable):
         # wears
@@ -49,13 +49,23 @@ class WearCommand(BaseEntity):
         command = ' '.join(args[:2])
         args    = args[2:]
 
-        if command != 'ta på':
-            return
+        if command == 'ta på':
+            wearable = player.inventory.find_best_match(' '.join(args))
 
-        wearable = player.inventory.find_best_match(' '.join(args))
+            if not wearable:
+                player.text('Ta på dig vad?')
+                return
 
-        if not wearable:
-            player.text('Ta på dig vad?')
-            return
+            if not player.wear(wearable):
+                player.emote(player, 'försöker ta på', player, wearable, 'men misslyckas.')
 
-        player.wear(wearable)
+        elif command == 'ta av':
+            wearable = player.find_best_match(' '.join(args))
+
+            if not wearable:
+                player.text('Ta av dig vad?')
+                return
+
+            if not player.remove(wearable):
+                # You're unable to remove {}.
+                player.text('Du lyckas inte ta av dig {}.'.format(wearable.get_description(indefinite=False)))

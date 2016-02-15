@@ -4,7 +4,7 @@ Du befinner dig längst ned i ett trapphus. Väggarna är vita och trappan är g
 
 # väster room1
 
-$ containeritem
+$ wearablecontainer
     en  grå ryggsäck
     den grå ryggsäcken
     Det är en grå ryggsäck som man kan stoppa saker i.

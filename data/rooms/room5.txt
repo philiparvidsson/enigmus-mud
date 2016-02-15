@@ -36,3 +36,13 @@ en skylt på leder in i ett annat rum.
 
 # norr  room6
 # öster room4
+
+$ container
+    en bokhylla|hylla
+    bokhyllan|hyllan
+    Det är en bokhylla i trä. Den ser alldaglig, tråkig och billig ut. Du får
+    för dig att den är till för att ställa böcker i.
+
+    $ algorithmbook.py:AlgorithmBook
+
+        % cissi_wants_it: true

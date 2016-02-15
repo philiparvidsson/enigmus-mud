@@ -53,6 +53,10 @@ class TakeCommand(BaseEntity):
         if command != 'ta':
             return
 
+        # To prevent conflict with wear/remove.
+        if len(args) > 0 and (args[0] == 'på' or args[0] == 'av'):
+            return
+
         container = player.container
 
         # from

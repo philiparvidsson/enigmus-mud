@@ -24,6 +24,7 @@ from entities.entity        import BaseEntity
 from entities.item        import Item
 from entities.container        import Container
 from entities.container        import ContainerItem
+from entities.container        import WearableContainer
 from entities.actor import BaseActor
 from entities.actors.player import Player
 from entities.room           import BaseRoom
@@ -268,8 +269,19 @@ def load_data(lines, indent_level=0):
             entity_data['script'] = script_data
 
             if indef_desc is not None and def_desc is not None:
-                entity_data['indef_desc'] = (indef_desc[0], indef_desc[1].split('|'), indef_desc[2].split('|'))
-                entity_data['def_desc'  ] = (def_desc[0], def_desc[1].split('|'), def_desc[2].split('|'))
+                if len(indef_desc) == 3:
+                    entity_data['indef_desc'] = (indef_desc[0], indef_desc[1].split('|'), indef_desc[2].split('|'))
+                elif len(indef_desc) == 2:
+                    entity_data['indef_desc'] = (indef_desc[0], [], indef_desc[1].split('|'))
+                else:
+                    entity_data['indef_desc'] = ('', [], indef_desc[0].split('|'))
+
+                if len(def_desc) == 3:
+                    entity_data['def_desc'] = (def_desc[0], def_desc[1].split('|'), def_desc[2].split('|'))
+                elif len(def_desc) == 2:
+                    entity_data['def_desc'] = (def_desc[0], [], def_desc[1].split('|'))
+                else:
+                    entity_data['def_desc'] = ('', [], def_desc[0].split('|'))
 
             data['entities'].append(entity_data)
         else:
@@ -300,6 +312,11 @@ def load_scripts():
 
         load_script(filename)
 
+def get_entity_class(s):
+    a = s.split(':')
+    b = load_script(a[0])
+    return getattr(b, a[1])
+
 def create_entity(data):
     # TODO: This shit should be another function.
     if isinstance(data, basestring):
@@ -318,9 +335,10 @@ def create_entity(data):
             script_module = load_script(script_name)
             class_        = getattr(script_module, class_name)
         else:
-            if   data['script'][0] == 'container'    : class_ = Container
-            elif data['script'][0] == 'containeritem': class_ = ContainerItem
-            elif data['script'][0] == 'item'         : class_ = Item
+            if   data['script'][0] == 'container'        : class_ = Container
+            elif data['script'][0] == 'containeritem'    : class_ = ContainerItem
+            elif data['script'][0] == 'item'             : class_ = Item
+            elif data['script'][0] == 'wearablecontainer': class_ = WearableContainer
     else:
         # No script specified means it's a room without script.
         class_ = BaseRoom
@@ -349,6 +367,9 @@ def create_entity(data):
                 entity.inventory.add_entity(e)
         else:
             entity.add_entity(e)
+
+    for attribute_data in data['attributes']:
+        setattr(entity, attribute_data[0], attribute_data[1])
 
     return entity
 

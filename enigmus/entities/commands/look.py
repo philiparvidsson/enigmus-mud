@@ -8,6 +8,7 @@
 
 from core                   import lang
 from core                   import messages
+from entities.actor         import BaseActor
 from entities.actors.player import Player
 from entities.entity        import BaseEntity
 from entities.entity        import Detail
@@ -83,4 +84,8 @@ class LookCommand(BaseEntity):
 
         if not isinstance(entity, Detail):
             player.text(lang.sentence(entity.get_description()))
-        player.text(entity.get_long_description())
+
+        if isinstance(entity, BaseActor):
+            player.text(entity.get_long_description(observer=player))
+        else:
+            player.text(entity.get_long_description())

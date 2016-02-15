@@ -15,6 +15,27 @@ def list(items):
 
     return text
 
+def pronouns(observer, observed, *args):
+    s = ''
+
+    first_self  = True
+    first_other = True
+    for arg in args:
+        if isinstance(arg, basestring):
+            s += ' ' + arg
+            continue
+
+        if observer == observed:
+            a = ' du' if first_self else ' dig'
+            first_self = False
+            s += a if observed == arg else ' ' + arg.get_description(indefinite=True)
+        else:
+            a = ' ' + sex(observed.sex) if observed and first_other else ' sig'
+            first_other = False
+            s += a if observed == arg else ' ' + arg.get_description(indefinite=True)
+
+    return s.strip()
+
 def sentence(text, *args):
     text = text.format(*args)
     text = text[0].upper() + text[1:]

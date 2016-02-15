@@ -169,18 +169,21 @@ class EmoteHandler(BaseEntity):
         if not room or not isinstance(room, BaseRoom):
             return
 
+        #args = [actor] + list(args)
         for player in room.get_entities(Player):
             s = 'Du' if player == actor else actor.get_description()
 
             for arg in args:
                 if isinstance(arg, basestring):
                     s += ' ' + arg
-                else:
-                    if player == actor:
-                        s += ' dig' if arg == actor else ' ' + arg.get_description(indefinite=False)
-                    else:
-                        s += ' sig' if arg == actor else ' ' + arg.get_description(indefinite=False)
+                    continue
 
+                if player == actor:
+                    s += ' dig' if arg == actor else ' ' + arg.get_description(indefinite=False)
+                else:
+                    s += ' sig' if arg == actor else ' ' + arg.get_description(indefinite=False)
+
+            #s = lang.pronouns(player, actor, *args)
             player.send(lang.sentence(s))
 
     def __player_command(self, player, command):

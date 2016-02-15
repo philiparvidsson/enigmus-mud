@@ -9,6 +9,7 @@
 from core               import lang
 from entities.entity    import BaseEntity
 from entities.item      import Item
+from entities.item      import WearableItem
 from entities.container import Container
 
 #-----------------------------------------------------------
@@ -58,6 +59,11 @@ class BaseActor(BaseEntity):
 
         matches.extend(self.inventory.find_matches(text, keep_scores=True))
 
+        for wearable in self.wearables:
+            match = (wearable.match(text), wearable)
+            if match[0] > 0:
+                matches.append(match)
+
         matches = sorted(matches, key=lambda x: x[0], reverse=True)
         if keep_scores:
             return matches
@@ -67,13 +73,16 @@ class BaseActor(BaseEntity):
     def emote(self, *args):
         self.post_message('actor_emote', self, args)
 
-    def get_long_description(self):
+    def get_long_description(self, observer=None):
+        if not observer:
+            observer = self
+
         desc = super(BaseActor, self).get_long_description()
 
         if len(self.wearables) > 0:
             wearable_descs = [x.get_description() for x in self.wearables]
             # {} is wearing {}.
-            desc += '\n' + lang.sentence('{} har {} på sig.', lang.sex(self.sex), lang.list(wearable_descs))
+            desc += '\n' + lang.sentence(lang.pronouns(observer, self, self, 'har', lang.list(wearable_descs), 'på', self))
 
         return desc
 
@@ -86,7 +95,8 @@ class BaseActor(BaseEntity):
             :returns: True if the item was given successfully.
         """
 
-        if item.container != self.inventory: return False
+        if item.container != self.inventory : return False
+        if actor.container != self.container: return False
 
         self.post_message('actor_give', self, actor, item)
         return True
@@ -162,8 +172,9 @@ class BaseActor(BaseEntity):
         return True
 
     def wear(self, wearable):
-        if wearable.container != self.inventory: return False
-        if wearable in self.wearables          : return False
+        if wearable.container != self.inventory  : return False
+        if wearable in self.wearables            : return False
+        if not isinstance(wearable, WearableItem): return False
 
         self.post_message('actor_wear', self, wearable)
         return True
@@ -173,9 +184,9 @@ class BaseActor(BaseEntity):
     def __actor_drop(self, actor, container, item):
         container.add_entity(item)
 
-    def __actor_give(giver, receiver, item):
+    def __actor_give(self, giver, receiver, item):
         self.inventory.remove_entity(item)
-        actor.inventory.add_entity(item)
+        receiver.inventory.add_entity(item)
 
     def __actor_go(self, direction):
         room = self.container
