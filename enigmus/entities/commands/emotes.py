@@ -64,7 +64,7 @@ class EmoteHandler(BaseEntity):
                         '*KAH-TISH*',
                     ])
 
-                for agent in player.room.get_entities(Player):
+                for agent in player.container.get_entities(Player):
                     agent.text(s)
 
                 player.emote('smiskar', entity, 'hårt som fan! Det här måste handla om en fetish')
