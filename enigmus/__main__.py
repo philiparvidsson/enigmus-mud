@@ -18,4 +18,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         world = sys.argv[1]
 
-    enigmus.run()
+    enigmus.run(world)
