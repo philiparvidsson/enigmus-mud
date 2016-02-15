@@ -6,6 +6,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+from core                   import lang
 from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
@@ -76,6 +77,11 @@ class TakeCommand(BaseEntity):
             if not container or not isinstance(container, Container):
                 # Take from what?
                 player.text('Ta från vad?')
+                return
+
+            if not container.is_open:
+                # {} is closed!
+                player.text(lang.sentence('{} är stängd!', container.get_description(indefinite=False)))
                 return
 
             args = args[:i]

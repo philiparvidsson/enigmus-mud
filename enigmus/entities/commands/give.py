@@ -24,7 +24,7 @@ class GiveCommand(BaseEntity):
         super(GiveCommand, self).__init__()
 
         self.on_message('actor_give', self.__actor_give,
-            filter=messages.for_entities_of_class(Player))
+            filter=messages.for_entities_of_class(BaseActor))
 
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(Player))

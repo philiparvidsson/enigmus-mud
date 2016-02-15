@@ -24,6 +24,7 @@ class Container(BaseEntity):
         super(Container, self).__init__()
 
         self.entities = []
+        self.is_open  = True
 
         self.on_message('entity_cleanup'  , self.__entity_cleanup  )
 
@@ -43,6 +44,9 @@ class Container(BaseEntity):
         entity.container = self
         self.entities.append(entity)
         self.post_message('container_add', self, entity)
+
+    def close(self):
+        self.is_open = False
 
     def find_matches(self, text, keep_scores=False):
         matches = super(Container, self).find_matches(text, keep_scores=True)
@@ -84,6 +88,9 @@ class Container(BaseEntity):
         """
 
         return len(self.entities) == 0
+
+    def open(self):
+        self.is_open = True
 
     def remove_entity(self, entity):
         """ Removes the entity from the container.

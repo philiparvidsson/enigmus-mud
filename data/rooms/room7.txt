@@ -5,4 +5,11 @@ Du står i en datasal vid några glasdörrar. Datorer finns överallt, men alla 
 # ut room3
 
 $ trashcan.py:Trashcan
+
+    $ item
+        en vit näsduk
+        den vita näsduken
+        Det är en vit, skrynklig näsduk. Äckligt, tänk om någon har snytit sig
+        i den!
+
 $ cissi.py:Cissi

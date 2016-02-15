@@ -40,7 +40,8 @@ def sentence(text, *args):
     text = text.format(*args)
     text = text[0].upper() + text[1:]
 
-    if text[-1] != '.':
+    lc = text[-1]
+    if lc != '.' and lc != '!' and lc != '?':
         text += '.'
 
     return text

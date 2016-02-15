@@ -63,8 +63,13 @@ class LookCommand(BaseEntity):
         if not entity:
             entity = player.container.find_best_match(text)
 
-        if look_inside and not isinstance(entity, Container):
-            entity = None
+        if look_inside:
+            if not isinstance(entity, Container):
+                entity = None
+            elif not entity.is_open:
+                # {} is closed!
+                player.text(lang.sentence('{} är stängd!', entity.get_description(indefinite=False)))
+                return
 
         if not entity:
             # Look at/in what?

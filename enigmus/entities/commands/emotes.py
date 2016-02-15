@@ -175,9 +175,9 @@ class EmoteHandler(BaseEntity):
                     continue
 
                 if player == actor:
-                    s += ' dig' if arg == actor else ' ' + arg.get_description(indefinite=False)
+                    s += ' sig' if arg == player else ' ' + arg.get_description(indefinite=False)
                 else:
-                    s += ' sig' if arg == actor else ' ' + arg.get_description(indefinite=False)
+                    s += ' dig' if arg == player else ' ' + arg.get_description(indefinite=False)
 
             #s = lang.pronouns(player, actor, *args)
             player.send(lang.sentence(s))

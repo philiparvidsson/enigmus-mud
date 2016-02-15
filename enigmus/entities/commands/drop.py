@@ -6,6 +6,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+from core                   import lang
 from core                   import messages
 from entities.actor         import BaseActor
 from entities.actors.player import Player
@@ -65,6 +66,11 @@ class DropCommand(BaseEntity):
 
             if not container or not isinstance(container, Container):
                 player.text('Släng i vad?')
+                return
+
+            if not container.is_open:
+                # {} is closed!
+                player.text(lang.sentence('{} är stängd!', container.get_description(indefinite=False)))
                 return
 
             args = args[:i]

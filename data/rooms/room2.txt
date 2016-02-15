@@ -8,3 +8,5 @@ $ wearablecontainer
     en  grå ryggsäck
     den grå ryggsäcken
     Det är en grå ryggsäck som man kan stoppa saker i.
+
+    % is_open: false

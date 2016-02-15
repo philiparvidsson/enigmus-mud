@@ -46,16 +46,56 @@ class Cissi(BaseActor):
         self.emote('knuffar ut dig raskt från datasalen.')
         player.go('ut')
 
+    def read_book(self):
+        r = random.randint(0, 8)
+
+        if r == 0:
+            self.emote('sätter fingret på en sida i boken och ser väldigt fundersam ut.')
+        elif r == 1:
+            for player in self.container.get_entities(Player):
+                player.text('*frrrrrrrrrt!* låter det när Cissi bläddrar snabbt i boken.')
+        elif r == 2:
+            self.emote('nickar långsamt och läser i boken.')
+        elif r == 3:
+            self.emote('mumlar något ohörbart.')
+        elif r == 4:
+            self.emote('vippar tveksamt fram och tillbaka med huvudet.')
+        elif r == 5:
+            self.emote('gör en fundersam min.')
+        elif r == 6:
+            self.emote('sätter pekfingret mot glasögonen och skjuter dem intill näsan.')
+
+        r = random.randint(0, 1)
+        if r == 0:
+            self.say(random.choice([
+                'Hah, här står det ju om red-black trees!',
+                'Nä-nä-nä, det här stämmer inte. Här står det fel!',
+                'Nämen, Boyer-Moore! Var det inte den algoritmen Thires gillade så mycket?',
+                'Just precis! Quickhull *är* linjär för slumpmässiga punktsamlingar!',
+                'Det här måste vara den senaste utgåvan!',
+                'Får jag behålla den här boken?',
+                'Ja, jag säger då det. Det här blir min kvällslektyr framöver!',
+                'Här kan man ju läsa om massa spännande algoritmer!'
+            ]))
+
+        self.timer(self.read_book, random.uniform(15.0, 35.0))
+
     def __actor_give(self, giver, receiver, item):
+        if receiver != self:
+            return
+
         if not hasattr(item, 'cissi_wants_it'):
             self.say('Det där joxet vill jag inte ha!')
-            def give_back():
-                self.give(giver, item)
+            def give_back(): self.give(giver, item)
             self.timer(give_back, 0.5)
             return
 
-        self.say('Hmmm..! Vad spännande!')
-        self.emote('bläddrar i', item)
+        def react():
+            self.say('Hmmm..! Vad spännande!')
+            self.emote('bläddrar i', item)
+            self.timer(self.read_book, random.uniform(3.0, 7.0))
+
+        self.timer(react, 0.5)
 
     def __container_add(self, container, entity):
         if not isinstance(entity, Player):
@@ -75,4 +115,3 @@ class Cissi(BaseActor):
 
         self.say(s)
         self.timer(self.push_player_out, 0.2, args=[entity])
-

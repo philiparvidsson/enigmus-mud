@@ -7,7 +7,6 @@
 from cli                    import console
 from core                    import messages
 from core                   import log
-from entities.commands.shout  import ShoutCommand
 from entities.commands.say  import SayCommand
 from entities.commands.go  import GoCommand
 from entities.commands.take  import TakeCommand
@@ -17,7 +16,10 @@ from entities.commands.give  import GiveCommand
 from entities.commands.look  import LookCommand
 from entities.commands.quit  import QuitCommand
 from entities.commands.emotes  import EmoteHandler
+from entities.commands.shout  import ShoutCommand
 from entities.commands.help  import HelpCommand
+from entities.commands.open  import OpenCommand
+from entities.commands.close  import CloseCommand
 from entities.commands.wear  import WearCommand
 #from entities.commands.emote  import KissCommand
 from entities.entity        import BaseEntity
@@ -203,7 +205,6 @@ def run():
 
 def load_commands():
     EmoteHandler()
-    ShoutCommand()
     SayCommand()
     GoCommand()
     TakeCommand()
@@ -214,6 +215,9 @@ def load_commands():
     QuitCommand()
     HelpCommand()
     WearCommand()
+    ShoutCommand()
+    OpenCommand()
+    CloseCommand()
 
 def load_room(s):
     lines = s.replace('\r', '').split('\n')
@@ -369,7 +373,12 @@ def create_entity(data):
             entity.add_entity(e)
 
     for attribute_data in data['attributes']:
-        setattr(entity, attribute_data[0], attribute_data[1])
+        val = attribute_data[1]
+        if   val == 'false'                           : val = False
+        elif val == 'true'                            : val = True
+        elif val.startswith('"') and val.endswith('"'): val = val[1:-1]
+        else                                          : val = float(val)
+        setattr(entity, attribute_data[0], val)
 
     return entity
 
