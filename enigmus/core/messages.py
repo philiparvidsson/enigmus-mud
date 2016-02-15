@@ -3,12 +3,25 @@
 """ Provides various filters for receiving entity messages. """
 
 #-----------------------------------------------------------
+# IMPORTS
+#-----------------------------------------------------------
+
+#-----------------------------------------------------------
 # FUNCTIONS
 #-----------------------------------------------------------
 
 def all():
     """ Receives all messages. """
     return lambda target: True
+
+def for_actors_with_item(item):
+    def filter(target):
+        if not hasattr(target, 'inventory'):
+            return False
+
+        return target.inventory == item.container
+
+    return filter
 
 def for_entity(entity):
     """ Receives messages meant for the recipient.

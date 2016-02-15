@@ -1,0 +1,53 @@
+Du är i ett av rummen vars fönster syns från ljussalen. Det är mörkt i rummet
+förutom det ljus som lyser in genom fönstret ner mot ljussalen, vilket inte är
+särskilt mycket på grund av det mulna vädret. På en av väggarna finns en
+whiteboard-tavla med slarvigt ritade figurer och text. Överallt sitter papper
+med anteckningar fasthäftade på väggarna. Vid den ena väggen står ett
+skrivbord.
+
+! ett skrivbord: Det är ett träskrivbord med lådor. På skrivbordet ligger ett
+                 svart skrivbordsunderlag samt en pappersbunt och flera pennor.
+
+! whiteboard:    På whiteboard-tavlan finns fler figurer ritade i olika färger.
+                 Det här rummet måste tillhöra en person med väldigt mycket
+                 idéer!
+
+! figurer:       Vid en närmare titt ser du att figurerna i själva verket är
+                 geometriska former och matemtaiska tecken.
+
+! anteckningar:  Papper med anteckningar finns överallt. Både på väggarna och
+                 på skrivbordet. De är skrivna med en slarvig handstil och
+                 nästan omöjliga att läsa.
+
+! pennor:        Flera pennor i olika färger ligger på skrivbordet.
+
+! papper:        En bunt med papper ligger på skrivbordet. De är fyllda med
+                 anteckningar och klotter.
+
+$ container
+    en översta skrivbordslåda|låda
+    den översta skrivbordslådan|lådan
+    Detta är den översta skrivbordslådan.
+
+    $ item
+        en anteckning|lapp|lappar
+        anteckningen|lappen|lapparna
+        Anteckningen är svår att tyda, men med lite ansträngning lyckas du
+        läsa den. Det står: "Läs mer om quickhull, sidan 93 i boken."
+
+    $ item
+        en rosa lapp|lappar
+        den rosa lappen|lapparna
+        På lappen står det: "Ring Ulf"
+
+$ container
+    en mellersta skrivbordslåda|låda
+    den mellersta skrivbordslådan|lådan
+    Detta är den mellersta skrivbordslådan.
+
+$ container
+    en nedersta skrivbordslåda|låda
+    den nedersta skrivbordslådan|lådan
+    Detta är den nedersta skrivbordslådan.
+
+# norr room10

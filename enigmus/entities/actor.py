@@ -145,14 +145,6 @@ class BaseActor(BaseEntity):
 
         self.post_message('actor_say', self, text)
 
-    def shout(self, text):
-        """ Shouts the specified text.
-
-            :param text: The sentence to shout.
-        """
-
-        self.post_message('actor_shout', self, text)
-
     def take(self, item):
         """ Attempts to take the specified item.
 
@@ -223,17 +215,17 @@ class BaseActor(BaseEntity):
 class Inventory(Container):
     """ Represents an actor inventory. """
 
-    def __init__(self, owner, max_entities):
+    def __init__(self, actor, max_entities):
         """ Initializes the inventory.
 
-            :param owner:        The inventory owner.
+            :param actor:        The inventory owner.
             :param max_entities: The max number of entities allowed.
         """
 
         super(Inventory, self).__init__()
 
+        self.actor        = actor
         self.max_entities = max_entities
-        self.owner        = owner
 
         self.on_message('entity_cleanup', self.__entity_cleanup)
 

@@ -45,4 +45,16 @@ $ container
 
     $ algorithmbook.py:AlgorithmBook
 
-        % cissi_wants_it: true
+    $ item
+        en blå bok|böcker
+        den blå boken|böckerna
+        Den här boken handlar om genuskunskap och heter 'Snopp är likamed
+        snippa'. Du tänker att det inte är någon idé att öppna den eftersom du
+        inte känner för att bli korkad och bitter. Vem skulle kunna vara
+        intresserad av den? Författaren heter Maj-Björn Thorvaldsen.
+
+    $ item
+        en svart bok|böcker
+        den svarta boken|böckerna
+        En svart, fin bok med ett guldemblem på framsidan. Det är "Dynamisk
+        psykiatri" av Johan Cullberg. Mycket intressant!

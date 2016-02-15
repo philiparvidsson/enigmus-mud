@@ -1,4 +1,6 @@
-Du står i en datasal vid några glasdörrar. Datorer finns överallt, men alla verkar vara avstängda. Rummet är belyst av ett grönaktigt sken från alla de lysrör som sitter i taket. En soptunna står vid väggen bredvid dig.
+Du står i en datasal vid några glasdörrar. Datorer finns överallt, men alla
+verkar vara avstängda. Rummet är belyst av ett grönaktigt sken från alla de
+lysrör som sitter i taket. En soptunna står vid väggen bredvid dig.
 
 ! datorer: Datasalen är fylld med säkert femtio datorer.
 
@@ -12,4 +14,16 @@ $ trashcan.py:Trashcan
         Det är en vit, skrynklig näsduk. Äckligt, tänk om någon har snytit sig
         i den!
 
+    $ notebook.py:Notebook
+    $ notebook.py:Pen
+
 $ cissi.py:Cissi
+
+    $ item
+        en nyckel|nycklar
+        nyckeln|nycklarna
+        Det är en liten nyckel. Det ser ut som att man kan låsa upp ett lås med
+        den, förutsatt att nyckeln passar i låset. I övrigt är nyckeln inte
+        särskilt spännande.
+
+        % quest_item: true

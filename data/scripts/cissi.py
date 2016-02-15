@@ -36,6 +36,20 @@ class Cissi(BaseActor):
         self.on_message('container_add', self.__container_add,
             filter=messages.for_nearby_entities(self))
 
+    def give_key(self, player):
+        book = [x for x in self.inventory.entities if hasattr(x, 'cissi_wants_it')]
+        key  = [x for x in self.inventory.entities if hasattr(x, 'quest_item')]
+
+        if len(key) != 1 or len(book) != 1:
+            return
+
+        book = book[0]
+        key  = key[0]
+
+        self.say('Du! Gör mig en tjänst! Gå upp till mitt kontoret och lägg boken i mitt skåp')
+        self.give(player, book)
+        self.give(player, key)
+
     def push_player_out(self, player):
         if player.container != self.container:
             return
@@ -47,23 +61,21 @@ class Cissi(BaseActor):
         player.go('ut')
 
     def read_book(self):
+        has_book = len([x for x in self.inventory.entities if hasattr(x, 'cissi_wants_it')]) == 1
+        if not has_book:
+            return
+
         r = random.randint(0, 8)
 
-        if r == 0:
-            self.emote('sätter fingret på en sida i boken och ser väldigt fundersam ut.')
+        if   r == 0: self.emote('sätter fingret på en sida i boken och ser väldigt fundersam ut.')
         elif r == 1:
             for player in self.container.get_entities(Player):
                 player.text('*frrrrrrrrrt!* låter det när Cissi bläddrar snabbt i boken.')
-        elif r == 2:
-            self.emote('nickar långsamt och läser i boken.')
-        elif r == 3:
-            self.emote('mumlar något ohörbart.')
-        elif r == 4:
-            self.emote('vippar tveksamt fram och tillbaka med huvudet.')
-        elif r == 5:
-            self.emote('gör en fundersam min.')
-        elif r == 6:
-            self.emote('sätter pekfingret mot glasögonen och skjuter dem intill näsan.')
+        elif r == 2: self.emote('nickar långsamt och läser i boken.')
+        elif r == 3: self.emote('mumlar något ohörbart.')
+        elif r == 4: self.emote('vippar tveksamt fram och tillbaka med huvudet.')
+        elif r == 5: self.emote('gör en fundersam min.')
+        elif r == 6: self.emote('sätter pekfingret mot glasögonen och skjuter dem intill näsan.')
 
         r = random.randint(0, 1)
         if r == 0:
@@ -78,7 +90,7 @@ class Cissi(BaseActor):
                 'Här kan man ju läsa om massa spännande algoritmer!'
             ]))
 
-        self.timer(self.read_book, random.uniform(15.0, 35.0))
+        self.timer(self.read_book, random.uniform(15.0, 25.0))
 
     def __actor_give(self, giver, receiver, item):
         if receiver != self:
@@ -94,6 +106,7 @@ class Cissi(BaseActor):
             self.say('Hmmm..! Vad spännande!')
             self.emote('bläddrar i', item)
             self.timer(self.read_book, random.uniform(3.0, 7.0))
+            self.timer(self.give_key, random.uniform(40.0, 50.0), args=[giver])
 
         self.timer(react, 0.5)
 

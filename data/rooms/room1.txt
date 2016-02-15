@@ -18,3 +18,4 @@ finns glasdörrar som går in till ett trapphus.
 # öster room2
 
 $ glasses.py:Glasses
+$ petter.py:Petter

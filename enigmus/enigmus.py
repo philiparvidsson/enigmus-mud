@@ -27,6 +27,7 @@ from entities.item        import Item
 from entities.container        import Container
 from entities.container        import ContainerItem
 from entities.container        import WearableContainer
+from entities.container        import WearableItem
 from entities.actor import BaseActor
 from entities.actors.player import Player
 from entities.room           import BaseRoom
@@ -193,6 +194,7 @@ def run():
     instance.init()
     console.init()
 
+    load_scripts()
     load_rooms()
     load_commands()
     load_actors()
@@ -310,7 +312,7 @@ def load_script(filename):
         return script_module
 
 def load_scripts():
-    for filename in os.listdir('data/rooms'):
+    for filename in os.listdir('data/scripts'):
         if not filename.endswith('.py'):
             continue
 
