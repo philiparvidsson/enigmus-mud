@@ -120,32 +120,8 @@ class Enigmus(object):
 # FUNCTIONS
 #-----------------------------------------------------------
 
-'''def create_entity(class_, *args):
-    if not issubclass(class_, BaseEntity):
-        # TODO: Raise exception.
-        print 'cant do dat'
-        return None
-
-    entity = class_(*args)
-
-    instance.entities[entity.id] = entity
-
-
-    return entity'''
-
-
 def get_entity(id):
     return instance.entities[id]
-
-def create_room(description):
-    room = Room()
-    room.describe(description)
-    return room
-
-def connect_rooms(room1, exit1, exit_desc1, exit_desc2, room2, exit2=None, exit_desc3=None, exit_desc4=None):
-    room1.exits[exit1] = (room2, exit_desc1, exit_desc2)
-    if exit2 is not None:
-        room2.exits[exit2] = (room1, exit_desc3, exit_desc4)
 
 def exit():
     instance._done = True
@@ -299,19 +275,16 @@ def load_script(filename):
         if script_name in scripts:
             return scripts[script_name]
 
-        script_module = imp.load_source(script_name, 'data/default/scripts/' + filename)
+        if os.path.isfile('data/common/scripts/' + filename):
+            script_module = imp.load_source(script_name, 'data/common/scripts/' + filename)
+        else:
+            script_module = imp.load_source(script_name, 'data/default/scripts/' + filename)
+
         scripts[script_name] = script_module
 
         print 'loaded script', filename
 
         return script_module
-
-def load_scripts():
-    for filename in os.listdir('data/default/scripts'):
-        if not filename.endswith('.py'):
-            continue
-
-        load_script(filename)
 
 def get_entity_class(s):
     a = s.split(':')
@@ -383,6 +356,19 @@ def load_rooms():
     #-----------------------------------
     # 1. Load rooms
     #-----------------------------------
+
+    for filename in os.listdir('data/common/rooms'):
+        if not filename.endswith('.txt'):
+            continue
+
+        room_name = filename[:filename.find('.txt')]
+        filename  = 'data/common/rooms/' + filename
+
+        with open(filename) as room_file:
+            room_data = load_room(room_file.read())
+
+        room_data['name'] = room_name
+        rooms[room_name]  = room_data
 
     for filename in os.listdir('data/default/rooms'):
         if not filename.endswith('.txt'):

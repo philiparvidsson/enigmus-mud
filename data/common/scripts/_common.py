@@ -14,9 +14,9 @@ import random
 # CLASSES
 #-----------------------------------------------------------
 
-class Global(BaseRoom):
+class Common(BaseRoom):
     def __init__(self):
-        super(Global, self).__init__()
+        super(Common, self).__init__()
 
         self.timer(self.thunder, 30.0)
 

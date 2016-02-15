@@ -1,4 +1,4 @@
-@ _global.py:Global
+@ _common.py:Common
 
 :: Special commands.
 
