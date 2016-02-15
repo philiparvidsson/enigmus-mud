@@ -213,7 +213,7 @@ class BaseEntity(object):
 
         if isinstance(self.description, basestring):
             s = self.description.lower().split(' ')
-            if len(s) == 1: desc = (('', [''], [s[0]]), ('', [''], [s[0]]))
+            if   len(s) == 1: desc = ((  '', [''], [s[0]]), (  '', [''], [s[0]]))
             elif len(s) == 2: desc = ((s[0], [''], [s[1]]), (s[0], [''], [s[1]]))
             else: desc = ((s[0], s[1:-1], [s[-1]]), (s[0], s[1:-1], [s[-1]]))
         else:

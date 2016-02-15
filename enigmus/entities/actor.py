@@ -135,6 +135,14 @@ class BaseActor(BaseEntity):
 
         self.post_message('actor_say', self, text)
 
+    def shout(self, text):
+        """ Shouts the specified text.
+
+            :param text: The sentence to shout.
+        """
+
+        self.post_message('actor_shout', self, text)
+
     def take(self, item):
         """ Attempts to take the specified item.
 

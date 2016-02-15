@@ -7,6 +7,7 @@
 from cli                    import console
 from core                    import messages
 from core                   import log
+from entities.commands.shout  import ShoutCommand
 from entities.commands.say  import SayCommand
 from entities.commands.go  import GoCommand
 from entities.commands.take  import TakeCommand
@@ -201,6 +202,7 @@ def run():
 
 def load_commands():
     EmoteHandler()
+    ShoutCommand()
     SayCommand()
     GoCommand()
     TakeCommand()
