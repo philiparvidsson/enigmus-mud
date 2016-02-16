@@ -70,7 +70,7 @@ def for_nearby_entities(entity):
 
 def all(*filters):
     """ Receives all messages (if parameter filters is empty) or messages that
-        are addressed to all of the supplied list of filters.
+        are addressed to every one of the supplied filters.
 
         :param filters: filters to combine into one
     """
@@ -90,7 +90,7 @@ def all(*filters):
 def any(*filters):
     """ Receives messages that are addressed to any of the supplied filters.
 
-        :param filters: filters to combine into one
+        :param filters: filters to check against
     """
 
     def filter(target):
