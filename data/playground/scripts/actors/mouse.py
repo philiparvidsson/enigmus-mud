@@ -47,7 +47,7 @@ class Mouse(Actor):
         for p in self.mouse_room.get_entities(Player):
             p.send('Du guppar omkring i tarmen. Musen rör nog på sig.')
 
-    def _actor_speak(self, actor, sentence):
+    def _actor_speak(self, actor, sentence, target):
         if actor is self:
             return
 

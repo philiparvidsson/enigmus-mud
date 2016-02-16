@@ -426,13 +426,14 @@ class Actor(Entity):
         self.post_message('actor_remove', self, wearable)
         return True
 
-    def say(self, text):
-        """ Says the specified text.
+    def say(self, text, target=None):
+        """ Says the specified text to the specified target.
 
-            :param text: The sentence to say.
+            :param text:   The sentence to say.
+            :param target: The entity to say it to.
         """
 
-        self.post_message('actor_say', self, text)
+        self.post_message('actor_say', self, text, target)
 
     def take(self, item):
         """ Attempts to take the specified item.

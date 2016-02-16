@@ -20,10 +20,7 @@ $ commands/shout.py:Command
 
 :: Inventory commands for item management.
 
-$ commands/drop.py:Command
-$ commands/give.py:Command
-$ commands/inventory.py:Command
-$ commands/take.py:Command
+$ commands/inventory.py:Commands
 
 :: Commands for interacting with containers.
 
@@ -33,4 +30,4 @@ $ commands/open.py:Command
 
 :: Commands for handling equipment.
 
-$ commands/wear.py:Command
+$ commands/equipment.py:Commands

@@ -4,11 +4,10 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+import console
 import logging
 import messages
-
-from cli     import console
-from network import TcpServer
+import network
 
 from entities import Actor
 from entities import Container
@@ -19,7 +18,6 @@ from entities import Player
 from entities import Room
 from entities import WearableContainer
 from entities import WearableItem
-
 
 import imp
 import os
@@ -48,7 +46,7 @@ class Enigmus(object):
     def init(self):
         self.entities = {}
         self.players  = []
-        self.server   = TcpServer()
+        self.server   = network.TcpServer()
 
         self._done      = False
         self._msg_queue = []
@@ -94,7 +92,7 @@ class Enigmus(object):
             return
 
         self.entities[entity.id] = entity
-        logging.info('added entity {}', entity.id)
+        logging.info('created entity: {}', entity.id)
 
     def remove_entity(self, entity):
         if not entity.id in self.entities:
@@ -102,7 +100,7 @@ class Enigmus(object):
             return
 
         del self.entities[entity.id]
-        logging.info('removed entity {}', entity.id)
+        logging.info('destroyed entity: {}', entity.id)
 
     def tick(self, dt):
         self.post_message(None, 'tick', [dt])
