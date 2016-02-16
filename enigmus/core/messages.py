@@ -10,9 +10,8 @@
 # FUNCTIONS
 #-----------------------------------------------------------
 
-def all():
-    """ Receives all messages. """
-    return lambda target: True
+def for_actors_with_item_or_nearby_entities(item, entity):
+    return self.any(self.for_actors_with_item(item), self.for_nearby_entities(entity))
 
 def for_actors_with_item(item):
     def filter(target):
@@ -66,6 +65,43 @@ def for_nearby_entities(entity):
         if not target.container      : return False
 
         return target.container == entity.container
+
+    return filter
+
+def all(*filters):
+    """ Receives all messages (if parameter filters is empty) or messages that
+        are addressed to all of the supplied list of filters.
+
+        :param filters: filters to combine into one
+    """
+
+    def filter(target):
+        if len(filters) == 0:
+            return True
+
+        for f in filters:
+            if not f:
+                return False
+
+        return True
+
+    return filter
+
+def any(*filters):
+    """ Receives messages that are addressed to any of the supplied filters.
+
+        :param filters: filters to combine into one
+    """
+
+    def filter(target):
+        if len(filters) == 0:
+            return True
+
+        for f in filters:
+            if f:
+                return True
+
+        return False
 
     return filter
 
