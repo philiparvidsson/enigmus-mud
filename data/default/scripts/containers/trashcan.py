@@ -4,7 +4,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from entities.container import Container
+from entities import Container
 
 #-----------------------------------------------------------
 # CLASSES

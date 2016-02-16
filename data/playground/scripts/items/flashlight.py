@@ -5,13 +5,9 @@
 #-----------------------------------------------------------
 
 import enigmus
+import messages
 
-from core import messages
-from entities.entity import BaseEntity
-from entities.actor import BaseActor
-from entities.actors.player import Player
-from entities.item import Item
-from entities.room import BaseRoom
+from entities import *
 
 import random
 

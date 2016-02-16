@@ -6,17 +6,16 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import messages
-from core                   import lang
-from entities.actor         import BaseActor
-from entities.actors.player import Player
-from entities.entity        import BaseEntity
+import language
+import messages
+
+from entities import (Actor, Entity, Player)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Command(BaseEntity):
+class Command(Entity):
     """ Command entity for handling the say command. """
 
     def __init__(self):
@@ -25,7 +24,7 @@ class Command(BaseEntity):
         super(Command, self).__init__()
 
         self.on_message('actor_shout', self.__actor_shout,
-            filter=messages.for_entities_of_class(BaseActor))
+            filter=messages.for_entities_of_class(Actor))
 
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(Player))

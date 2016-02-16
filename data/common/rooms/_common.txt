@@ -1,3 +1,6 @@
+:: This is a special room used to load scripts etc, it is not a room that can
+:: be visited by players.
+
 @ _common.py:Common
 
 :: Special commands.

@@ -6,19 +6,16 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import lang
-from core                   import messages
-from entities.actor         import BaseActor
-from entities.actors.player import Player
-from entities.entity        import BaseEntity
-from entities.entity        import Detail
-from entities.container     import Container
+import language
+import messages
+
+from entities import (Actor, Detail, Entity, Player, Room)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Command(BaseEntity):
+class Command(Entity):
     """ Command entity for handling the look command. """
 
     def __init__(self):
@@ -68,7 +65,7 @@ class Command(BaseEntity):
                 entity = None
             elif not entity.is_open:
                 # {} is closed!
-                player.text(lang.sentence('{} är stängd!', entity.get_description(indefinite=False)))
+                player.text(language.sentence('{} är stängd!', entity.get_description(indefinite=False)))
                 return
 
         if not entity:
@@ -79,18 +76,18 @@ class Command(BaseEntity):
         if look_inside:
             if len(entity.entities) == 0:
                 # {} is empty.
-                player.text(lang.sentence('{} är tom.', entity.get_description(indefinite=False)))
+                player.text(language.sentence('{} är tom.', entity.get_description(indefinite=False)))
                 return
 
-            s = lang.list([x.get_description() for x in entity.entities])
+            s = language.list([x.get_description() for x in entity.entities])
             # {} contains: {}
-            player.text(lang.sentence('{} innehåller: {}', entity.get_description(indefinite=False), s))
+            player.text(language.sentence('{} innehåller: {}', entity.get_description(indefinite=False), s))
             return
 
         if not isinstance(entity, Detail):
-            player.text(lang.sentence(entity.get_description()))
+            player.text(language.sentence(entity.get_description()))
 
-        if isinstance(entity, BaseActor):
+        if isinstance(entity, Actor):
             player.text(entity.get_long_description(observer=player))
         else:
             player.text(entity.get_long_description())

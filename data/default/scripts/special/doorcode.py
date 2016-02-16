@@ -5,19 +5,16 @@
 #-----------------------------------------------------------
 
 import enigmus
-
-from core                   import messages
-from entities.entity        import BaseEntity
-from entities.actors.player import Player
-from entities.room          import BaseRoom
-
+import messages
 import random
+
+from entities import (Entity, Player, Room)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class DoorCode(BaseEntity):
+class DoorCode(Entity):
     def __init__(self):
         super(DoorCode, self).__init__()
 

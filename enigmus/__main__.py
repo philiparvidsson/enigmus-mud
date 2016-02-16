@@ -15,7 +15,8 @@ import sys
 if __name__ == '__main__':
     world = 'default'
 
-    if len(sys.argv) > 1:
-        world = sys.argv[1]
-
-    enigmus.run(world)
+    if len(sys.argv) < 2:
+        print 'usage: python enigmus <worlds>'
+        print 'example: python enigmus common default'
+    else:
+        enigmus.run(sys.argv[1:])

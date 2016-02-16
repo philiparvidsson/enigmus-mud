@@ -6,16 +6,16 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import messages
-from entities.actors.player import Player
-from entities.entity        import BaseEntity
+import messages
+
+from entities import (Entity, Player)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Command(BaseEntity):
-    """ Command entity for handling the say command. """
+class Command(Entity):
+    """ Command entity for handling the quit command. """
 
     def __init__(self):
         """ Initializes the command. """
@@ -28,5 +28,7 @@ class Command(BaseEntity):
     # ------- MESSAGES -------
 
     def __player_command(self, player, command):
-        if command == 'quit':
-            player.disconnect()
+        if command != 'quit':
+            return
+
+        player.disconnect()

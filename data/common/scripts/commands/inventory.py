@@ -6,16 +6,16 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import lang
-from core                   import messages
-from entities.actors.player import Player
-from entities.entity        import BaseEntity
+import language
+import messages
+
+from entities import (Entity, Player)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Command(BaseEntity):
+class Command(Entity):
     """ Command entity for handling the inventory command. """
 
     def __init__(self):
@@ -42,7 +42,7 @@ class Command(BaseEntity):
             return
 
         inventory = player.inventory.entities
-        items     = lang.list([x.get_description() for x in inventory])
+        items     = language.list([x.get_description() for x in inventory])
 
         # You have: {}
         player.text('Du har: {}'.format(items))

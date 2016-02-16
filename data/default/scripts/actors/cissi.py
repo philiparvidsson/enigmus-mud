@@ -5,19 +5,17 @@
 #-----------------------------------------------------------
 
 import enigmus
-
-from core import messages
-from entities.actor import BaseActor
-from entities.actors.player import Player
-from entities.container import Container
-
+import messages
 import random
+
+from entities import (Actor, Container, Player)
+
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Cissi(BaseActor):
+class Cissi(Actor):
     def __init__(self):
         super(Cissi, self).__init__()
 

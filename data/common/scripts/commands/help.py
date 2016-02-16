@@ -6,15 +6,15 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import messages
-from entities.actors.player import Player
-from entities.entity        import BaseEntity
+import messages
+
+from entities import (Entity, Player)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Command(BaseEntity):
+class Command(Entity):
     """ Command entity for handling the help command. """
 
     def __init__(self):

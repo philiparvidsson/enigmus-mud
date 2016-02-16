@@ -6,16 +6,15 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import messages
-from entities.actor         import BaseActor
-from entities.actors.player import Player
-from entities.entity        import BaseEntity
+import messages
+
+from entities import (Actor, Entity, Player)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Command(BaseEntity):
+class Command(Entity):
     """ Command entity for handling the give command. """
 
     def __init__(self):
@@ -24,7 +23,7 @@ class Command(BaseEntity):
         super(Command, self).__init__()
 
         self.on_message('actor_give', self.__actor_give,
-            filter=messages.for_entities_of_class(BaseActor))
+            filter=messages.for_entities_of_class(Actor))
 
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(Player))
@@ -65,7 +64,7 @@ class Command(BaseEntity):
 
         item_desc = item.get_description(indefinite=False)
 
-        if not actor or actor == player or not isinstance(actor, BaseActor):
+        if not actor or actor == player or not isinstance(actor, Actor):
             # Give {} to who?
             player.text('Ge {} till vem?'.format(item_desc))
             return

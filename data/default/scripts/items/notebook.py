@@ -4,8 +4,9 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core import messages
-from entities.item import Item
+import messages
+
+from entities import Item
 
 import random
 

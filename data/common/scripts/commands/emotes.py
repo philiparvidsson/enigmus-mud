@@ -6,19 +6,17 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import lang
-from core                   import messages
-from entities.actor         import BaseActor
-from entities.actors.player import Player
-from entities.entity        import BaseEntity
-from entities.room          import BaseRoom
+import language
+import messages
 import random
+
+from entities import (Actor, Entity, Player, Room)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Emotes(BaseEntity):
+class Emotes(Entity):
     """ Entity for handling emotes. """
 
     def __init__(self):
@@ -27,10 +25,10 @@ class Emotes(BaseEntity):
         super(Emotes, self).__init__()
 
         self.on_message('actor_emote', self.__actor_emote,
-            filter=messages.for_entities_of_class(BaseActor))
+            filter=messages.for_entities_of_class(Actor))
 
         self.on_message('player_command', self.__player_command,
-            filter=messages.for_entities_of_class(BaseActor))
+            filter=messages.for_entities_of_class(Actor))
 
         self.emotes = {
             'peka'  : self.point,
@@ -162,7 +160,7 @@ class Emotes(BaseEntity):
     def __actor_emote(self, actor, args):
         room = actor.container
 
-        if not room or not isinstance(room, BaseRoom):
+        if not room or not isinstance(room, Room):
             return
 
         #args = [actor] + list(args)
@@ -179,8 +177,8 @@ class Emotes(BaseEntity):
                 else:
                     s += ' dig' if arg == player else ' ' + arg.get_description(indefinite=False)
 
-            #s = lang.pronouns(player, actor, *args)
-            player.send(lang.sentence(s))
+            #s = language.pronouns(player, actor, *args)
+            player.send(language.sentence(s))
 
     def __player_command(self, player, command):
         args    = command.split(' ')

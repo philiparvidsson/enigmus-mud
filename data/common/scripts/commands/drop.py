@@ -6,18 +6,16 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import lang
-from core                   import messages
-from entities.actor         import BaseActor
-from entities.actors.player import Player
-from entities.container     import Container
-from entities.entity        import BaseEntity
+import language
+import messages
+
+from entities import (Actor, Container, Entity, Player)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Command(BaseEntity):
+class Command(Entity):
     """ Command entity for handling the drop command. """
 
     def __init__(self):
@@ -26,7 +24,7 @@ class Command(BaseEntity):
         super(Command, self).__init__()
 
         self.on_message('actor_drop', self.__actor_drop,
-            filter=messages.for_entities_of_class(BaseActor))
+            filter=messages.for_entities_of_class(Actor))
 
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(Player))
@@ -70,7 +68,7 @@ class Command(BaseEntity):
 
             if not container.is_open:
                 # {} is closed!
-                player.text(lang.sentence('{} är stängd!', container.get_description(indefinite=False)))
+                player.text(language.sentence('{} är stängd!', container.get_description(indefinite=False)))
                 return
 
             args = args[:i]

@@ -4,7 +4,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from entities.item import Item
+from entities import Item
 
 #-----------------------------------------------------------
 # CLASSES

@@ -5,13 +5,9 @@
 #-----------------------------------------------------------
 
 import enigmus
+import messages
 
-from core import messages
-from entities.entity import BaseEntity
-from entities.actor import BaseActor
-from entities.actors.player import Player
-from entities.item import Item
-from entities.room import BaseRoom
+from entities import *
 
 import random
 
@@ -23,7 +19,7 @@ import random
 # CLASSES
 #-----------------------------------------------------------
 
-class Mouse(BaseActor):
+class Mouse(Actor):
     def __init__(self):
         super(Mouse, self).__init__()
 
@@ -86,7 +82,7 @@ class Mouse(BaseActor):
                                 'kunna kliva in i det om du ville. Du får'    \
                                 'en känsla av att han inte gillar din närvaro.'
 
-        self.mouse_room = BaseRoom()
+        self.mouse_room = Room()
         self.mouse_room.describe('En varm tarm. Du undrar vad som händer om du sparkar till den.')
 
         self.on_message('player_command', self._on_player_command, filter=messages.for_entities_in(self.mouse_room))
@@ -97,13 +93,13 @@ class Mouse(BaseActor):
     def _container_add(self, container, entity):
         self.mouse_room.exits = { 'ut' : container }
 
-        if not isinstance(container, BaseRoom):
+        if not isinstance(container, Room):
             return
 
         container.exits['mus'] = self.mouse_room
 
     def _container_remove(self, container, entity):
-        if not isinstance(container, BaseRoom):
+        if not isinstance(container, Room):
             return
 
         if entity is not self:

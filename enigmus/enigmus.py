@@ -4,46 +4,60 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from cli                    import console
-from core                    import messages
-from core                   import log
+import logging
+import messages
 
-from entities.entity        import BaseEntity
-from entities.item        import Item
-from entities.container        import Container
-from entities.container        import ContainerItem
-from entities.container        import WearableContainer
-from entities.container        import WearableItem
-from entities.actor import BaseActor
-from entities.actors.player import Player
-from entities.room           import BaseRoom
-from network.server         import TcpServer
+from cli     import console
+from network import TcpServer
+
+from entities import Actor
+from entities import Container
+from entities import ContainerItem
+from entities import Entity
+from entities import Item
+from entities import Player
+from entities import Room
+from entities import WearableContainer
+from entities import WearableItem
+
 
 import imp
 import os
 import time
 
 #-----------------------------------------------------------
+# CONSTANT
+#-----------------------------------------------------------
+
+DATA_DIR      = 'data'
+TICKS_PER_SEC = 10.0
+
+#-----------------------------------------------------------
 # GLOBALS
 #-----------------------------------------------------------
 
-rooms   = {}
-scripts = {}
 instance = None
-world_name = 'default'
+rooms    = {}
+scripts  = {}
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
 class Enigmus(object):
-    def __init__(self):
-        self._done      = None
-        self._msg_queue = None
+    def init(self):
+        self.entities = {}
+        self.players  = []
+        self.server   = TcpServer()
 
-        self.entities = None
-        self.players  = None
-        self.server   = None
+        self._done      = False
+        self._msg_queue = []
+
+
+        self.server.on_connect   (on_connect     )
+        self.server.on_disconnect(on_disconnect  )
+        self.server.on_receive   (on_receive     )
+        self.server.listen       ('0.0.0.0', 1337)
 
     def cleanup(self):
         for entity in self.entities.values():
@@ -56,64 +70,45 @@ class Enigmus(object):
         self.players  = None
         self.server   = None
 
-    def init(self):
-        self._done      = False
-        self._msg_queue = []
-
-        self.entities = {}
-        self.players  = []
-        self.server   = TcpServer()
-
-        self.server.on_messages([('connect'   , on_connect   ),
-                                 ('disconnect', on_disconnect),
-                                 ('receive'   , on_receive   )])
-
-        self.server.listen('0.0.0.0', 1337)
-
     def post_message(self, target, msg, args):
         self._msg_queue.append((target, msg, args))
 
     def process_pending_messages(self):
         for target, msg, args in self._msg_queue:
-            if target.id not in self.entities:
-                log.warn('message dropped: {}, {}, {}', target.id, msg, args)
+            if target and target.id not in self.entities:
+                logging.warn('message dropped: {}, {}, {}', target.id, msg, args)
 
             for entity in self.entities.values():
                 #try:
                     entity.handle_message(target, msg, args)
                 #except Exception as e:
-                #    log.error('message {} ({}) for {} resulted in exception',
+                #    logging.error('message {} ({}) for {} resulted in exception',
                 #        msg, args, target)
-                #    log.error(str(e))
+                #    logging.error(str(e))
 
         self._msg_queue = []
 
     def register_entity(self, entity):
         if entity.id in self.entities:
-            log.error('attempted to add entity {} twice', entity)
+            logging.error('attempted to add entity {} twice', entity)
             return
 
         self.entities[entity.id] = entity
-        print 'added entity {}'.format(entity.id)
+        logging.info('added entity {}', entity.id)
 
     def remove_entity(self, entity):
         if not entity.id in self.entities:
-            log.warn('cannot remove non-existent entity {}', entity)
+            logging.warn('cannot remove non-existent entity {}', entity)
             return
 
         del self.entities[entity.id]
-        print 'removed entity {}'.format(entity.id)
+        logging.info('removed entity {}', entity.id)
 
     def tick(self, dt):
-        for entity in self.entities.values():
-            entity.tick(dt)
+        self.post_message(None, 'tick', [dt])
 
         self.server.update()
-
         self.process_pending_messages()
-
-        if self._done:
-            self.process_pending_messages()
 
         return not self._done
 
@@ -133,42 +128,118 @@ def on_connect(connection):
 
     connection.player = player
 
-    print '{} connected.'.format(connection.address[0])
+    logging.info('{} connected', connection.address[0])
 
 def on_disconnect(connection):
     connection.player.destroy()
 
     instance.players.remove(connection.player)
 
-    print '{} disconnected.'.format(connection.address[0])
+    logging.info('{} disconnected', connection.address[0])
 
 def on_receive(connection, data):
     connection.player.receive(data)
 
-def run(world):
-    global world_name
-    world_name = world
+def load_script(path, filename):
+        name = os.path.join(path, filename)
+        name = os.path.relpath(name, path)
+        name = name.replace('\\', '/')
 
+        if name in scripts:
+            return scripts[name]
+
+        script = imp.load_source(name.replace('.', '_'), os.path.join(path, filename))
+        scripts[name] = script
+
+        logging.info('loaded script: {}', name)
+
+        return script
+
+def load_scripts(path):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if not file.endswith('.py'):
+                continue
+
+            file = os.path.join(os.path.relpath(root, path), file)
+            load_script(path, file)
+
+def load_world(path):
+    path       = os.path.join(DATA_DIR, path)
+    rooms_dir  = os.path.join(path, 'rooms')
+
+    load_scripts(os.path.join(path, 'scripts'))
+
+    rooms = {}
+
+    #-----------------------------------
+    # 2. Load room data.
+    #-----------------------------------
+
+    for root, dirs, files in os.walk(rooms_dir):
+        for file in files:
+            file = os.path.join(root, file)
+            if not file.endswith('.txt'):
+                logging.warn('file {} ignored', file)
+                continue
+
+            name = os.path.basename(file[:file.find('.txt')])
+
+            with open(file) as room_file:
+                data = load_room(room_file.read())
+
+            data['name'] = name
+            rooms[name]  = data
+
+    #-----------------------------------
+    # 3. Create rooms, entities etc.
+    #-----------------------------------
+
+    for room_name, room_data in rooms.items():
+        room = create_entity(room_data)
+        room.data = room_data
+        rooms[room_name] = room
+
+    #-----------------------------------
+    # 4. Setup exits.
+    #-----------------------------------
+
+    for room in rooms.values():
+        for exit_data in room.data['exits']:
+            room.add_exit(exit_data[0], rooms[exit_data[1]])
+
+        # We're done with the room data here.
+        del room.data
+
+    globals()['rooms'].update(rooms)
+
+def run(worlds):
     global instance
-
-    if instance is not None:
-        print 'already running'
-        return
-
     instance = Enigmus()
 
     instance.init()
     console.init()
 
-    #load_scripts()
-    load_rooms()
+    for world in worlds:
+        load_world(world)
 
-    while instance.tick(1.0/30.0):
+    one_tick = 1.0/TICKS_PER_SEC
+    cum_dt   = 0.0
+
+    t1 = time.time()
+    while not instance._done:
+        t2      = time.time()
+        cum_dt += t2 - t1
+        t1      = time.time()
+
+        while cum_dt >= one_tick:
+            instance.tick(one_tick)
+            cum_dt -= one_tick
+
         console.update()
-        time.sleep(1.0/30.0)
+        time.sleep(one_tick/2.0)
 
     instance.cleanup()
-
 
 def load_room(s):
     lines = s.replace('\r', '').split('\n')
@@ -196,6 +267,9 @@ def load_data(lines, indent_level=0):
         text = text[4*indent_level:].strip()
 
         lines.pop(0)
+
+        if len(text) == 0:
+            continue
 
         if text.startswith('@'):
             data['script'] = text[1:].strip().split(':')
@@ -273,23 +347,6 @@ def load_data(lines, indent_level=0):
 
     return data
 
-def load_script(filename):
-        script_name = '_script' + filename[:filename.index('.py')]
-
-        if script_name in scripts:
-            return scripts[script_name]
-
-        if os.path.isfile('data/common/scripts/' + filename):
-            script_module = imp.load_source(script_name, 'data/common/scripts/' + filename)
-        else:
-            script_module = imp.load_source(script_name, 'data/' + world_name + '/scripts/' + filename)
-
-        scripts[script_name] = script_module
-
-        print 'loaded script', filename
-
-        return script_module
-
 def get_entity_class(s):
     a = s.split(':')
     b = load_script(a[0])
@@ -310,7 +367,7 @@ def create_entity(data):
             script_name = data['script'][0]
             class_name  = data['script'][1]
 
-            script_module = load_script(script_name)
+            script_module = scripts[script_name]
             class_        = getattr(script_module, class_name)
         else:
             if   data['script'][0] == 'container'        : class_ = Container
@@ -319,7 +376,7 @@ def create_entity(data):
             elif data['script'][0] == 'wearablecontainer': class_ = WearableContainer
     else:
         # No script specified means it's a room without script.
-        class_ = BaseRoom
+        class_ = Room
 
     entity = class_()
 
@@ -338,7 +395,7 @@ def create_entity(data):
 
     for entity_data in data['entities']:
         e = create_entity(entity_data)
-        if isinstance(entity, BaseActor):
+        if isinstance(entity, Actor):
             if isinstance(e, WearableItem):
                 entity.wearables.append(e)
             else:
@@ -352,56 +409,7 @@ def create_entity(data):
         elif val == 'true'                            : val = True
         elif val.startswith('"') and val.endswith('"'): val = val[1:-1]
         else                                          : val = float(val)
+
         setattr(entity, attribute_data[0], val)
 
     return entity
-
-def load_rooms():
-    #-----------------------------------
-    # 1. Load rooms
-    #-----------------------------------
-
-    for filename in os.listdir('data/common/rooms'):
-        if not filename.endswith('.txt'):
-            continue
-
-        room_name = filename[:filename.find('.txt')]
-        filename  = 'data/common/rooms/' + filename
-
-        with open(filename) as room_file:
-            room_data = load_room(room_file.read())
-
-        room_data['name'] = room_name
-        rooms[room_name]  = room_data
-
-    for filename in os.listdir('data/' + world_name + '/rooms'):
-        if not filename.endswith('.txt'):
-            continue
-
-        room_name = filename[:filename.find('.txt')]
-        filename  = 'data/' + world_name + '/rooms/' + filename
-
-        with open(filename) as room_file:
-            room_data = load_room(room_file.read())
-
-        room_data['name'] = room_name
-        rooms[room_name]  = room_data
-
-    #-----------------------------------
-    # 2. Setup rooms, entitites etc.
-    #-----------------------------------
-
-    for room_name, room_data in rooms.items():
-        room = create_entity(room_data)
-        room.data = room_data
-        rooms[room_name] = room
-
-    #-----------------------------------
-    # 3. Setup exits.
-    #-----------------------------------
-
-    for room in rooms.values():
-        for exit_data in room.data['exits']:
-            room.add_exit(exit_data[0], rooms[exit_data[1]])
-
-        del room.data

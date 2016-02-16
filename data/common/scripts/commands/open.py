@@ -6,18 +6,16 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from core                   import lang
-from core                   import messages
-from entities.actor         import BaseActor
-from entities.actors.player import Player
-from entities.container     import Container
-from entities.entity        import BaseEntity
+import language
+import messages
+
+from entities import (Actor, Container, Entity, Player)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Command(BaseEntity):
+class Command(Entity):
     """ Command entity for handling the open command. """
 
     def __init__(self):
@@ -55,7 +53,7 @@ class Command(BaseEntity):
 
         if container.is_open:
             # {} is already open.
-            player.text(lang.sentence('{} är redan öppen.', container.get_description(indefinite=False)))
+            player.text(language.sentence('{} är redan öppen.', container.get_description(indefinite=False)))
             return
 
         container.open()
