@@ -101,7 +101,7 @@ class Commands(Command):
         item_desc  = ' '.join(args[:i]  )
         actor_desc = ' '.join(args[i+1:])
 
-        item  = player.inventory.find_best_match(item_desc)
+        item  = player.inventory.find_best_match(item_desc )
         actor = player.container.find_best_match(actor_desc)
 
         if not item:
