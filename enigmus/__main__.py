@@ -13,10 +13,10 @@ import sys
 #-----------------------------------------------------------
 
 if __name__ == '__main__':
-    world = 'default'
+    quest = ['common', 'demo']
 
     if len(sys.argv) < 2:
-        print 'usage: python enigmus <worlds>'
-        print 'example: python enigmus common default'
+        print 'usage: python enigmus <quests>'
+        print 'example: python enigmus common demo'
     else:
         enigmus.run(sys.argv[1:])

@@ -27,7 +27,7 @@ import time
 # CONSTANT
 #-----------------------------------------------------------
 
-DATA_DIR      = 'data'
+QUESTS_DIR    = 'quests'
 TICKS_PER_SEC = 10.0
 
 #-----------------------------------------------------------
@@ -162,9 +162,8 @@ def load_scripts(path):
             file = os.path.join(os.path.relpath(root, path), file)
             load_script(path, file)
 
-def load_world(path):
-    path       = os.path.join(DATA_DIR, path)
-    rooms_dir  = os.path.join(path, 'rooms')
+def load_quest(path):
+    path = os.path.join(QUESTS_DIR, path)
 
     load_scripts(os.path.join(path, 'scripts'))
 
@@ -174,7 +173,7 @@ def load_world(path):
     # 2. Load room data.
     #-----------------------------------
 
-    for root, dirs, files in os.walk(rooms_dir):
+    for root, dirs, files in os.walk(os.path.join(path, 'rooms')):
         for file in files:
             file = os.path.join(root, file)
             if not file.endswith('.txt'):
@@ -211,15 +210,15 @@ def load_world(path):
 
     globals()['rooms'].update(rooms)
 
-def run(worlds):
+def run(quests):
     global instance
     instance = Enigmus()
 
     instance.init()
     console.init()
 
-    for world in worlds:
-        load_world(world)
+    for quest in quests:
+        load_quest(quest)
 
     one_tick = 1.0/TICKS_PER_SEC
     cum_dt   = 0.0
