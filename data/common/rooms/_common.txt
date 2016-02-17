@@ -14,7 +14,7 @@ $ commands/go.py:Command
 
 :: Social commands for communication.
 
-$ commands/emotes.py:Emotes
+$ commands/emotes.py:Commands
 $ commands/say.py:Command
 $ commands/shout.py:Command
 

@@ -10,33 +10,31 @@ import language
 import messages
 import random
 
+from command import Command
 from entities import (Actor, Entity, Player, Room)
 
 #-----------------------------------------------------------
 # CLASSES
 #-----------------------------------------------------------
 
-class Emotes(Entity):
+class Commands(Command):
     """ Entity for handling emotes. """
 
     def __init__(self):
         """ Initializes the emote handler. """
 
-        super(Emotes, self).__init__()
+        super(Commands, self).__init__()
 
-        self.on_message('actor_emote', self.__actor_emote,
-            filter=messages.for_entities_of_class(Actor))
-
-        self.on_message('player_command', self.__player_command,
-            filter=messages.for_entities_of_class(Actor))
-
-        self.emotes = {
+        self.commands = {
             'peka'  : self.point,
             'pussa' : self.kiss,
             'vinka' : self.wave,
             'dansa' : self.dance,
             'smiska': self.spank
         }
+
+        self.on_message('actor_emote', self.__actor_emote,
+            filter=messages.for_entities_of_class(Actor))
 
     def spank(self, player, args):
         # check for modifier
@@ -179,11 +177,3 @@ class Emotes(Entity):
 
             #s = language.pronouns(player, actor, *args)
             player.send(language.sentence(s))
-
-    def __player_command(self, player, command):
-        args    = command.split(' ')
-        command = args[0]
-        args    = args[1:]
-
-        if command in self.emotes:
-            self.emotes[command](player, args)
