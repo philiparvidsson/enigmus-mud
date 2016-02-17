@@ -26,11 +26,12 @@ class Darkness(Entity):
             filter=messages.for_container_of(self))
 
     def is_dark(self):
-        num_lights = 0
+        light_class = enigmus.instance.database.get_class('items/light.py:Light')
+        num_lights  = 0
         for entity in self.room.entities:
             if isinstance(entity, Actor):
                 for item in entity.inventory.entities:
-                    if not isinstance(item, enigmus.instance.database.get_class('items/flashlight.py:Flashlight')):
+                    if not isinstance(item, light_class):
                         continue
 
                     if item.is_on:
@@ -38,7 +39,7 @@ class Darkness(Entity):
                         if num_lights >= self.lights_required:
                             return True
 
-            if not isinstance(entity, enigmus.instance.database.get_class('items/flashlight.py:Flashlight')):
+            if not isinstance(entity, light_class):
                 continue
 
             if entity.is_on:
