@@ -5,3 +5,5 @@ golvet är av laminat.
 # ner    room3
 # väster room5
 # upp    room8
+
+$ actors/petter.py:Petter
