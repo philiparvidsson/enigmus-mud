@@ -34,7 +34,7 @@ class Mouse(Actor):
             'Jag tror jag är förföljd!'
         ]
         self.say(random.choice(d))
-        self.timer(self.talk, 22.0)
+        Timer(self.talk, 22.0)
 
     def walk_around(self):
         e = self.container.exits.keys()[:]
@@ -42,7 +42,7 @@ class Mouse(Actor):
             e.remove('mus')
 
         self.go(random.choice(e))
-        self.timer(self.walk_around, 60.0)
+        Timer(self.walk_around, 60.0)
 
         for p in self.mouse_room.get_entities(Player):
             p.send('Du guppar omkring i tarmen. Musen rör nog på sig.')
@@ -67,7 +67,7 @@ class Mouse(Actor):
             e.remove('mus')
 
         def walk(): self.go(random.choice(e))
-        self.timer(walk, 0.1)
+        Timer(walk, 0.1)
 
     def __on_entity_init(self):
         self.describe('en' , ['liten', 'mysig'] , ['mus'  ],
@@ -87,8 +87,8 @@ class Mouse(Actor):
 
         self.on_message('player_command', self._on_player_command, filter=messages.for_entities_in(self.mouse_room))
 
-        self.timer(self.walk_around, 60.0)
-        self.timer(self.talk, 22.0)
+        Timer(self.walk_around, 60.0)
+        Timer(self.talk, 22.0)
 
     def _container_add(self, container, entity):
         self.mouse_room.exits = { 'ut' : container }

@@ -8,7 +8,7 @@ import enigmus
 import messages
 import random
 
-from entities import (Actor, Container, Player)
+from entities import (Actor, Container, Player, Timer)
 
 #-----------------------------------------------------------
 # CLASSES
@@ -87,7 +87,7 @@ class Cissi(Actor):
                 'Här kan man ju läsa om massa spännande algoritmer!'
             ]))
 
-        self.timer(self.read_book, random.uniform(7.0, 21.0))
+        Timer(self.read_book, random.uniform(7.0, 21.0))
 
     def __actor_give(self, giver, receiver, item):
         if receiver != self:
@@ -99,21 +99,21 @@ class Cissi(Actor):
 
         if not hasattr(item, 'cissi_wants_it'):
             self.say('Det där joxet vill jag inte ha!')
-            self.timer(give_back, 0.5)
+            Timer(give_back, 0.5)
             return
 
         def react():
             if not any(hasattr(e, 'quest_item') for e in self.inventory.entities):
                 self.say('Lägg den i mitt skåp säger jag!')
-                self.timer(give_back, 0.5)
+                Timer(give_back, 0.5)
                 return
 
             self.say('Hmmm..! Vad spännande!')
             self.emote('bläddrar i', item)
-            self.timer(self.read_book, random.uniform(3.0, 7.0))
-            self.timer(self.give_key, random.uniform(40.0, 50.0), args=[giver])
+            Timer(self.read_book, random.uniform(3.0, 7.0))
+            Timer(self.give_key, random.uniform(40.0, 50.0), args=[giver])
 
-        self.timer(react, 0.5)
+        Timer(react, 0.5)
 
     def __container_add(self, container, entity):
         if not isinstance(entity, Player):
@@ -124,7 +124,7 @@ class Cissi(Actor):
 
         if any(hasattr(e, 'cissi_wants_it') for e in entity.inventory.entities):
             self.say('Vad har du där för något? Får jag se!?')
-            self.timer(self.push_player_out, 7.0, args=[entity])
+            Timer(self.push_player_out, 7.0, args=[entity])
             return
 
         s = random.choice([
@@ -135,4 +135,4 @@ class Cissi(Actor):
         ])
 
         self.say(s)
-        self.timer(self.push_player_out, 0.2, args=[entity])
+        Timer(self.push_player_out, 0.2, args=[entity])

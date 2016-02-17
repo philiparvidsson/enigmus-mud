@@ -71,4 +71,4 @@ class MattPresent(Item):
             present_open.player.go = haha
 
         present_open.player = player
-        self.timer(present_open, 0.1)
+        Timer(present_open, 0.1)

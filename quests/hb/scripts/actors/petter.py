@@ -8,7 +8,7 @@ import enigmus
 import messages
 import random
 
-from entities import (Actor, Container, Player)
+from entities import (Actor, Container, Player, Timer)
 
 #-----------------------------------------------------------
 # CLASSES
@@ -26,8 +26,8 @@ class Petter(Actor):
                       'lite filosofisk och funderande. Hans hår är grått och '
                       'han har blå ögon')
 
-        self.timer(self.wander, 10.0)
+        Timer(self.wander, 10.0)
 
     def wander(self):
         self.go(random.choice(self.container.exits.keys()))
-        self.timer(self.wander, random.uniform(15.0, 6.0))
+        Timer(self.wander, random.uniform(15.0, 6.0))

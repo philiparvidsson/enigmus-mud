@@ -33,14 +33,12 @@ class Entity(object):
         self.details          = []
         self.is_destroyed     = False
         self.long_description = object.__str__(self)
-        self.timers           = []
 
         self._msg_funcs = {}
 
         enigmus.instance.register_entity(self)
 
         self.on_message('entity_destroy', self.__entity_destroy)
-        self.on_message('tick'          , self.__tick, filter=messages.all())
 
         self.post_message('entity_init')
 
@@ -275,33 +273,14 @@ class Entity(object):
 
         enigmus.instance.post_message(self, msg, args)
 
-    def timer(self, func, interval, args=None, repeat=1):
-        """  Creates a timer.
-
-             :param func:     The timeout function.
-             :param interval: The timer interval, in seconds.
-             :param repeat:   The number of repetitions.
-        """
-
-        self.timers.append(Timer(args, func, interval, repeat))
-
     # ------- MESSAGES -------
 
     def __entity_destroy(self):
-        self.timers = None
-
         if self.container:
             self.container.remove_entity(self)
 
         self.is_destroyed = True
         enigmus.instance.remove_entity(self)
-
-    def __tick(self, dt):
-        for timer in self.timers:
-            timer.tick(dt)
-
-        for timer in [t for t in self.timers if t.finished]:
-            self.timers.remove(timer)
 
 #-------------------------------------------------------------------------------
 
@@ -821,25 +800,28 @@ class Room(Container):
 
 #-------------------------------------------------------------------------------
 
-class Timer(object):
-    """  Represents an entity timer. """
+class Timer(Entity):
+    """  Represents a timer entity. """
 
-    def __init__(self, args, func, interval, repeat):
+    def __init__(self, func, interval, args=None, repeat=1):
         """  Initializes the timer.
 
              :param func:     The timeout function.
              :param interval: The timer interval, in seconds.
              :param repeat:   The number of repetitions.
-         """
+        """
+
+        super(Timer, self).__init__()
 
         self.args     = args
-        self.finished = False
         self.func     = func
         self.interval = interval
         self.repeat   = repeat
         self.time     = interval
 
-    def tick(self, dt):
+        self.on_message('tick', self.__tick, filter=messages.all())
+
+    def __tick(self, dt):
         """ Updates the timer.
 
             :param dt: The time delta, in seconds.
@@ -862,7 +844,7 @@ class Timer(object):
 
         self.repeat -= 1
         if self.repeat <= 0:
-            self.finished = True
+            self.destroy()
 
 #-------------------------------------------------------------------------------
 

@@ -67,7 +67,6 @@ class DoorCode(Entity):
 
         enigmus.instance.database.rooms[self.room].add_entity(player)
         player.text(player.container.get_description(exclude_actor=player))
-
         for p in room.get_entities(Player):
             p.text('Lika snabbt som de öppnas slår dörrarna igen, alldeles för '
                    'snabbt för att du skulle hinna gå in utan att vara beredd.')
