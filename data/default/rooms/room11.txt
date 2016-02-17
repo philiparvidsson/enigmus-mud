@@ -5,8 +5,9 @@ whiteboard-tavla med slarvigt ritade figurer och text. Överallt sitter papper
 med anteckningar fasthäftade på väggarna. Vid den ena väggen står ett
 skrivbord.
 
-! ett skrivbord: Det är ett träskrivbord med lådor. På skrivbordet ligger ett
-                 svart skrivbordsunderlag samt en pappersbunt och flera pennor.
+! ett skrivbord: Det är ett träskrivbord med tre lådor. På skrivbordet ligger
+                 ett svart skrivbordsunderlag samt en pappersbunt och flera
+                 pennor.
 
 ! whiteboard:    På whiteboard-tavlan finns fler figurer ritade i olika färger.
                  Det här rummet måste tillhöra en person med väldigt mycket
@@ -27,8 +28,8 @@ skrivbord.
 # norr room10
 
 $ container
-    en översta skrivbordslåda|låda
-    den översta skrivbordslådan|lådan
+    en översta skrivbordslåda|låda|lådor
+    den översta skrivbordslådan|lådan|lådorna
     Detta är den översta skrivbordslådan.
 
     $ item
@@ -43,11 +44,11 @@ $ container
         På lappen står det: "Ring Ulf"
 
 $ container
-    en mellersta skrivbordslåda|låda
-    den mellersta skrivbordslådan|lådan
+    en mellersta skrivbordslåda|låda|lådor
+    den mellersta skrivbordslådan|lådan|lådorna
     Detta är den mellersta skrivbordslådan.
 
 $ container
-    en nedersta skrivbordslåda|låda
-    den nedersta skrivbordslådan|lådan
+    en nedersta skrivbordslåda|låda|lådor
+    den nedersta skrivbordslådan|lådan|lådorna
     Detta är den nedersta skrivbordslådan.

@@ -24,9 +24,7 @@ $ commands/inventory.py:Commands
 
 :: Commands for interacting with containers.
 
-$ commands/look.py:Command
-$ commands/close.py:Command
-$ commands/open.py:Command
+$ commands/container.py:Commands
 
 :: Commands for handling equipment.
 

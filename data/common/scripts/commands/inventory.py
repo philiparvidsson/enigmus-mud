@@ -10,7 +10,7 @@ import language
 import messages
 
 from command  import Command
-from entities import (Actor, Detail, Entity, Player)
+from entities import (Actor, Container, Detail, Entity, Player)
 
 #-----------------------------------------------------------
 # CLASSES
@@ -25,7 +25,7 @@ class Commands(Command):
         super(Commands, self).__init__()
 
         self.commands = {
-            'ge'         : self.inventory,
+            'ge'         : self.give,
 
             'i'          : self.inventory,
             'inventarier': self.inventory,

@@ -324,6 +324,13 @@ class Actor(Entity):
         self.on_message('actor_wear'    , self.__actor_wear    )
         self.on_message('entity_cleanup', self.__entity_cleanup)
 
+    def close(self, container):
+        if not container.close():
+            return False
+
+        self.post_message('actor_close', self, container)
+        return True
+
     def drop(self, item, container=None):
         """ Drops the specified item from the actor's inventory into the
             specified container.
@@ -419,6 +426,13 @@ class Actor(Entity):
             return 1
 
         return super(Actor, self).match(text)
+
+    def open(self, container):
+        if not container.open():
+            return False
+
+        self.post_message('actor_open', self, container)
+        return True
 
     def remove(self, wearable):
         if not wearable in self.wearables: return False
@@ -532,7 +546,6 @@ class Player(Actor):
 
         command = self._buffer[:i]
         self._buffer = self._buffer[i+1:]
-        print len(self._buffer)
 
         i = command.find('\r')
         if i >= 0:
@@ -626,6 +639,9 @@ class Container(Entity):
         """ Closes the container. """
 
         self.is_open = False
+        self.post_message('container_close', self)
+
+        return True
 
     def find_matches(self, text, keep_scores=False):
         matches = super(Container, self).find_matches(text, keep_scores=True)
@@ -672,6 +688,9 @@ class Container(Entity):
         """ Opens the container. """
 
         self.is_open = True
+        self.post_message('container_open', self)
+
+        return True
 
     def remove_entity(self, entity):
         """ Removes the entity from the container.

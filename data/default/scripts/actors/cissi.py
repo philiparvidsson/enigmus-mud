@@ -120,6 +120,9 @@ class Cissi(Actor):
         if not isinstance(entity, Player):
             return
 
+        if not any(hasattr(e, 'quest_item') for e in self.inventory.entities):
+            return
+
         if any(hasattr(e, 'cissi_wants_it') for e in entity.inventory.entities):
             self.say('Vad har du där för något? Får jag se!?')
             self.timer(self.push_player_out, 7.0, args=[entity])
