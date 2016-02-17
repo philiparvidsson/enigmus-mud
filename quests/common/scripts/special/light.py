@@ -4,6 +4,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+import language
 import messages
 
 from entities import Entity
@@ -35,12 +36,22 @@ class LightCommands(Command):
                 player.text('Tänd vad?')
                 return
 
+            if light.is_on:
+                light_desc = light.get_description(indefinite=False)
+                player.text(language.sentence('{} är redan tänd.', light_desc))
+                return
+
             light.is_on = True
             player.emote('tände', light)
         elif args[0] == 'släck':
             light = player.inventory.find_best_match(' '.join(args[1:]))
             if not isinstance(light, Light):
                 player.text('Släck vad?')
+                return
+
+            if not light.is_on:
+                light_desc = light.get_description(indefinite=False)
+                player.text(language.sentence('{} är redan släckt.', light_desc))
                 return
 
             light.is_on = False

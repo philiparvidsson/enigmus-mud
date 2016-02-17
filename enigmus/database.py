@@ -138,20 +138,25 @@ class Database(object):
         # 1. Load room data.
         #-----------------------------------
 
-        for root, dirs, files in os.walk(os.path.join(path, 'rooms')):
+        path = os.path.join(path, 'rooms')
+        for root, dirs, files in os.walk(path):
             for file in files:
                 file = os.path.join(root, file)
                 if not file.endswith('.txt'):
                     logging.warn('file {} ignored', file)
                     continue
 
-                name = os.path.basename(file[:file.find('.txt')])
-
                 with open(file) as room_file:
                     data = self.deserialize_entity(room_file.read())
 
+                name = os.path.relpath(file, path)
+                name = name.replace('\\', '/')
+                name = name[:name.find('.txt')]
+
                 data['name'] = name
+                data['dir' ] = os.path.relpath(root, path)
                 rooms[name]  = data
+                logging.info('loaded room: {}', name)
 
         #-----------------------------------
         # 2. Create rooms, entities etc.
@@ -168,7 +173,14 @@ class Database(object):
 
         for room in rooms.values():
             for exit_data in room.data['exits']:
-                room.add_exit(exit_data[0], rooms[exit_data[1]])
+                room_name = exit_data[1]
+                if room.data['dir'] != '.':
+                    room_name = os.path.join(room.data['dir'], room_name)
+                    room_name = room_name.replace('\\', '/')
+
+                if room_name.startswith('/'):
+                    room_name = room_name[1:]
+                room.add_exit(exit_data[0], rooms[room_name])
 
             # We're done with the room data here.
             del room.data

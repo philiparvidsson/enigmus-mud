@@ -1,0 +1,13 @@
+Du befinner dig i byggnadens källare. Väggar och tak är av grå betong. Golvet
+är grönt. Det sitter lysrör i taket, men de är spruckna och trasiga.
+Glasskärvor ligger på golvet. Brun färg har stänkt på väggen och golvet.
+
+! glas: Det ligger glasskärvor på golvet som ramlat ned från lysrören när de
+        spruckit. Ingen verkar ha varit här nere på länge.
+
+! färg:  Det är brun färg på väggen.
+
+# upp   /floor1/room3
+# söder room2
+
+$ special/darkness.py:Darkness

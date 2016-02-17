@@ -1,5 +1,5 @@
 Du befinner dig i en korridor. Längs korridoren finns flera rum som alla är
 mörka. I korridoren lyser ett lysrör i taket, men belysningen är ganska dålig.
 
-# öster room9
-# söder room11
+# öster room2
+# söder room4

@@ -34,8 +34,8 @@ en skylt på leder in i ett annat rum.
 
 ! en skylt:    På skylten står det: "Värm din mat här!
 
-# norr  room6
-# öster room4
+# norr  room3
+# öster room1
 
 $ container
     en bokhylla|hylla

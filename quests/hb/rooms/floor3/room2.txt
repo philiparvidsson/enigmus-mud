@@ -1,5 +1,5 @@
 En korridor. Längst bort i korridoren finns ett fönster som släpper in lite
 ljus. Här finns en öppen dörr som leder in till en annan korridor.
 
-# söder room8
-# väster room10
+# söder room1
+# väster room3

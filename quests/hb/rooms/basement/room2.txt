@@ -1,0 +1,5 @@
+rum 2 lol test
+
+# sönder room1
+
+$ special/darkness.py:Darkness

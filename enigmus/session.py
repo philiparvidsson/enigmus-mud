@@ -46,7 +46,7 @@ class LoggingInState(State):
             self.session.player.description = self.session.player.name
             self.session.state = PlayingState(self.session)
 
-            enigmus.instance.database.rooms['room1'].add_entity(self.session.player)
+            enigmus.instance.database.rooms['floor1/room1'].add_entity(self.session.player)
             self.session.player.send(self.session.player.container.get_description(exclude_actor=self.session.player))
 
 class PlayingState(State):

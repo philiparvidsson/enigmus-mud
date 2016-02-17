@@ -26,26 +26,27 @@ class Darkness(Entity):
             filter=messages.for_container_of(self))
 
     def is_dark(self):
-        light_class = enigmus.instance.database.get_class('items/light.py:Light')
+        light_class = enigmus.instance.database.get_class('special/light.py:Light')
         num_lights  = 0
-        for entity in self.room.entities:
-            if isinstance(entity, Actor):
-                for item in entity.inventory.entities:
-                    if not isinstance(item, light_class):
-                        continue
 
-                    if item.is_on:
-                        num_lights += 1
-                        if num_lights >= self.lights_required:
-                            return True
+        # Find all lights in room and inventories.
 
-            if not isinstance(entity, light_class):
+        inventories = [actor.inventory.entities for actor in self.room.entities
+                           if isinstance(actor, Actor)]
+
+        lights = [light for light in self.room.entities
+                      if isinstance(light, light_class)]
+
+        lights.extend([item for inventory in inventories for item in inventory
+                           if isinstance(item, light_class)])
+
+        for light in lights:
+            if not light.is_on:
                 continue
 
-            if entity.is_on:
-                num_lights += 1
-                if num_lights >= self.lights_required:
-                    return True
+            num_lights += 1
+            if num_lights >= self.lights_required:
+                return False
 
         return True
 
@@ -91,7 +92,7 @@ class Darkness(Entity):
     def __container_add(self, container, entity):
         if entity == self:
             self.room = container
-            self.replace_find_matches(self.room)
+            self.replace_find_matches   (self.room)
             self.replace_get_description(self.room)
             return
 
@@ -101,11 +102,10 @@ class Darkness(Entity):
 
     def __container_remove(self, container, entity):
         if entity == self:
-            self.restore_find_matches(self.room)
+            self.restore_find_matches   (self.room)
             self.restore_get_description(self.room)
             return
 
         if isinstance(entity, Actor):
             self.restore_find_matches(entity)
             self.restore_find_matches(entity.inventory)
-

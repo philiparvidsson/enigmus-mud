@@ -9,10 +9,10 @@ Det finns även toaletter i närheten för den som behöver uträtta sina behov.
               uträtta dina behov.
 
 # söder room1
-# upp   room4
+# upp   /floor2/room1
+# ner   /basement/room1
 
 $ special/doorcode.py:DoorCode
 
     % code: "4973"
-    % room: "room7"
-
+    % room: "floor1/room4"

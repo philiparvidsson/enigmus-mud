@@ -9,7 +9,7 @@ ser en svart, rund soptunna i ett av rummets hörn.
              Matresterna är nog micrade så pass många gånger att de i princip
              är omöjliga att få bort vid det här laget.
 
-# söder room5
+# söder room2
 
 $ containers/trashcan.py:Trashcan
     $ item

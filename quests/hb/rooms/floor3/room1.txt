@@ -1,4 +1,4 @@
 Du står i en korridor. Du kan se ner i ljussalen härifrån.
 
-# ner  room4
-# norr room9
+# ner  /floor2/room1
+# norr room2
