@@ -6,7 +6,6 @@
 
 import enigmus
 import messages
-import random
 
 from entities import Actor, Entity, Player, Room
 
