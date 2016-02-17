@@ -65,7 +65,7 @@ class DoorCode(Entity):
         player.emote('går in i datasalen.')
         player.text('Glasdörrarna slår igen bakom dig.')
 
-        enigmus.rooms[self.room].add_entity(player)
+        enigmus.instance.database.rooms[self.room].add_entity(player)
         player.text(player.container.get_description(exclude_actor=player))
 
         for p in room.get_entities(Player):
