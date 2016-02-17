@@ -18,6 +18,19 @@ def for_actors_with_item(item):
 
     return filter
 
+def for_actors_with_item_of_class(class_):
+    def filter(target):
+        if not hasattr(target, 'inventory'):
+            return False
+
+        for item in target.inventory.entities:
+            if isinstance(item, class_):
+                return True
+
+        return False
+
+    return filter
+
 def for_entity(entity):
     """ Receives messages meant for the recipient.
 

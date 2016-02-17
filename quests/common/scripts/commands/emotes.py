@@ -10,7 +10,7 @@ import language
 import messages
 import random
 
-from command import Command
+from command  import Command
 from entities import (Actor, Entity, Player, Room)
 
 #-----------------------------------------------------------
