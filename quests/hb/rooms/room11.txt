@@ -3,7 +3,7 @@ förutom det ljus som lyser in genom fönstret ner mot ljussalen, vilket inte ä
 särskilt mycket på grund av det mulna vädret. På en av väggarna finns en
 whiteboard-tavla med slarvigt ritade figurer och text. Överallt sitter papper
 med anteckningar fasthäftade på väggarna. Vid den ena väggen står ett
-skrivbord.
+skrivbord och ett skåp.
 
 ! ett skrivbord: Det är ett träskrivbord med tre lådor. På skrivbordet ligger
                  ett svart skrivbordsunderlag samt en pappersbunt och flera
@@ -52,3 +52,8 @@ $ container
     en nedersta skrivbordslåda|låda|lådor
     den nedersta skrivbordslådan|lådan|lådorna
     Detta är den nedersta skrivbordslådan.
+
+$ container
+    ett vitt skåp
+    det vita skåpet
+    Det är ett vitt skåp i metall. Det ser väldigt tungt ut.

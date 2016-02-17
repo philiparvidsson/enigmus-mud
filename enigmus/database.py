@@ -54,6 +54,7 @@ class Database(object):
                 elif data['script'][0] == 'containeritem'    : class_ = ContainerItem
                 elif data['script'][0] == 'item'             : class_ = Item
                 elif data['script'][0] == 'wearablecontainer': class_ = WearableContainer
+                elif data['script'][0] == 'wearableitem'     : class_ = WearableItem
         else:
             # No script specified means it's a room without script.
             class_ = Room
