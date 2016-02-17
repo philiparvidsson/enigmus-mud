@@ -57,3 +57,5 @@ $ container
     ett vitt skåp
     det vita skåpet
     Det är ett vitt skåp i metall. Det ser väldigt tungt ut.
+
+    $ items/flashlight.py:Flashlight

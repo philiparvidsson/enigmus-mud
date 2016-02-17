@@ -15,3 +15,4 @@ $ special/doorcode.py:DoorCode
 
     % code: "4973"
     % room: "room7"
+

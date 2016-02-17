@@ -31,6 +31,9 @@ def for_actors_with_item_of_class(class_):
 
     return filter
 
+def for_container_of(entity):
+    return lambda target: target == entity.container
+
 def for_entity(entity):
     """ Receives messages meant for the recipient.
 

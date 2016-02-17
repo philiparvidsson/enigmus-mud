@@ -6,6 +6,8 @@ av ett fönster längre upp i trappan.
                några lampor. Genom fönstret kan man skymta en grå himmel
                utanför.
 
+# väster room1
+
 $ wearablecontainer
     en  grå ryggsäck
     den grå ryggsäcken
@@ -13,4 +15,3 @@ $ wearablecontainer
 
     % is_open: false
 
-# väster room1

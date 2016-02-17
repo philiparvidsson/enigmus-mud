@@ -99,6 +99,10 @@ class Database(object):
         text = text.replace('\r', '')
         return self.parse_lines(text.split('\n'))
 
+    def get_class(self, name):
+        name = name.split(':')
+        return getattr(self.scripts[name[0]], name[1])
+
     def load_script(self, path, filename):
             name = os.path.join(path, filename)
             name = os.path.relpath(name, path)
