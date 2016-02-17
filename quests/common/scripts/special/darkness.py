@@ -7,7 +7,7 @@
 import enigmus
 import messages
 
-from entities import Actor, Entity, Player, Room
+from entities import Actor, Entity, Room
 
 #-----------------------------------------------------------
 # CLASSES
