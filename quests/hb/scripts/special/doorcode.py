@@ -8,7 +8,7 @@ import enigmus
 import messages
 import random
 
-from entities import (Entity, Player, Room)
+from entities import Entity, Player, Room
 
 #-----------------------------------------------------------
 # CLASSES

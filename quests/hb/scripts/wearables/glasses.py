@@ -4,7 +4,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-from entities import (Container, WearableItem)
+from entities import Container, WearableItem
 
 #-----------------------------------------------------------
 # CLASSES

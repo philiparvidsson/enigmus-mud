@@ -11,7 +11,7 @@ import messages
 import random
 
 from command  import Command
-from entities import (Actor, Entity, Player, Room)
+from entities import Actor, Entity, Player, Room
 
 #-----------------------------------------------------------
 # CLASSES

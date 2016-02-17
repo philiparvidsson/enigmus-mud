@@ -9,7 +9,7 @@
 import language
 import messages
 
-from entities import (Actor, Entity, Player, Room)
+from entities import Actor, Entity, Player, Room
 
 #-----------------------------------------------------------
 # CLASSES

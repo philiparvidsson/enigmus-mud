@@ -9,7 +9,7 @@
 import messages
 
 from command  import Command
-from entities import (Actor, Container, Detail, Entity, Player)
+from entities import Actor, Container, Detail, Entity, Player
 
 #-----------------------------------------------------------
 # CLASSES
