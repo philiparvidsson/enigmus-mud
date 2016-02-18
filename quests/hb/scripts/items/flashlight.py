@@ -14,7 +14,7 @@ from command  import Command
 # CLASSES
 #-----------------------------------------------------------
 
-light_class = enigmus.instance.database.get_class('special/light.py:Light')
+light_class = enigmus.get_entity_class('special/light.py:Light')
 class Flashlight(Item, light_class):
     def __init__(self):
         super(Flashlight, self).__init__()

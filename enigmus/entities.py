@@ -393,6 +393,13 @@ class Actor(Entity):
         self.post_message('actor_go', direction)
         return True
 
+    def lock(self, unlockable, key):
+        if unlockable.lock(key):
+            self.post_message('actor_lock', self, unlockable, key)
+            return True
+
+        return False
+
     def match(self, text):
         """ Checks if the specified description matches the entity.
 
@@ -445,6 +452,13 @@ class Actor(Entity):
         self.post_message('actor_take', self, container, item)
 
         return True
+
+    def unlock(self, unlockable, key):
+        if unlockable.unlock(key):
+            self.post_message('actor_unlock', self, unlockable, key)
+            return True
+
+        return False
 
     def wear(self, wearable):
         if wearable.container != self.inventory  : return False

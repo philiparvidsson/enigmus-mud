@@ -10,13 +10,14 @@ $ actors/cissi.py:Cissi
 
     $ wearables/glasses.py:Glasses
 
-    $ item
+    $ special/unlockable.py:Key
         en nyckel|nycklar
         nyckeln|nycklarna
         Det är en liten nyckel. Det ser ut som att man kan låsa upp ett lås med
         den, förutsatt att nyckeln passar i låset. I övrigt är nyckeln inte
         särskilt spännande.
 
+        % key_name:   "cissi_locker_key"
         % quest_item: true
 
 $ containers/trashcan.py:Trashcan

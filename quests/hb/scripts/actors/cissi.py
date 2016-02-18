@@ -96,7 +96,6 @@ class Cissi(Actor):
         def give_back():
             self.give(giver, item)
 
-
         if not hasattr(item, 'cissi_wants_it'):
             self.say('Det där joxet vill jag inte ha!')
             Timer(give_back, 0.5)

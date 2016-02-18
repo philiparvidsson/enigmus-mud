@@ -8,7 +8,6 @@ import language
 import messages
 
 from entities import Entity
-from command  import Command
 
 #-----------------------------------------------------------
 # CLASSES
@@ -20,7 +19,7 @@ class Light(Entity):
 
         self.is_on = False
 
-class LightCommands(Command):
+class LightCommands(Entity):
     def __init__(self):
         super(LightCommands, self).__init__()
 

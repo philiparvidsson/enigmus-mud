@@ -26,7 +26,7 @@ class Darkness(Entity):
             filter=messages.for_container_of(self))
 
     def is_dark(self):
-        light_class = enigmus.instance.database.get_class('special/light.py:Light')
+        light_class = enigmus.get_entity_class('special/light.py:Light')
         num_lights  = 0
 
         # Find all lights in room and inventories.

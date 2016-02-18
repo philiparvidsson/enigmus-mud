@@ -6,6 +6,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+import enigmus
 import language
 import messages
 
@@ -130,6 +131,13 @@ class Commands(Command):
         if not container or not isinstance(container, Container):
             # Open what?
             player.text('Öppna vad?')
+            return
+
+        unlockable_class = enigmus.get_entity_class('special/unlockable.py:Unlockable')
+        if isinstance(container, unlockable_class) and container.is_locked:
+            # {} is locked.
+            player.text(language.sentence('{} är låst.',
+                        container.get_description(indefinite=False)))
             return
 
         if container.is_open:

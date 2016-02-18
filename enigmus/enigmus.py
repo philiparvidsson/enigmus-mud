@@ -114,6 +114,9 @@ class Enigmus(object):
 def get_entity(id):
     return instance.entities[id]
 
+def get_entity_class(name):
+    return instance.database.get_class(name)
+
 def exit():
     instance._done = True
 

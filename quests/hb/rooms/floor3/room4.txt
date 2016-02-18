@@ -53,9 +53,13 @@ $ container
     den nedersta skrivbordslådan|lådan|lådorna
     Detta är den nedersta skrivbordslådan.
 
-$ container
+$ special/unlockable.py:UnlockableContainer
     ett vitt skåp
     det vita skåpet
     Det är ett vitt skåp i metall. Det ser väldigt tungt ut.
+
+    % is_locked: true
+    % is_open:   false
+    % key_name:  "cissi_locker_key"
 
     $ items/flashlight.py:Flashlight
