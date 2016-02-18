@@ -68,26 +68,33 @@ class Darkness(Entity):
         entity.find_matches = entity.find_matches_darkness
         del entity.find_matches_darkness
 
-    def replace_get_description(self, room):
-        room.get_description_darkness = room.get_description
+    def replace_get_description(self, entity):
+        entity.get_description_darkness = entity.get_description
 
-        def get_description(exclude_actor=None):
-            if self.is_dark():
-                if self.lights_required > 1:
-                    return 'Ett väldigt mörkt rum.'
-                else:
-                    return 'Ett mörkt rum.'
+        if isinstance(entity, Room):
+            def get_description(exclude_actor=None):
+                if self.is_dark():
+                    if self.lights_required > 1:
+                        return 'Ett väldigt mörkt rum.'
+                    else:
+                        return 'Ett mörkt rum.'
 
-            return room.get_description_darkness(exclude_actor)
+                return entity.get_description_darkness(exclude_actor)
+        else:
+            def get_description(indefinite=False):
+                if self.is_dark():
+                    return 'någon'
 
-        room.get_description = get_description
+                return entity.get_description_darkness(indefinite)
 
-    def restore_get_description(self, room):
-        if not hasattr(room, 'get_description_darkness'):
+        entity.get_description = get_description
+
+    def restore_get_description(self, entity):
+        if not hasattr(entity, 'get_description_darkness'):
             return
 
-        room.get_description = room.get_description_darkness
-        del room.get_description_darkness
+        entity.get_description = entity.get_description_darkness
+        del entity.get_description_darkness
 
     def __container_add(self, container, entity):
         if entity == self:
@@ -97,8 +104,9 @@ class Darkness(Entity):
             return
 
         if isinstance(entity, Actor):
-            self.replace_find_matches(entity)
-            self.replace_find_matches(entity.inventory)
+            self.replace_find_matches   (entity)
+            self.replace_find_matches   (entity.inventory)
+            self.replace_get_description(entity)
 
     def __container_remove(self, container, entity):
         if entity == self:
@@ -109,3 +117,4 @@ class Darkness(Entity):
         if isinstance(entity, Actor):
             self.restore_find_matches(entity)
             self.restore_find_matches(entity.inventory)
+            self.restore_get_description(entity)

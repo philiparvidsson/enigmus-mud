@@ -18,5 +18,3 @@ finns glasdörrar som går in till ett trapphus.
 
 # norr  room3
 # öster room2
-
-$ wearables/glasses.py:Glasses
