@@ -19,6 +19,12 @@ class Light(Entity):
 
         self.is_on = False
 
+    def switch_on(self):
+        self.is_on = True
+
+    def switch_off(self):
+        self.is_on = False
+
 class LightCommands(Entity):
     def __init__(self):
         super(LightCommands, self).__init__()
@@ -40,7 +46,7 @@ class LightCommands(Entity):
                 player.text(language.sentence('{} är redan tänd.', light_desc))
                 return
 
-            light.is_on = True
+            light.switch_on()
             player.emote('tände', light)
         elif args[0] == 'släck':
             light = player.inventory.find_best_match(' '.join(args[1:]))
@@ -53,7 +59,7 @@ class LightCommands(Entity):
                 player.text(language.sentence('{} är redan släckt.', light_desc))
                 return
 
-            light.is_on = False
+            light.switch_off()
             player.emote('släckte', light)
 
 LightCommands()

@@ -24,3 +24,13 @@ class Flashlight(Item, light_class):
                       'En liten svart ficklampa. Den är av stilren modell och '
                       'får lätt plats i fickan tack vare sin storlek. Den ser '
                       'dyr ut.')
+
+    def switch_on(self):
+        super(Flashlight, self).switch_on()
+
+        self.description.add_indefinite_adjective('*tänd*')
+
+    def switch_off(self):
+        super(Flashlight, self).switch_off()
+
+        self.description.remove_indefinite_adjective('*tänd*')

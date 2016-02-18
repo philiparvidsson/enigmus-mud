@@ -732,6 +732,12 @@ class Description(object):
     def remove_indefinite_adjective(self, adj):
         if adj in self.indefinite[1]: self.indefinite[1].remove(adj)
 
+    def set_definite_noun(self, noun):
+        self.definite[2] = noun
+
+    def set_indefinite_noun(self, noun):
+        self.indefinite[2] = noun
+
 #-------------------------------------------------------------------------------
 
 class Detail(Entity):
