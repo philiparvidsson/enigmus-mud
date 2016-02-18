@@ -58,8 +58,8 @@ $ special/unlockable.py:UnlockableContainer
     det vita skåpet
     Det är ett vitt skåp i metall. Det ser väldigt tungt ut.
 
-    % is_locked: true
-    % is_open:   false
-    % key_name:  "cissi_locker_key"
+    % is_locked:    true
+    % is_open:      false
+    % key_name:     "cissi_locker_key"
 
     $ items/flashlight.py:Flashlight

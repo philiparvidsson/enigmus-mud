@@ -606,8 +606,9 @@ class Container(Entity):
 
         super(Container, self).__init__()
 
-        self.entities = []
-        self.is_open  = True
+        self.entities     = []
+        self.is_closeable = False
+        self.is_open      = True
 
         self.on_message('entity_cleanup'  , self.__entity_cleanup  )
 

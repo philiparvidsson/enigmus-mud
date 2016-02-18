@@ -46,6 +46,8 @@ class UnlockableContainer(Container, Unlockable):
     def __init__(self):
         super(UnlockableContainer, self).__init__()
 
+        self.is_closeable = True
+
 class LockCommands(Entity):
     def __init__(self):
         super(LockCommands, self).__init__()

@@ -53,6 +53,10 @@ class Commands(Command):
             player.text('Stäng vad?')
             return
 
+        if not container.is_closeable:
+            player.text(language.sentence('{} går inte att stänga!', container.get_description(indefinite=False)))
+            return
+
         if not container.is_open:
             # {} is already closed.
             player.text(language.sentence('{} är redan stängd.',
@@ -128,7 +132,7 @@ class Commands(Command):
         if not container:
             container = player.container.find_best_match(desc)
 
-        if not container or not isinstance(container, Container):
+        if not container or not isinstance(container, Container) or not container.is_closeable:
             # Open what?
             player.text('Öppna vad?')
             return
