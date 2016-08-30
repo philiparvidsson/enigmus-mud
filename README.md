@@ -4,4 +4,4 @@ Developed a simple MUD (multiplayer text game) game engine and started a couple 
 
 <img src="img/01.png" alt="">
 
-<img src="img/01.png" alt="">
+<img src="img/02.png" alt="">
