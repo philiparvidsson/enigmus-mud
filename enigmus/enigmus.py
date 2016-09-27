@@ -4,7 +4,7 @@
 # IMPORTS
 #-----------------------------------------------------------
 
-import console
+#import console
 import database
 import logging
 import messages
@@ -143,7 +143,7 @@ def run(quests):
     instance = Enigmus()
 
     instance.init()
-    console.init()
+    #console.init()
 
     for quest in quests:
         instance.database.load_quest(quest)
@@ -161,7 +161,7 @@ def run(quests):
             instance.tick(one_tick)
             cum_dt -= one_tick
 
-        console.update()
+        #console.update()
         time.sleep(one_tick/2.0)
 
     instance.cleanup()
