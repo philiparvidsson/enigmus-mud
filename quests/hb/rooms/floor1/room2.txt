@@ -11,8 +11,9 @@ av ett fönster längre upp i trappan.
 $ wearablecontainer
     en  grå ryggsäck
     den grå ryggsäcken
-    Det är en grå ryggsäck som man kan stoppa saker i. Den ser modern ut.
+    Det är en grå ryggsäck tillverkad i matt nylon som man kan stoppa saker i.
+    Den ser modern ut. På ena axelbandet sitter en neongrön logotyp
+    föreställande en tennisboll.
 
     % is_closeable: true
     % is_open:      false
-
