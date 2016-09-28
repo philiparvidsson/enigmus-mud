@@ -35,19 +35,25 @@ class LoggingInState(State):
     def handle_command(self, command):
         if not hasattr(self.session.player, 'name'):
             self.session.player.name = command
-            self.session.player.send('Hej {}! Ange lösenord: '.format(command), end='')
-        elif not hasattr(self.session.player, 'password'):
-            self.session.player.password = command
-
-            del self.session.player.password
-
-            self.session.player.send('Tack! Ha så kul!')
+            self.session.player.send('Hej {}!\n'.format(command), end='')
 
             self.session.player.description = self.session.player.name
             self.session.state = PlayingState(self.session)
 
             enigmus.instance.database.rooms['floor1/room1'].add_entity(self.session.player)
             self.session.player.send(self.session.player.container.get_description(exclude_actor=self.session.player))
+#        elif not hasattr(self.session.player, 'password'):
+#            self.session.player.password = command
+#
+#            del self.session.player.password
+#
+#            self.session.player.send('Tack! Ha så kul!')
+#
+#            self.session.player.description = self.session.player.name
+#            self.session.state = PlayingState(self.session)
+#
+#            enigmus.instance.database.rooms['floor1/room1'].add_entity(self.session.player)
+#            self.session.player.send(self.session.player.container.get_description(exclude_actor=self.session.player))
 
 class PlayingState(State):
     def __init__(self, session):
