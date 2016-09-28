@@ -40,8 +40,8 @@ class Command(Entity):
             if player == actor:
                 player.text(room.get_description(exclude_actor=player))
             else:
-                # {} comes {}.
-                player.text(language.sentence('{} kommer {}.', actor_desc, exit))
+                # {} comes in.
+                player.text(language.sentence('{} kommer in.', actor_desc))
 
     def __actor_leave(self, actor, room, exit):
         actor_desc = actor.get_description(indefinite=False)

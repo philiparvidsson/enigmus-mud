@@ -484,10 +484,10 @@ class Actor(Entity):
         new_room = exit[0]
 
         room.remove_entity(self)
-        self.post_message('actor_leave', self, room, exit[1])
+        self.post_message('actor_leave', self, room, direction)
 
         new_room.add_entity(self)
-        self.post_message('actor_enter', self, new_room, exit[2])
+        self.post_message('actor_enter', self, new_room, direction)
 
     def __actor_remove(self, actor, wearable):
         self.wearables.remove(wearable)
@@ -533,18 +533,20 @@ class Player(Actor):
             self.disconnect()
             return
 
-        i = self._buffer.find('\n')
-        if i == -1:
-            return None
+        while True:
+            i = self._buffer.find('\n')
+            if i == -1:
+                return None
 
-        command = self._buffer[:i]
-        self._buffer = self._buffer[i+1:]
+            command = self._buffer[:i]
+            self._buffer = self._buffer[i+1:]
 
-        i = command.find('\r')
-        if i >= 0:
-            command = command[:i]
+            i = command.find('\r')
+            if i >= 0:
+                command = command[:i]
 
-        self.session.state.handle_command(command)
+            if len(command) > 0:
+                self.session.state.handle_command(command)
 
     def send(self, text, end='\n', hard_breaks=True):
         text = text.replace('\r', '')

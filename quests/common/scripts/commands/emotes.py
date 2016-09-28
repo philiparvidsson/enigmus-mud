@@ -164,6 +164,7 @@ class Commands(Command):
         #args = [actor] + list(args)
         for player in room.get_entities(Player):
             s = 'Du' if player == actor else actor.get_description()
+            s2 = ' dig' if s == 'Du' else ' sig'
 
             for arg in args:
                 if isinstance(arg, basestring):
@@ -171,7 +172,7 @@ class Commands(Command):
                     continue
 
                 if player == actor:
-                    s += ' sig' if arg == player else ' ' + arg.get_description(indefinite=False)
+                    s += s2 if arg == player else ' ' + arg.get_description(indefinite=False)
                 else:
                     s += ' dig' if arg == player else ' ' + arg.get_description(indefinite=False)
 
