@@ -42,6 +42,8 @@ class LoggingInState(State):
 
             enigmus.instance.database.rooms['floor1/room1'].add_entity(self.session.player)
             self.session.player.send(self.session.player.container.get_description(exclude_actor=self.session.player))
+
+            self.session.player.send('Om du är ny skriver du: hjälp')
 #        elif not hasattr(self.session.player, 'password'):
 #            self.session.player.password = command
 #

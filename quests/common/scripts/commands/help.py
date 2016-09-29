@@ -32,7 +32,7 @@ class Command(Entity):
             return
 
         player.text('''
-Skriv säg <text> för att säga något till andra spelare:
+Skriv säg &lt;text&gt; för att säga något till andra spelare:
   säg hej, hur går det?
 
 Skriv titta för att se dig omkring. Du kan även titta på eller i något:

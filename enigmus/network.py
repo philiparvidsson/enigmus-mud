@@ -162,6 +162,7 @@ class WebSocket(TcpConnection):
         if self._state == 0:
             self._send_buf += data
         else:
+            opcode = 1 # text frame
             while len(data) > 0:
                 n = min(120, len(data))
                 d = data[0:n]
@@ -169,12 +170,13 @@ class WebSocket(TcpConnection):
 
                 s = bytearray()
                 if len(data) == 0:
-                    s.append(0x81)
+                    s.append(0x80 | opcode)
                 else:
-                    s.append(0x81) # should be 0x01 because fin should be set to 0
+                    s.append(0x00 | opcode)
 
                 s.append(len(d))
                 s.extend(memoryview(d).tobytes())
+                opcode = 0 # continuation frame
 
                 super(WebSocket, self).send(s)
 

@@ -2,18 +2,88 @@
 <html>
   <head>
     <title>Enigmus MUD</title>
-  </head>
-  <body style="background-color: #111;">
-    <div style="margin-left: auto; margin-right: auto; width: 800px;">
-      <pre id="text" style="color: #eee; font-family: monospace; font-size: 14px; line-height: 150%; max-height: 800px; overflow: scroll; overflow-x: hidden; width: 100%;"></pre>
+    <style>
+      * {
+          color: #eee;
+          background-color: #111;
+          font-family: monospace;
+          font-size: 14px;
+          line-height: 150%;
+      }
 
-      <input id="command" style="background-color: #111; border: 1px solid #333; color: #fff; width: 100%;" type="text">
+      input {
+          border: 1px solid #333;
+          outline: none;
+          width: 100%;
+      }
+
+      #wrapper {
+          margin-left: auto;
+          margin-right: auto;
+          width: 620px;
+      }
+
+      #text {
+          overflow: scroll;
+          overflow: hidden;
+          width: 100%;
+          max-height: 800px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <pre id="text"></pre>
+
+      <input id="command" type="text">
     </div>
 
-    <script src="index.js">
-    </script>
-
     <script>
+      maxLength = 8192
+      var conn = new WebSocket('ws://127.0.0.1:1337')
+
+      conn.onerror = (err) => {
+          console.log('err', err)
+      }
+
+      conn.onmessage = (e)  => {
+          s = e.data
+
+          //s = s.replace(/(?:\r\n|\r|\n)/g, '<br/>')
+          s = s.replace(/Utg.ngar\: .*/, (s) => '<span style="color: #0d0;">' + s + '</span>')
+
+          textElem = document.getElementById('text')
+
+          str = textElem.innerHTML + s
+
+          if (str.length > maxLength) {
+              str = str.substring(str.length - maxLength)
+          }
+
+          textElem.innerHTML = str;
+          textElem.scrollTop = textElem.scrollHeight;
+      }
+
+      conn.onopen = () => {
+      }
+
+       function sendCommand(s) {
+           if (s.length == 0) {
+               return
+           }
+
+           str = textElem.innerHTML + '<span style="color: #007fff">' +s + '</span>\n'
+
+           if (str.length > maxLength) {
+               str = str.substring(str.length - maxLength)
+           }
+
+           textElem.innerHTML = str;
+           textElem.scrollTop = textElem.scrollHeight;
+
+           conn.send(s + '\n')
+      }
+
       input = document.getElementById('command')
       input.focus()
       input.onkeyup = (e) => {
