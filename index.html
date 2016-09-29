@@ -67,21 +67,21 @@
       conn.onopen = () => {
       }
 
-       function sendCommand(s) {
-           if (s.length == 0) {
-               return
-           }
+      function sendCommand(s) {
+          if (s.length == 0) {
+              return
+          }
 
-           str = textElem.innerHTML + '<span style="color: #007fff">' +s + '</span>\n'
+          str = textElem.innerHTML + '<span style="color: #007fff">' +s + '</span>\n'
 
-           if (str.length > maxLength) {
-               str = str.substring(str.length - maxLength)
-           }
+          if (str.length > maxLength) {
+              str = str.substring(str.length - maxLength)
+          }
 
-           textElem.innerHTML = str;
-           textElem.scrollTop = textElem.scrollHeight;
+          textElem.innerHTML = str;
+          textElem.scrollTop = textElem.scrollHeight;
 
-           conn.send(s + '\n')
+          conn.send(s + '\n')
       }
 
       input = document.getElementById('command')
