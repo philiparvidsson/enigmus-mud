@@ -15,10 +15,9 @@ conn.onmessage = (e)  => {
 }
 
 conn.onopen = () => {
-    console.log('heylo connected')
-    conn.send('heylo\n')
 }
 
 function sendCommand(s) {
+    textElem.innerHTML += s + '\n'
     conn.send(s + '\n')
 }
