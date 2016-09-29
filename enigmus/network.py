@@ -4,7 +4,9 @@
 # IMPORTS
 #-----------------------------------------------------------
 
+import base64
 import select
+import sha
 import socket
 
 #-----------------------------------------------------------
@@ -62,6 +64,8 @@ class TcpConnection(object):
         for func in self.server._receive_funcs:
             func(self, data)
 
+        return data
+
     def send(self, data):
         """ Sends data through the connection. """
 
@@ -69,6 +73,60 @@ class TcpConnection(object):
 
         for func in self.server._send_funcs:
             func(self, data)
+
+#-------------------------------------------------------------------------------
+
+class WebSocket(TcpConnection):
+    def __init__(self, server, sock, addr):
+        super(WebSocket, self).__init__(server, sock, addr)
+
+        self._buffer = ''
+        self._state = 0
+
+    def _receive(self):
+        data = self._socket.recv(BUF_SIZE)
+
+        if not data:
+            self.close()
+            return None
+
+        if self._state == 0:
+            self._buffer += data.replace('\r', '')
+
+            if self._buffer.find('\n\n') > 0:
+                lines = self._buffer.split('\n')
+                headers = {}
+                for line in lines:
+                    if line.startswith('GET') or len(line) == 0:
+                        continue
+
+                    s = line.split(':')
+                    name = s[0].strip()
+                    value = s[1].strip()
+
+                    headers[name] = value
+
+                self._buffer = ''
+                self._send_handshake(headers)
+                self._state = 1
+        elif self._state == 1:
+            print data, 'received'
+
+
+        return data
+
+    def send(self, data):
+        pass
+
+    def _send_handshake(self, headers):
+        s = headers['Sec-WebSocket-Key'] + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
+        wsh = sha.new(s)
+        ws_hash = base64.b64encode(wsh.digest())
+        self.send('HTTP/1.1 101 Switching Protocols\n')
+        self.send('Upgrade: websocket\n')
+        self.send('Sec-WebSocket-Accept:{}\n'.format(ws_hash))
+        self.send('Sec-WebSocket-Protocol: chat\n')
+        self.send('\n\n')
 
 #-------------------------------------------------------------------------------
 
@@ -168,7 +226,7 @@ class TcpServer(object):
         """ Accepts pending incoming connections. """
 
         sock, addr = self._socket.accept()
-        conn       = TcpConnection(self, sock, addr)
+        conn       = WebSocket(self, sock, addr)
 
         self.connections[sock] = conn
 
