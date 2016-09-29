@@ -527,7 +527,8 @@ class Player(Actor):
         self._connection.close()
 
     def receive(self, text):
-        self._buffer += text.decode('iso-8859-1').encode('utf-8')
+        #self._buffer += text.decode('iso-8859-1').encode('utf-8')
+        self._buffer += text.decode('utf-8').encode('utf-8')
 
         if len(self._buffer) > Player.MAX_BUFFER:
             self.disconnect()

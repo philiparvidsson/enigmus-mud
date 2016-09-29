@@ -9,7 +9,9 @@ conn.onmessage = (e)  => {
 
     //s = s.replace(/(?:\r\n|\r|\n)/g, '<br/>')
 
-    document.getElementById('text').innerHTML += s
+    textElem = document.getElementById('text')
+    textElem.innerHTML += s
+    textElem.scrollTop = textElem.scrollHeight;
 }
 
 conn.onopen = () => {
