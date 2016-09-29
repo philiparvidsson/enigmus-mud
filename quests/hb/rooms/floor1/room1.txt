@@ -2,16 +2,20 @@ Du befinner dig i en stor entrésal. Taket är flera meter högt upp, golvet är
 svart laminat och väggarna är vitmålade. En tavla sitter på väggen framför dig,
 och till vänster sitter några TV-skärmar på väggen och flimrar. Rakt fram
 fortsätter salen mot en korridor, även den med lika högt i tak. Till höger
-finns glasdörrar som går in till ett trapphus.
+finns glasdörrar som går in till ett trapphus. Du känner att du kan *titta på*
+tavlan.
 
 ! skärmar:      Skärmarna flimrar och visar bara brus för tillfället.
 
 ! en tavla:     Det ser ut som ett inglasat diplom av något slag. Det finns
                 lite text på tavlan, men den går inte att läsa. Du känner
                 däremot att du har koll på hur man tittar föremål. Det känns
-                väl bra?
+                väl bra? Tavlan ger dig också en känsla av att du kan fokusera
+                intensivt på ett vädersträck för att röra dig åt det hållet...
+                hmmm...
 
-! en text:      Texten på tavlan är svårläst. Du kan inte riktigt tyda den.
+! en text:      Texten på tavlan är svårläst. Du kan inte riktigt tyda den. Den
+                är förmodligen oviktig. Eller..?
 
 ! ett trapphus: Innanför glasdörren syns ett trapphus. Du kan gå dit om du
                 vill.
