@@ -583,8 +583,8 @@ class Player(Actor):
         s   = s  .replace('\n', '\r\n')
         end = end.replace('\n', '\r\n')
 
-        self._connection.send(s  .decode('utf-8').encode('iso-8859-1'))
-        self._connection.send(end.decode('utf-8').encode('iso-8859-1'))
+        self._connection.send(s  )
+        self._connection.send(end)
 
     def text(self, text):
         self.post_message('player_text', text)

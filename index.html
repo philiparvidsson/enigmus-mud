@@ -3,8 +3,23 @@
   <head>
     <title>Enigmus MUD</title>
   </head>
-  <body>
+  <body style="background-color: #111;">
+    <pre id="text" style="color: #eee; font-family: monospace; font-size: 14px; line-height: 150%;"></pre>
+
+    <input id="command" style="background-color: #111; color: #fff;" type="text">
+
     <script src="index.js">
+    </script>
+
+    <script>
+      input = document.getElementById('command')
+      input.onkeyup = (e) => {
+          if (e.keyCode == 13) {
+              e.preventDefault()
+              sendCommand(input.value)
+              input.value = ''
+          }
+      }
     </script>
   </body>
 </html>

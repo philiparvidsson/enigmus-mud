@@ -5,10 +5,18 @@ conn.onerror = (err) => {
 }
 
 conn.onmessage = (e)  => {
-    console.log('msg', e.data)
+    s = e.data
+
+    //s = s.replace(/(?:\r\n|\r|\n)/g, '<br/>')
+
+    document.getElementById('text').innerHTML += s
 }
 
 conn.onopen = () => {
     console.log('heylo connected')
-    conn.send('heylo')
+    conn.send('heylo\n')
+}
+
+function sendCommand(s) {
+    conn.send(s + '\n')
 }

@@ -83,6 +83,8 @@ class WebSocket(TcpConnection):
         self._buffer = ''
         self._state = 0
 
+        self._send_buf = ''
+
     def _receive(self):
         data = self._socket.recv(BUF_SIZE)
 
@@ -106,27 +108,85 @@ class WebSocket(TcpConnection):
 
                     headers[name] = value
 
-                self._buffer = ''
+                self._buffer = None
                 self._send_handshake(headers)
                 self._state = 1
-        elif self._state == 1:
-            print data, 'received'
 
+                if len(self._send_buf) > 0:
+                    self.send(self._send_buf)
+        elif self._state == 1 and len(data) > 0:
+            if not self._buffer:
+                self._buffer = bytearray(memoryview(data).tobytes())
+            else:
+                self._buffer.append(memoryview(data).tobytes())
+
+            self._recv_frame()
 
         return data
 
+    def _recv_frame(self):
+        b = self._buffer
+
+        fin        = (b[0] >> 7) & 1
+        rsv1       = (b[0] >> 6) & 1
+        rsv2       = (b[0] >> 5) & 1
+        rsv3       = (b[0] >> 4) & 1
+        opcode     = (b[0] >> 5) & 0x0f
+        mask       = (b[1] >> 7) & 1
+        payloadlen = (b[1] >> 1) & 0x7f
+
+        i = 2
+
+        if payloadlen >= 126:
+            assert False
+
+        # all client->server messages are masked
+        assert mask == 1
+
+        key = b[i:i+4]
+        i += 4
+
+        data = b[i:i+payloadlen]
+
+        for i in range(len(data)):
+            data[i] = data[i] ^ key[i%4]
+
+        #print 'recv', len(data), 'bytes:', data
+
+        self._buffer = self._buffer[i+payloadlen:]
+
+        for func in self.server._receive_funcs:
+            func(self, data)
+
     def send(self, data):
-        pass
+        if self._state == 0:
+            self._send_buf += data
+        else:
+            while len(data) > 0:
+                n = min(120, len(data))
+                d = data[0:n]
+                data = data[n:]
+
+                s = bytearray()
+                if len(data) == 0:
+                    s.append(0x81)
+                else:
+                    s.append(0x81) # should be 0x01 because fin should be set to 0
+
+                s.append(len(d))
+                s.extend(memoryview(d).tobytes())
+
+                super(WebSocket, self).send(s)
 
     def _send_handshake(self, headers):
         s = headers['Sec-WebSocket-Key'] + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
         wsh = sha.new(s)
         ws_hash = base64.b64encode(wsh.digest())
-        self.send('HTTP/1.1 101 Switching Protocols\n')
-        self.send('Upgrade: websocket\n')
-        self.send('Sec-WebSocket-Accept:{}\n'.format(ws_hash))
-        self.send('Sec-WebSocket-Protocol: chat\n')
-        self.send('\n\n')
+        self._socket.send('HTTP/1.1 101 Switching Protocols\n')
+        self._socket.send('Upgrade: websocket\n')
+        self._socket.send('Connection: Upgrade\n')
+        self._socket.send('Sec-WebSocket-Accept: {}\n'.format(ws_hash))
+        self._socket.send('\n')
 
 #-------------------------------------------------------------------------------
 
