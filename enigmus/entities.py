@@ -348,6 +348,9 @@ class Actor(Entity):
     def emote(self, *args):
         self.post_message('actor_emote', self, args)
 
+    def emit_sound(self, name):
+        self.emote('play_sound', '"{}"'.format(name))
+
     def get_long_description(self, observer=None):
         if not observer:
             observer = self
@@ -584,8 +587,7 @@ class Player(Actor):
         s   = s  .replace('\n', '\r\n')
         end = end.replace('\n', '\r\n')
 
-        self._connection.send(s  )
-        self._connection.send(end)
+        self._connection.send(s + end)
 
     def text(self, text):
         self.post_message('player_text', text)
