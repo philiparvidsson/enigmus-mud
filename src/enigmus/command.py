@@ -1,11 +1,12 @@
 # coding=utf-8
 
-""" Provides the quit command handler. """
+""" Provides the take command handler. """
 
 #-----------------------------------------------------------
 # IMPORTS
 #-----------------------------------------------------------
 
+import language
 import messages
 
 from entities import Entity, Player
@@ -15,20 +16,27 @@ from entities import Entity, Player
 #-----------------------------------------------------------
 
 class Command(Entity):
-    """ Command entity for handling the quit command. """
-
     def __init__(self):
-        """ Initializes the command. """
-
         super(Command, self).__init__()
+
+        self.commands = {}
 
         self.on_message('player_command', self.__player_command,
             filter=messages.for_entities_of_class(Player))
 
-    # ------- MESSAGES -------
-
     def __player_command(self, player, command):
-        if command != 'quit':
+        if len(command) == 0:
             return
 
-        player.disconnect()
+        s = command.split(' ')
+
+        i = 1
+        while i <= len(s):
+            command = ' '.join(s[:i])
+            args    = s[i:]
+
+            if command in self.commands:
+                self.commands[command](player, args)
+                return
+
+            i += 1

@@ -5,14 +5,18 @@
 #-----------------------------------------------------------
 
 import enigmus
-import random
 
-from entities import Room
+import sys
 
 #-----------------------------------------------------------
-# CLASSES
+# SCRIPT
 #-----------------------------------------------------------
 
-class Common(Room):
-    def __init__(self):
-        super(Common, self).__init__()
+if __name__ == '__main__':
+    quest = ['common', 'demo']
+
+    if len(sys.argv) < 2:
+        print 'usage: python enigmus <quests>'
+        print 'example: python enigmus common demo'
+    else:
+        enigmus.run(sys.argv[1:])

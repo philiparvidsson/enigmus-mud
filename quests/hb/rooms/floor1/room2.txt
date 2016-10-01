@@ -1,6 +1,8 @@
 Du befinner dig längst ned i ett trapphus. Väggarna är vita och trappan är
 gjord av sten. Det finns ett svart räcke som följer trappan. Rummet är belyst
-av ett fönster längre upp i trappan.
+av ett fönster längre upp i trappan. På ena sidan av trapphuset finns glasdörrar
+som leder till en stor entrésal, och på den andra sidan finns glasdörrar som
+leder in till något café.
 
 ! ett fönster: Fönstret släpper in ljus i trapphuset, som i övrigt inte har
                några lampor. Genom fönstret kan man skymta en grå himmel

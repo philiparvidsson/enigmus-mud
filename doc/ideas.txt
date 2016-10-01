@@ -1,0 +1,13 @@
+Spelaren introduceras till spelet och får välja sitt utseende, namn m.m.
+
+Spelaren befinner sig i en stor sal, som möjligtvis känns lite bekant. Spelet
+går ut på att förstå vilken miljö spelaren befinner sig i, nämligen Borås
+Högskola.
+
+Ledtrådar ges genom spelets gång i form av små lappar m.m. (mer idéer behövs).
+
+Spelet kan eventuellt "klaras" genom att avslöja alla personer i det (ex. lärare
+som Cissi, Ulf m.m. Kanske genom att man säger deras namn till dem. Eller olika
+för olika personer.)
+
+* Skit i hela mud-biten och gör noveller i mud-form.
